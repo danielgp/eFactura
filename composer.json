@@ -1,0 +1,50 @@
+{
+    "name": "danielgp/efactura",
+    "description": "eFactura scripts to produce and read XML files containing official selling details to help out business data exchange and authorities oversight",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name":     "Daniel Popiniuc",
+            "email":    "danielpopiniuc@gmail.com",
+            "role":     "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-xml": "*",
+        "ext-xmlreader": "*",
+        "ext-xmlwriter": "*"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.0"
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "autoload": {
+        "classmap": [
+            "source/"
+        ],
+        "files": [
+            "source/traitBasic.php",
+            "source/traitTax.php",
+            "source/traitLines.php",
+            "source/traitCompanies.php",
+            "source/traitHeader.php",
+            "source/electornicInvoiceRead.php"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true,
+    "archive": {
+        "exclude": [
+            "/nbproject",
+            "/vendor"
+        ]
+    }
+}
