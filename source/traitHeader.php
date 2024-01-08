@@ -34,24 +34,24 @@ trait traitHeader
     use traitCompanies,
         traitTax;
 
-    private function getHeader(array $arrayParameters): array {
-        $arrayCBC      = explode(':', $arrayParameters['DocumentNameSpaces']['cbc']);
+    private function getHeader(array $arrayParams): array {
+        $arrayCBC      = explode(':', $arrayParams['DocumentNameSpaces']['cbc']);
         $strCBC        = $arrayCBC[count($arrayCBC) - 1]; // CommonBasicComponents
-        $strCAC        = $arrayParameters['cacName']; // CommonAggregateComponents
+        $strCAC        = $arrayParams['cacName']; // CommonAggregateComponents
         $arrayDocument = [
-            $strCBC => $this->getHeaderCommonBasicComponents($arrayParameters['Type'], $arrayParameters['CBC']),
+            $strCBC => $this->getHeaderCommonBasicComponents($arrayParams['DocumentTagName'], $arrayParams['CBC']),
             $strCAC => [
-                'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParameters['CAC']
+                'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParams['CAC']
                     ->AccountingCustomerParty->children('cac', true)->Party),
-                'AccountingSupplierParty' => $this->getAccountingSupplierParty($arrayParameters['CAC']
+                'AccountingSupplierParty' => $this->getAccountingSupplierParty($arrayParams['CAC']
                     ->AccountingSupplierParty->children('cac', true)->Party),
-                'LegalMonetaryTotal'      => $this->getLegalMonetaryTotal($arrayParameters['CAC']->LegalMonetaryTotal),
-                'TaxTotal'                => $this->getTaxTotal($arrayParameters['CAC']->TaxTotal),
+                'LegalMonetaryTotal'      => $this->getLegalMonetaryTotal($arrayParams['CAC']->LegalMonetaryTotal),
+                'TaxTotal'                => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
             ],
         ];
         $intLineNo     = 0;
-        if (isset($arrayParameters['CAC']->PaymentMeans)) {
-            foreach ($arrayParameters['CAC']->PaymentMeans as $child) {
+        if (isset($arrayParams['CAC']->PaymentMeans)) {
+            foreach ($arrayParams['CAC']->PaymentMeans as $child) {
                 $intLineNo++;
                 $intLineStr                                          = ($intLineNo < 10 ? '0' : '')
                     . $intLineNo;
@@ -59,8 +59,8 @@ trait traitHeader
             }
         }
         // optional components =========================================================================================
-        if (isset($arrayParameters['CAC']->InvoicePeriod)) {
-            $arrayDocument[$strCAC]['InvoicePeriod'] = $this->getLegalInvoicePeriod($arrayParameters['CAC']
+        if (isset($arrayParams['CAC']->InvoicePeriod)) {
+            $arrayDocument[$strCAC]['InvoicePeriod'] = $this->getLegalInvoicePeriod($arrayParams['CAC']
                 ->InvoicePeriod);
         }
         return $arrayDocument;

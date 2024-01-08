@@ -37,7 +37,7 @@ class electornicInvoiceRead
     public function readElectronicInvoice($strFile) {
         $objFile                 = new \SimpleXMLElement($strFile, NULL, TRUE);
         $arrayDocument           = [
-            'Type'               => $objFile->getName(),
+            'DocumentTagName'    => $objFile->getName(),
             'DocumentNameSpaces' => $objFile->getDocNamespaces(true),
         ];
         $arrayCAC                = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
@@ -47,7 +47,7 @@ class electornicInvoiceRead
             'cacName'            => $strElementA,
             'CBC'                => $objFile->children('cbc', true),
             'DocumentNameSpaces' => $arrayDocument['DocumentNameSpaces'],
-            'Type'               => $arrayDocument['Type'],
+            'DocumentTagName'    => $arrayDocument['DocumentTagName'],
         ]);
         $intLineNo               = 0;
         foreach ($objFile->children('cac', true) as $child) {
@@ -57,7 +57,7 @@ class electornicInvoiceRead
                 case 'InvoiceLine':
                     $intLineNo++;
                     $intLineStr                          = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                    $arrayDocument['Lines'][$intLineStr] = $this->getLine($arrayDocument['Type'], $child);
+                    $arrayDocument['Lines'][$intLineStr] = $this->getLine($arrayDocument['DocumentTagName'], $child);
                     break;
             }
             unset($strCurrentTag);
