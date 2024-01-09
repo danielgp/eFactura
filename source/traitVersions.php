@@ -54,7 +54,7 @@ trait traitVersions
         if (!file_exists($strFileName)) {
             throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));
         }
-        $fileHandle = fopen($strFileName, 'r', 'read');
+        $fileHandle = fopen($strFileName, 'r');
         if ($fileHandle === false) {
             throw new \RuntimeException(sprintf('Unable to open file %s for read purpose!', $strFileName));
         }
