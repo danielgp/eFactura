@@ -33,6 +33,19 @@ trait traitLines
 
     use traitTax;
 
+    private function getDocumentLines($objFile, string $strTag) {
+        $arrayLines = [];
+        $intLineNo  = 0;
+        foreach ($objFile->children('cac', true) as $strNodeName => $child) {
+            if ($strNodeName === ($strTag . 'Line')) {
+                $intLineNo++;
+                $intLineStr              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                $arrayLines[$intLineStr] = $this->getLine($strTag, $child);
+            }
+        }
+        return $arrayLines;
+    }
+
     private function getLine(string $strType, $child): array {
         $arrayOutput = [
             'ID'                  => $child->children('cbc', true)->ID->__toString(),
@@ -66,13 +79,12 @@ trait traitLines
         if (isset($child3->children('cbc', true)->Description)) {
             $arrayOutput['Description'] = $child3->children('cac', true)->Description->__toString();
         }
-        // Sub-sections ================================================================================================
         if (isset($child3->children('cac', true)->AllowanceCharge)) {
             $intLineNo = 0;
             foreach ($child3->children('cac', true)->AllowanceCharge as $child4) {
                 $intLineNo++;
                 $intLineStr                                  = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                $arrayOutput['AllowanceCharge'][$intLineStr] = $this->getLineItemAllowanceCharge();
+                $arrayOutput['AllowanceCharge'][$intLineStr] = $this->getLineItemAllowanceCharge($child4);
             }
         }
         if (isset($child3->children('cac', true)->CommodityClassification)) {
@@ -94,7 +106,7 @@ trait traitLines
 
     private function getLineItemAllowanceCharge($child2): array {
         $arrayOutput = [
-            'Amount'                    => $this->getTagWithCurrencyParameter($child2->children('cbc', true)->Amount),
+            'Amount'                    => $this->getTagWithCurrencyParameter($child2->Amount),
             'AllowanceChargeReason'     => $child2->children('cbc', true)->AllowanceChargeReason->__toString(),
             'AllowanceChargeReasonCode' => $child2->children('cbc', true)->AllowanceChargeReasonCode->__toString(),
             'ChargeIndicator'           => $child2->children('cbc', true)->ChargeIndicator->__toString(),

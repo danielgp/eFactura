@@ -34,12 +34,22 @@ class electornicInvoiceRead
     use traitHeader,
         traitLines;
 
-    public function readElectronicInvoice($strFile) {
-        $objFile                 = new \SimpleXMLElement($strFile, NULL, TRUE);
-        $arrayDocument           = [
+    private function getDocumentRoot($objFile) {
+        $arrayDocument = [
             'DocumentTagName'    => $objFile->getName(),
             'DocumentNameSpaces' => $objFile->getDocNamespaces(true),
         ];
+        if (array_key_exists('xsi', $arrayDocument['DocumentNameSpaces'])) {
+            if (isset($objFile->attributes('xsi', true)->schemaLocation)) {
+                $arrayDocument['SchemaLocation'] = $objFile->attributes('xsi', true)->schemaLocation;
+            }
+        }
+        return $arrayDocument;
+    }
+
+    public function readElectronicInvoice($strFile) {
+        $objFile                 = new \SimpleXMLElement($strFile, NULL, TRUE);
+        $arrayDocument           = $this->getDocumentRoot($objFile);
         $arrayCAC                = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
         $strElementA             = $arrayCAC[count($arrayCAC) - 1]; // CommonAggregateComponents
         $arrayDocument['Header'] = $this->getHeader([
@@ -49,19 +59,7 @@ class electornicInvoiceRead
             'DocumentNameSpaces' => $arrayDocument['DocumentNameSpaces'],
             'DocumentTagName'    => $arrayDocument['DocumentTagName'],
         ]);
-        $intLineNo               = 0;
-        foreach ($objFile->children('cac', true) as $child) {
-            $strCurrentTag = $child->getName();
-            switch ($strCurrentTag) {
-                case 'CreditNoteLine':
-                case 'InvoiceLine':
-                    $intLineNo++;
-                    $intLineStr                          = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                    $arrayDocument['Lines'][$intLineStr] = $this->getLine($arrayDocument['DocumentTagName'], $child);
-                    break;
-            }
-            unset($strCurrentTag);
-        }
+        $arrayDocument['Lines']  = $this->getDocumentLines($objFile, $arrayDocument['DocumentTagName']);
         return $arrayDocument;
     }
 }

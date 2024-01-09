@@ -1,0 +1,54 @@
+{
+    "Defaults": {
+        "Comments": {
+            "CBC": {
+                "CreditNoteTypeCode": "BT-3 | Codul tipului facturii | R44",
+                "DocumentCurrencyCode": "BT-5 | Codul monedei facturii | R54,47",
+                "DueDate": "BT-9 | Data scadenţei | R60",
+                "ID": "BT-1 | Numărul facturii | R56",
+                "InvoiceTypeCode": "BT-3 | Codul tipului facturii | R44",
+                "IssueDate": "BT-2 | Data emiterii facturii | R56",
+                "TaxCurrencyCode": "BT-6 | Codul monedei de contabilizare a TVA | R54"
+            }
+        },
+        "DocumentNameSpaces": {
+            "": "urn:oasis:names:specification:ubl:schema:xsd:%s-2",
+            "qdt": "urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2",
+            "ccts": "urn:un:unece:uncefact:documentation:2",
+            "udt": "urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2",
+            "cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
+            "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+            "xs": "http://www.w3.org/2001/XMLSchema",
+            "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+        },
+        "EnvironmentName": "test",
+        "SchemaLocation": "urn:oasis:names:specification:ubl:schema:xsd:%s-2 http://docs.oasis-open.org/ubl/os-UBL-%s/xsd/maindoc/UBL-%s-%s.xsd"
+    },
+    "Domain": "https://webserviceapl.anaf.ro/{environmentName}/FCTEL/rest/{featureName}",
+    "FeatureNames": {
+        "Download": "descarcare",
+        "Message_Status": "stareMesaj",
+        "Messages_List": "listaMesajeFactura",
+        "Upload": "upload"
+    },
+    "Versions": {
+        "1.0.7": {
+            "CIUS-RO": "1.0.0",
+            "Last_Updates": "2022-10-18",
+            "UBL": "2.1",
+            "Validity": {
+                "End": "2022-12-28",
+                "Start": "2021-11-11"
+            }
+        },
+        "1.0.8": {
+            "CIUS-RO": "1.0.1",
+            "Last_Updates": "2022-07-12",
+            "UBL": "2.1",
+            "Validity": {
+                "End": "2099-12-31",
+                "Start": "2022-12-29"
+            }
+        }
+    }
+}

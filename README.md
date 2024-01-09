@@ -14,3 +14,5 @@ PHP developers that serves various business to accomodate custom applications in
 [![Monthly Downloads](https://poser.pugx.org/danielgp/efactura/d/monthly)](https://packagist.org/packages/danielgp/efactura)
 [![Daily Downloads](https://poser.pugx.org/danielgp/efactura/d/daily)](https://packagist.org/packages/danielgp/efactura)
 
+Code quality analysis
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/danielgp/efactura/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/danielgp/efactura/?branch=main)

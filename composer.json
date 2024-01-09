@@ -12,13 +12,13 @@
     ],
     "require": {
         "php": ">=8.1",
-        "ext-xml": "*",
-        "ext-xmlreader": "*",
-        "ext-xmlwriter": "*"
+        "ext-XML": "*",
+        "ext-SimpleXML": "*",
+        "ext-XMLWriter": "*"
     },
     "config": {
         "platform": {
-            "php": "8.2.0"
+            "php": "8.2.14"
         },
         "optimize-autoloader": true,
         "sort-packages": true

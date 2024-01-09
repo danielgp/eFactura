@@ -31,81 +31,32 @@ namespace danielgp\efactura;
 class electornicInvoiceWrite
 {
 
-    protected $arrayUniformResourceLocator = [
-        'DefaultEnvironmentName' => 'test',
-        'Domain'                 => 'https://webserviceapl.anaf.ro/{environmentName}/FCTEL/rest/{featureName}',
-        'FeatureNames'           => [
-            'Upload'         => 'upload',
-            'Message_Status' => 'stareMesaj',
-            'Messages_List'  => 'listaMesajeFactura',
-            'Download'       => 'descarcare',
-        ],
-        'Versions'               => [
-            '1.0.7' => [
-                'Validity'     => [
-                    'Start' => '2021-11-11',
-                    'End'   => '2022-12-28',
-                ],
-                'Last_Updates' => '2022-10-18',
-                'UBL'          => '2.1',
-                'CIUS-RO'      => '1.0.0',
-            ],
-            '1.0.8' => [
-                'Validity'     => [
-                    'Start' => '2022-12-29',
-                    'End'   => '2099-12-31',
-                ],
-                'Last_Updates' => '2022-07-12',
-                'UBL'          => '2.1',
-                'CIUS-RO'      => '1.0.1',
-            ]
-        ]
-    ];
+    use traitVersions;
+
     protected $objXmlWriter;
 
-    private function establishCurrentVersion(array $arrayKnownVersions): array {
-        $arrayVersionToReturn = [];
-        $dtValidityNow        = new \DateTime();
-        foreach ($arrayKnownVersions as $value) {
-            $dtValidityStart = new \DateTime($value['Validity']['Start']);
-            $dtValidityEnd   = new \DateTime($value['Validity']['End']);
-            if (($dtValidityNow >= $dtValidityStart) && ($dtValidityNow <= $dtValidityEnd)) {
-                $arrayVersionToReturn = [
-                    'UBL'     => $value['UBL'],
-                    'CIUS-RO' => $value['CIUS-RO'],
-                ];
+    private function setDocumentBasicElements(array $arrayElementWithData): void {
+        foreach ($arrayElementWithData as $key => $value) {
+            if (array_key_exists($key, $this->arraySettings['Defaults']['Comments']['CBC'])) {
+                $this->objXmlWriter->writeComment($this->arraySettings['Defaults']['Comments']['CBC'][$key]);
+            }
+            $this->objXmlWriter->writeElement('cbc:' . $key, $value);
+        }
+    }
+
+    private function setDocumentHeader(array $arrayDocumentData): void {
+        $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
+        foreach ($arrayDocumentData['DocumentNameSpaces'] as $key => $value) {
+            if ($key === '') {
+                $strValue = sprintf($value, $arrayDocumentData['DocumentTagName']);
+                $this->objXmlWriter->writeAttributeNS(NULL, 'xmlns', NULL, $strValue);
+            } else {
+                $this->objXmlWriter->writeAttributeNS('xmlns', $key, NULL, $value);
             }
         }
-        return $arrayVersionToReturn;
-    }
-
-    private function setDocumentHeader(string $strDocumentTagName, array $arrayVersion): void {
-        $this->objXmlWriter->startElement($strDocumentTagName);
-        $strCommonPrefix = 'urn:oasis:names:specification:ubl:schema:xsd:';
-        $this->objXmlWriter->writeAttributeNS(NULL, 'xmlns', NULL, $strCommonPrefix
-            . $strDocumentTagName . '-2');
-        $this->objXmlWriter->writeAttributeNS('xmlns', 'cac', NULL, $strCommonPrefix . 'CommonAggregateComponents-2');
-        $this->objXmlWriter->writeAttributeNS('xmlns', 'cbc', NULL, $strCommonPrefix . 'CommonBasicComponents-2');
-        $this->objXmlWriter->writeAttributeNS('xmlns', 'ext', NULL, $strCommonPrefix . 'CommonExtensionComponents-2');
-        $this->objXmlWriter->writeAttributeNS('xmlns', 'qdt', NULL, $strCommonPrefix . 'QualifiedDataTypes-2');
-        $this->objXmlWriter->writeAttributeNS('xmlns', 'udt', NULL, $strCommonPrefix . 'UnqualifiedDataTypes-2');
-        $this->objXmlWriter->writeAttributeNS('xmlns', 'xs', NULL, 'http://www.w3.org/2001/XMLSchema');
-        $this->objXmlWriter->writeAttributeNS('xmlns', 'xsi', NULL, 'http://www.w3.org/2001/XMLSchema-instance');
-        $this->objXmlWriter->writeAttributeNS('xsi', 'schemaLocation', NULL, implode(' ', [
-            $strCommonPrefix . $strDocumentTagName . '-2', implode('-', [
-                'http://docs.oasis-open.org/ubl/os-UBL',
-                $arrayVersion['UBL'] . '/xsd/maindoc/UBL',
-                $strDocumentTagName,
-                $arrayVersion['UBL'] . '.xsd',
-            ])
-        ]));
-    }
-
-    private function setDocumentHeaderVersions(array $arrayVersion): void {
-        $this->objXmlWriter->writeElement('cbc:UBLVersionID', $arrayVersion['UBL']);
-        $this->objXmlWriter->writeElement('cbc:CustomizationID', 'urn:cen.eu:en16931:2017'
-            . '#compliant#urn:efactura.mfinante.ro:CIUS-RO:'
-            . $arrayVersion['CIUS-RO']);
+        if (array_key_exists('SchemaLocation', $arrayDocumentData)) {
+            $this->objXmlWriter->writeAttribute('xsi:schemaLocation', $arrayDocumentData['SchemaLocation']);
+        }
     }
 
     public function writeElectronicInvoice(string $strFile, array $arrayDocumentData): void {
@@ -114,9 +65,19 @@ class electornicInvoiceWrite
         $this->objXmlWriter->setIndent(true);
         $this->objXmlWriter->setIndentString(str_repeat(' ', 4));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
-        $arrayVersion       = $this->establishCurrentVersion($this->arrayUniformResourceLocator['Versions']);
-        $this->setDocumentHeader($arrayDocumentData['DocumentTagName']);
-        $this->setDocumentHeaderVersions($arrayVersion);
+        // if no DocumentNameSpaces seen take Default ones from local configuration
+        if (!array_key_exists('DocumentNameSpaces', $arrayDocumentData)) {
+            $this->getSettingsFromFileIntoMemory();
+            $arrayDocumentData['DocumentNameSpaces'] = $this->arraySettings['Defaults']['DocumentNameSpaces'];
+            $arrayDocumentData['SchemaLocation']     = vsprintf($this->arraySettings['Defaults']['SchemaLocation'], [
+                $arrayDocumentData['DocumentTagName'],
+                $arrayDocumentData['UBLVersionID'],
+                $arrayDocumentData['DocumentTagName'],
+                $arrayDocumentData['UBLVersionID'],
+            ]);
+        }
+        $this->setDocumentHeader($arrayDocumentData);
+        $this->setDocumentBasicElements($arrayDocumentData['Header']['CommonBasicComponents-2']);
         // TODO: add logic for each section
         $this->objXmlWriter->endElement(); // Invoice or CreditNote
         $this->objXmlWriter->flush();
