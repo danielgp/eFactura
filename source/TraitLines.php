@@ -28,10 +28,10 @@
 
 namespace danielgp\efactura;
 
-trait traitLines
+trait TraitLines
 {
 
-    use traitTax;
+    use TraitTax;
 
     private function getDocumentLines($objFile, string $strTag) {
         $arrayLines = [];

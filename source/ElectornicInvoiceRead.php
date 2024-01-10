@@ -28,11 +28,11 @@
 
 namespace danielgp\efactura;
 
-class electornicInvoiceRead
+class ElectornicInvoiceRead
 {
 
-    use traitHeader,
-        traitLines;
+    use TraitHeader,
+        TraitLines;
 
     private function getDocumentRoot($objFile) {
         $arrayDocument = [

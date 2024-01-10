@@ -28,7 +28,7 @@
 
 namespace danielgp\efactura;
 
-trait traitCompanies
+trait TraitCompanies
 {
 
     private function getAccountingCustomerParty($child2): array {

@@ -28,14 +28,14 @@
 
 namespace danielgp\efactura;
 
-class electornicInvoiceWrite
+class ElectornicInvoiceWrite
 {
 
     use traitVersions;
 
     protected $objXmlWriter;
 
-    private function setDocumentBasicElements(array $arrayElementWithData): void {
+    private function setHeaderCommonBasicComponents(array $arrayElementWithData): void {
         foreach ($arrayElementWithData as $key => $value) {
             if (array_key_exists($key, $this->arraySettings['Defaults']['Comments']['CBC'])) {
                 $this->objXmlWriter->writeComment($this->arraySettings['Defaults']['Comments']['CBC'][$key]);
@@ -44,7 +44,7 @@ class electornicInvoiceWrite
         }
     }
 
-    private function setDocumentHeader(array $arrayDocumentData): void {
+    private function setDocumentTag(array $arrayDocumentData): void {
         $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
         foreach ($arrayDocumentData['DocumentNameSpaces'] as $key => $value) {
             if ($key === '') {
@@ -65,21 +65,18 @@ class electornicInvoiceWrite
         $this->objXmlWriter->setIndent(true);
         $this->objXmlWriter->setIndentString(str_repeat(' ', 4));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
-        $this->getSettingsFromFileIntoMemory();
         // if no DocumentNameSpaces seen take Default ones from local configuration
-        if (!array_key_exists('DocumentNameSpaces', $arrayDocumentData)) {
-            $arrayVersions                                                          = $this->establishCurrentVersion($this->arraySettings['Versions']);
-            $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID'] = $arrayVersions['UBL'];
-            $arrayDocumentData['DocumentNameSpaces']                                = $this->arraySettings['Defaults']['DocumentNameSpaces'];
-            $arrayDocumentData['SchemaLocation']                                    = vsprintf($this->arraySettings['Defaults']['SchemaLocation'], [
-                $arrayDocumentData['DocumentTagName'],
-                $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID'],
-                $arrayDocumentData['DocumentTagName'],
-                $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID'],
-            ]);
+        $this->getSettingsFromFileIntoMemory();
+        $arrayDefaults      = $this->getDefaultsIntoDataSet($arrayDocumentData);
+        if ($arrayDefaults !== []) {
+            $arrayDocumentData = array_merge($arrayDocumentData, $arrayDefaults['Root']);
+            if (!array_key_exists('CustomizationID', $arrayDocumentData['Header']['CommonBasicComponents-2'])) {
+                $arrayDocumentData['Header']['CommonBasicComponents-2']['CustomizationID'] = $arrayDefaults['CIUS-RO'];
+                $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID']    = $arrayDefaults['UBL'];
+            }
         }
-        $this->setDocumentHeader($arrayDocumentData);
-        $this->setDocumentBasicElements($arrayDocumentData['Header']['CommonBasicComponents-2']);
+        $this->setDocumentTag($arrayDocumentData);
+        $this->setHeaderCommonBasicComponents($arrayDocumentData['Header']['CommonBasicComponents-2']);
         // TODO: add logic for each section
         $this->objXmlWriter->endElement(); // Invoice or CreditNote
         $this->objXmlWriter->flush();

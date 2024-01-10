@@ -28,11 +28,11 @@
 
 namespace danielgp\efactura;
 
-trait traitHeader
+trait TraitHeader
 {
 
-    use traitCompanies,
-        traitTax;
+    use TraitCompanies,
+        TraitTax;
 
     private function getHeader(array $arrayParams): array {
         $arrayCBC      = explode(':', $arrayParams['DocumentNameSpaces']['cbc']);

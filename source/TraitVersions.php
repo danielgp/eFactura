@@ -28,7 +28,7 @@
 
 namespace danielgp\efactura;
 
-trait traitVersions
+trait TraitVersions
 {
 
     protected $arraySettings = [];
@@ -47,6 +47,27 @@ trait traitVersions
             }
         }
         return $arrayVersionToReturn;
+    }
+
+    private function getDefaultsIntoDataSet(array $arrayDocumentData): array {
+        $arrayOutput = [];
+        if (!array_key_exists('DocumentNameSpaces', $arrayDocumentData)) {
+            $arrayVersions = $this->establishCurrentVersion($this->arraySettings['Versions']);
+            $arrayOutput   = [
+                'Root'    => [
+                    'DocumentNameSpaces' => $this->arraySettings['Defaults']['DocumentNameSpaces'],
+                    'SchemaLocation'     => vsprintf($this->arraySettings['Defaults']['SchemaLocation'], [
+                        $arrayDocumentData['DocumentTagName'],
+                        $arrayVersions['UBL'],
+                        $arrayDocumentData['DocumentTagName'],
+                        $arrayVersions['UBL'],
+                    ]),
+                ],
+                'UBL'     => $arrayVersions['UBL'],
+                'CIUS-RO' => $arrayVersions['CIUS-RO'],
+            ];
+        }
+        return $arrayOutput;
     }
 
     private function getSettingsFromFileIntoMemory(): void {

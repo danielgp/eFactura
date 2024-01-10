@@ -28,12 +28,14 @@
             "source/"
         ],
         "files": [
-            "source/traitBasic.php",
-            "source/traitTax.php",
-            "source/traitLines.php",
-            "source/traitCompanies.php",
-            "source/traitHeader.php",
-            "source/electornicInvoiceRead.php"
+            "source/TraitBasic.php",
+            "source/TraitVersions.php",
+            "source/TraitTax.php",
+            "source/TraitLines.php",
+            "source/TraitCompanies.php",
+            "source/TraitHeader.php",
+            "source/ElectornicInvoiceRead.php",
+            "source/ElectornicInvoiceWrite.php"
         ]
     },
     "require-dev": {

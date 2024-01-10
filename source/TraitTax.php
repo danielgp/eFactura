@@ -28,10 +28,10 @@
 
 namespace danielgp\efactura;
 
-trait traitTax
+trait TraitTax
 {
 
-    use traitBasic;
+    use TraitBasic;
 
     private function getTaxCategory($child3): array {
         $arrayOutput = [

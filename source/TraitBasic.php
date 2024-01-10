@@ -28,7 +28,7 @@
 
 namespace danielgp\efactura;
 
-trait traitBasic
+trait TraitBasic
 {
 
     private function getTagWithCurrencyParameter($childLineExtensionAmount) {
