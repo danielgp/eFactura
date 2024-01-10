@@ -68,12 +68,14 @@ class electornicInvoiceWrite
         // if no DocumentNameSpaces seen take Default ones from local configuration
         if (!array_key_exists('DocumentNameSpaces', $arrayDocumentData)) {
             $this->getSettingsFromFileIntoMemory();
-            $arrayDocumentData['DocumentNameSpaces'] = $this->arraySettings['Defaults']['DocumentNameSpaces'];
-            $arrayDocumentData['SchemaLocation']     = vsprintf($this->arraySettings['Defaults']['SchemaLocation'], [
+            $arrayVersions                                                          = $this->establishCurrentVersion($this->arraySettings['Versions']);
+            $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID'] = $arrayVersions['UBL'];
+            $arrayDocumentData['DocumentNameSpaces']                                = $this->arraySettings['Defaults']['DocumentNameSpaces'];
+            $arrayDocumentData['SchemaLocation']                                    = vsprintf($this->arraySettings['Defaults']['SchemaLocation'], [
                 $arrayDocumentData['DocumentTagName'],
-                $arrayDocumentData['UBLVersionID'],
+                $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID'],
                 $arrayDocumentData['DocumentTagName'],
-                $arrayDocumentData['UBLVersionID'],
+                $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID'],
             ]);
         }
         $this->setDocumentHeader($arrayDocumentData);
