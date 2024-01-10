@@ -65,9 +65,9 @@ class electornicInvoiceWrite
         $this->objXmlWriter->setIndent(true);
         $this->objXmlWriter->setIndentString(str_repeat(' ', 4));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
+        $this->getSettingsFromFileIntoMemory();
         // if no DocumentNameSpaces seen take Default ones from local configuration
         if (!array_key_exists('DocumentNameSpaces', $arrayDocumentData)) {
-            $this->getSettingsFromFileIntoMemory();
             $arrayVersions                                                          = $this->establishCurrentVersion($this->arraySettings['Versions']);
             $arrayDocumentData['Header']['CommonBasicComponents-2']['UBLVersionID'] = $arrayVersions['UBL'];
             $arrayDocumentData['DocumentNameSpaces']                                = $this->arraySettings['Defaults']['DocumentNameSpaces'];
