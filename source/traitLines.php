@@ -66,6 +66,10 @@ trait traitLines
                     ->InvoicedQuantity);
                 break;
         }
+        if (isset($child->children('cac', true)->AllowanceCharge)) {
+            $arrayOutput['AllowanceCharge'] = $this->getLineItemAllowanceCharge($child
+                    ->children('cac', true)->AllowanceCharge);
+        }
         $arrayOutput['Item']  = $this->getLineItem($child->children('cac', true)->Item);
         $arrayOutput['Price'] = $this->getLinePrice($child->children('cac', true)->Price);
         return $arrayOutput;
@@ -73,48 +77,57 @@ trait traitLines
 
     private function getLineItem($child3): array {
         $arrayOutput = [
-            'Name' => $child3->children('cbc', true)->Name->__toString(),
+            'Name'                  => $child3->children('cbc', true)->Name->__toString(),
+            'ClassifiedTaxCategory' => $this->getTaxCategory($child3->children('cac', true)->ClassifiedTaxCategory),
         ];
         // optional components =========================================================================================
         if (isset($child3->children('cbc', true)->Description)) {
             $arrayOutput['Description'] = $child3->children('cac', true)->Description->__toString();
         }
-        if (isset($child3->children('cac', true)->AllowanceCharge)) {
-            $intLineNo = 0;
-            foreach ($child3->children('cac', true)->AllowanceCharge as $child4) {
-                $intLineNo++;
-                $intLineStr                                  = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                $arrayOutput['AllowanceCharge'][$intLineStr] = $this->getLineItemAllowanceCharge($child4);
+        $arrayAggregate = $this->getLineItemAggregate($child3);
+        return array_merge($arrayOutput, $arrayAggregate);
+    }
+
+    private function getLineItemAllowanceCharge($child3): array {
+        $arrayOutput = [];
+        $intLineNo   = 0;
+        foreach ($child3 as $child4) {
+            $intLineNo++;
+            $intLineStr               = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $arrayOutput[$intLineStr] = [
+                'Amount'                    => $this->getTagWithCurrencyParameter($child4
+                        ->children('cbc', true)->Amount),
+                'AllowanceChargeReasonCode' => $child4->children('cbc', true)->AllowanceChargeReasonCode->__toString(),
+                'ChargeIndicator'           => $child4->children('cbc', true)->ChargeIndicator->__toString(),
+            ];
+            if (isset($child4->children('cbc', true)->AllowanceChargeReason)) {
+                $arrayOutput[$intLineStr]['AllowanceChargeReason'] = $this->getTagWithCurrencyParameter($child4
+                        ->children('cbc', true)->AllowanceChargeReason);
+            }
+            if (isset($child4->children('cbc', true)->BaseAmount)) {
+                $arrayOutput[$intLineStr]['BaseAmount'] = $this->getTagWithCurrencyParameter($child4
+                        ->children('cbc', true)->BaseAmount);
             }
         }
-        if (isset($child3->children('cac', true)->CommodityClassification)) {
-            $child4                                                           = $child3->children('cac', true)
-                ->CommodityClassification->children('cbc', true)->ItemClassificationCode;
-            $arrayOutput['CommodityClassification']['ItemClassificationCode'] = [
-                'listID' => $child4->attributes()->listID->__toString(),
-                'value'  => $child4->__toString(),
-            ];
-        }
-        if (isset($child3->children('cac', true)->SellersItemIdentification)) {
-            $arrayOutput['SellersItemIdentification']['ID'] = $child3
-                    ->children('cac', true)->SellersItemIdentification->children('cbc', true)->ID->__toString();
-        }
-        $arrayOutput['ClassifiedTaxCategory'] = $this->getTaxCategory($child3
-                ->children('cac', true)->ClassifiedTaxCategory);
         return $arrayOutput;
     }
 
-    private function getLineItemAllowanceCharge($child2): array {
-        $arrayOutput = [
-            'Amount'                    => $this->getTagWithCurrencyParameter($child2->Amount),
-            'AllowanceChargeReason'     => $child2->children('cbc', true)->AllowanceChargeReason->__toString(),
-            'AllowanceChargeReasonCode' => $child2->children('cbc', true)->AllowanceChargeReasonCode->__toString(),
-            'ChargeIndicator'           => $child2->children('cbc', true)->ChargeIndicator->__toString(),
-        ];
-        // optional components =========================================================================================
-        if (isset($child2->children('cbc', true)->BaseAmount)) {
-            $arrayOutput['BaseAmount'] = $this->getTagWithCurrencyParameter($child2->children('cbc', true)
-                ->BaseAmount);
+    private function getLineItemAggregate($child3): array {
+        $arrayOutput = [];
+        foreach ($child3->children('cac', true) as $strName => $value) {
+            switch ($strName) {
+                case 'CommodityClassification':
+                    $child4                                          = $value->children('cbc', true)
+                        ->ItemClassificationCode;
+                    $arrayOutput[$strName]['ItemClassificationCode'] = [
+                        'listID' => $child4->attributes()->listID->__toString(),
+                        'value'  => $child4->__toString(),
+                    ];
+                    break;
+                case 'SellersItemIdentification':
+                    $arrayOutput[$strName]['ID']                     = $value->children('cbc', true)->ID->__toString();
+                    break;
+            }
         }
         return $arrayOutput;
     }
