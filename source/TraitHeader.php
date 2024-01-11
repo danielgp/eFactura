@@ -129,6 +129,9 @@ trait TraitHeader
         if (isset($child2->children('cbc', true)->ChargeTotalAmount)) {
             $arrayOutput['ChargeTotalAmount'] = $this->getTagWithCurrencyParameter($objCBC->ChargeTotalAmount);
         }
+        if (isset($child2->children('cbc', true)->PayableRoundingAmount)) {
+            $arrayOutput['PayableRoundingAmount'] = $this->getTagWithCurrencyParameter($objCBC->PayableRoundingAmount);
+        }
         if (isset($child2->children('cbc', true)->PrepaidAmount)) {
             $arrayOutput['PrepaidAmount'] = $this->getTagWithCurrencyParameter($objCBC->PrepaidAmount);
         }
