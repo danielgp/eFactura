@@ -59,6 +59,7 @@
             "LegalMonetaryTotal_PayableRoundingAmount": "BT-114 | Valoare de rotunjire (Valoarea care trebuie adunată la totalul facturii pentru a rotunji suma de plată) | R40",
             "LegalMonetaryTotal_PrepaidAmount": "BT-113 | Sumă plătită (Suma valorilor care au fost plătite anticipat) | R40,R66",
             "PaymentMeans": "BG-16 | INSTRUCŢIUNI DE PLATĂ | R58",
+            "PaymentMeans_PaymentID": "BT-83 | Aviz de plată (Valoare textuală utilizată pentru a stabili o legătură între plată şi Factură, emisă de Vânzător.) | R56,R62",
             "PaymentMeans_PaymentMeansCode": "BT-81 | Codul tipului de instrument de plată | R58 | UN/EDIFACT = 4461",
             "PaymentMeans_PayeeFinancialAccount_ID": "BT-84 | Identificatorul contului de plată | R61,R65 | varchar 30",
             "PaymentMeans_PayeeFinancialAccount_Name": "BT-85 | Numele contului de plată | R58",
@@ -141,6 +142,15 @@
                     "CityName",
                     "CountrySubentity",
                     "Country"
+                ],
+                "PaymentMeans": [
+                    "PaymentMeansCode",
+                    "PaymentID",
+                    "PayeeFinancialAccount"
+                ],
+                "PaymentMeans_PayeeFinancialAccount": [
+                    "ID",
+                    "Name"
                 ]
             },
             "CBC": [

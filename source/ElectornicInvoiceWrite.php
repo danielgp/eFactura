@@ -191,25 +191,19 @@ class ElectornicInvoiceWrite
         $this->setHeaderCommonAggregateComponentsCompanies([
             'data'     => $arrayAggegateComponents['AccountingSupplierParty']['Party'],
             'tag'      => 'AccountingSupplierParty',
+            'subTag'   => 'Party',
             'comments' => $bolComments,
         ]);
         $this->setHeaderCommonAggregateComponentsCompanies([
             'data'     => $arrayAggegateComponents['AccountingCustomerParty']['Party'],
             'tag'      => 'AccountingCustomerParty',
+            'subTag'   => 'Party',
             'comments' => $bolComments,
         ]);
         // multiple accounts can be specified within PaymentMeans
-        if (is_array($arrayAggegateComponents['PaymentMeans'])) {
-            foreach ($arrayAggegateComponents['PaymentMeans'] as $value) {
-                $this->setHeaderCommonAggregateComponentsOthers([
-                    'data'     => $value,
-                    'tag'      => 'PaymentMeans',
-                    'comments' => $bolComments,
-                ]);
-            }
-        } else {
-            $this->setHeaderCommonAggregateComponentsOthers([
-                'data'     => $arrayAggegateComponents['PaymentMeans'],
+        foreach ($arrayAggegateComponents['PaymentMeans'] as $value) {
+            $this->setHeaderCommonAggregateComponentsOrdered([
+                'data'     => $value,
                 'tag'      => 'PaymentMeans',
                 'comments' => $bolComments,
             ]);
@@ -235,6 +229,29 @@ class ElectornicInvoiceWrite
           } */
         $this->objXmlWriter->endElement(); // Invoice or CreditNote
         $this->objXmlWriter->flush();
+    }
+
+    private function setHeaderCommonAggregateComponentsOrdered(array $arrayParameters): void {
+        $key              = $arrayParameters['tag'];
+        $this->setElementComment($key, 'CAC', $arrayParameters['comments']);
+        $this->objXmlWriter->startElement('cac:' . $key);
+        $arrayCustomOrder = $this->arraySettings['CustomOrder']['Header']['CAC'][$key];
+        foreach ($arrayCustomOrder as $value) {
+            if (array_key_exists($value, $arrayParameters['data'])) {
+                $this->setElementComment(implode('_', [$key, $value]), 'CAC', $arrayParameters['comments']);
+                if (is_array($arrayParameters['data'][$value])) {
+                    $this->objXmlWriter->startElement('cac:' . $value);
+                    foreach ($arrayParameters['data'][$value] as $key2 => $value2) {
+                        $this->setElementComment(implode('_', [$key, $value, $key2]), 'CAC', $arrayParameters['comments']);
+                        $this->objXmlWriter->writeElement('cbc:' . $key2, $value2);
+                    }
+                    $this->objXmlWriter->endElement(); // $value
+                } else {
+                    $this->objXmlWriter->writeElement('cbc:' . $value, $arrayParameters['data'][$value]);
+                }
+            }
+        }
+        $this->objXmlWriter->endElement(); // $key
     }
 
     private function setHeaderCommonAggregateComponentsOthers(array $arrayParameters): void {
