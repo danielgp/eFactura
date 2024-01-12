@@ -1,16 +1,160 @@
 {
-    "Defaults": {
-        "Comments": {
-            "CBC": {
-                "CreditNoteTypeCode": "BT-3 | Codul tipului facturii | R44",
-                "DocumentCurrencyCode": "BT-5 | Codul monedei facturii | R54,47",
-                "DueDate": "BT-9 | Data scadenţei | R60",
-                "ID": "BT-1 | Numărul facturii | R56",
-                "InvoiceTypeCode": "BT-3 | Codul tipului facturii | R44",
-                "IssueDate": "BT-2 | Data emiterii facturii | R56",
-                "TaxCurrencyCode": "BT-6 | Codul monedei de contabilizare a TVA | R54"
-            }
+    "Comments": {
+        "CAC": {
+            "AccountingCustomerParty": "BG-7 | CUMPĂRĂTOR | R57",
+            "AccountingCustomerParty_PartyLegalEntity_CompanyID": "BT-48 | Identificatorul de TVA al Cumpărătorului | R45,52,57",
+            "AccountingCustomerParty_PartyLegalEntity_CompanyLegalForm": "BT-46 | Identificatorul Cumpărătorului | R57",
+            "AccountingCustomerParty_PartyLegalEntity_RegistrationName": "BT-47 | Identificatorul de înregistrare legală a Cumpărătorului | R47,52,57",
+            "AccountingCustomerParty_PartyName_Name": "BT-44 | Numele Cumpărătorului | R57",
+            "AccountingCustomerParty_PartyTaxScheme_CompanyID": "BT-48 | Identificatorul de TVA al Cumpărătorului | R45,52,57",
+            "AccountingCustomerParty_PostalAddress": "BG-8 | ADRESA POŞTALĂ A CUMPĂRĂTORULUI | R53",
+            "AccountingCustomerParty_PostalAddress_CityName": "BT-52 | Localitatea Cumpărătorului | R53 | varchar 50",
+            "AccountingCustomerParty_PostalAddress_Country_IdentificationCode": "BT-55 | Codul ţării Cumpărătorului | R53",
+            "AccountingCustomerParty_PostalAddress_CountrySubentity": "BT-54 | Subdiviziunea ţării Cumpărătorului | R53",
+            "AccountingCustomerParty_PostalAddress_StreetName": "BT-50 | Adresa Cumpărătorului - Linia 1 | R53 | varchar 100",
+            "AccountingSupplierParty": "BG-4 | VÂNZĂTOR | R57",
+            "AccountingSupplierParty_Contact": "BG-6 | CONTACTUL VÂNZĂTORULUI | R57",
+            "AccountingSupplierParty_Contact_ElectronicMail": "BT-43 | Adresa de email a contactului Vânzătorului | R57",
+            "AccountingSupplierParty_Contact_Name": "BT-41 | Punctul de contact al Vânzătorului | R57",
+            "AccountingSupplierParty_Contact_Telephone": "BT-42 | Numărul de telefon al contactului Vânzătorului | R57",
+            "AccountingSupplierParty_PartyLegalEntity_CompanyID": "BT-31 | Identificatorul de TVA al Vânzătorului | R52",
+            "AccountingSupplierParty_PartyLegalEntity_CompanyLegalForm": "BT-32 | Identificatorul de înregistrare fiscală a Vânzătorului | R47",
+            "AccountingSupplierParty_PartyLegalEntity_RegistrationName": "BT-30 | Identificatorul de înregistrare legală a Vânzătorului | R52",
+            "AccountingSupplierParty_PartyName_Name": "BT-27 | Numele vânzătorului | R48",
+            "AccountingSupplierParty_PartyTaxScheme_CompanyID": "BT-32 | Identificatorul de înregistrare fiscală a Vânzătorului | R47",
+            "AccountingSupplierParty_PostalAddress": "BG-5 | ADRESA POŞTALĂ A VÂNZĂTORULUI | R53",
+            "AccountingSupplierParty_PostalAddress_CityName": "BT-37 | Localitatea Vânzătorului | R53",
+            "AccountingSupplierParty_PostalAddress_Country_IdentificationCode": "BT-40 | Codul ţării Vânzătorului | R53",
+            "AccountingSupplierParty_PostalAddress_CountrySubentity": "BT-39 | Subdiviziunea ţării Vânzătorului | R53",
+            "AccountingSupplierParty_PostalAddress_StreetName": "BT-35 | Adresa Vânzătorului - Linia 1 | R53",
+            "Lines": "BG-25 | LINIE A FACTURII | R17,R23,R27",
+            "Lines_CreditedQuantity": [
+                "BT-129 | Cantitatea facturată | R39,R56",
+                "BT-130 | Codul unităţii de măsură a cantităţii facturate | R14,R39"
+            ],
+            "Lines_ID": "BT-126 | Identificatorul liniei facturii | R44",
+            "Lines_InvoicedQuantity": [
+                "BT-129 | Cantitatea facturată | R39,R56",
+                "BT-130 | Codul unităţii de măsură a cantităţii facturate | R14,R39"
+            ],
+            "Lines_Item": "BG-31 | INFORMAŢII PRIVIND ARTICOLUL | R20,R56,R25,R26",
+            "Lines_Item_ClassifiedTaxCategory_ID": "BT-151 | Codul categoriei de TVA a articolului facturat | R37,R45,R48,R55",
+            "Lines_Item_ClassifiedTaxCategory_Percent": "BT-152 | Cota TVA pentru articolul facturat | R37,R45,R48",
+            "Lines_Item_Name": "BT-153 | Numele articolului | R20,R56",
+            "Lines_Item_Description": "BT-154 | Descrierea articolului | R20,R56",
+            "Lines_LineExtensionAmount": "BT-131 | Valoarea neta a liniei | R39,R40,R56",
+            "Lines_Note": "BT-127 | Nota liniei facturii | R28",
+            "Lines_Price": "BG-29 | DETALII ALE PREŢULUI | R14",
+            "Lines_Price_BaseQuantity": [
+                "BT-149 | Cantitatea de bază a preţului articolului | R14",
+                "BT-150 | Codul unităţii de măsură a cantităţii de bază a preţului articolului | R14"
+            ],
+            "Lines_Price_PriceAmount": "BT-146 | Preţul net al articolului | R14",
+            "Lines_Price_PriceInclusiveAmount": "BT-148 | Preţul brut al articolului | R14",
+            "LegalMonetaryTotal": "BG-22 | TOTALURILE DOCUMENTULUI | R40",
+            "LegalMonetaryTotal_LineExtensionAmount": "BT-106 | Suma valorilor nete ale liniilor facturii | R40",
+            "LegalMonetaryTotal_TaxExclusiveAmount": "BT-109 | Valoarea totală a facturii fără TVA | R40",
+            "LegalMonetaryTotal_TaxInclusiveAmount": "BT-112 | Valoarea totală a facturii cu TVA | R40,R67",
+            "LegalMonetaryTotal_PayableAmount": "BT-115 | Suma de plată | R40,R59,R68",
+            "LegalMonetaryTotal_PayableRoundingAmount": "BT-114 | Valoare de rotunjire (Valoarea care trebuie adunată la totalul facturii pentru a rotunji suma de plată) | R40",
+            "LegalMonetaryTotal_PrepaidAmount": "BT-113 | Sumă plătită (Suma valorilor care au fost plătite anticipat) | R40,R66",
+            "PaymentMeans": "BG-16 | INSTRUCŢIUNI DE PLATĂ | R58",
+            "PaymentMeans_PaymentMeansCode": "BT-81 | Codul tipului de instrument de plată | R58 | UN/EDIFACT = 4461",
+            "PaymentMeans_PayeeFinancialAccount_ID": "BT-84 | Identificatorul contului de plată | R61,R65 | varchar 30",
+            "PaymentMeans_PayeeFinancialAccount_Name": "BT-85 | Numele contului de plată | R58",
+            "TaxTotal": "BG-23 | DETALIEREA TVA | R38,R45,R47,R48,R49",
+            "TaxTotal_TaxAmount": "BT-110 | Valoarea totală a TVA a facturii | R40,R49",
+            "TaxTotal_TaxSubtotal_TaxAmount": "BT-117 | Valoarea TVA pentru fiecare categorie de TVA | R49",
+            "TaxTotal_TaxSubtotal_TaxableAmount": "BT-116 | Baza de calcul pentru categoria de TVA | R50",
+            "TaxTotal_TaxSubtotal_TaxCategory_ID": "BT-118 | Codul categoriei de TVA | R38,R45,R49",
+            "TaxTotal_TaxSubtotal_TaxCategory_Percent": "BT-119 | Cota categoriei de TVA | R38,R49"
         },
+        "CBC": {
+            "CreditNoteTypeCode": "BT-3 | Codul tipului facturii | R44",
+            "DocumentCurrencyCode": "BT-5 | Codul monedei facturii | R54,47",
+            "DueDate": "BT-9 | Data scadenţei | R60",
+            "ID": "BT-1 | Numărul facturii | R56",
+            "InvoiceTypeCode": "BT-3 | Codul tipului facturii | R44",
+            "IssueDate": "BT-2 | Data emiterii facturii | R56",
+            "TaxCurrencyCode": "BT-6 | Codul monedei de contabilizare a TVA | R54"
+        }
+    },
+    "CustomOrder": {
+        "Header": {
+            "CAC": {
+                "AccountingCustomerParty": [
+                    "PartyName",
+                    "PostalAddress",
+                    "PartyTaxScheme",
+                    "PartyLegalEntity",
+                    "Contact"
+                ],
+                "AccountingCustomerParty_Contact": [
+                    "Name",
+                    "Telephone",
+                    "ElectronicMail"
+                ],
+                "AccountingCustomerParty_PartyLegalEntity": [
+                    "RegistrationName",
+                    "CompanyID",
+                    "CompanyLegalForm"
+                ],
+                "AccountingCustomerParty_PartyName": [
+                    "Name"
+                ],
+                "AccountingCustomerParty_PartyTaxScheme": [
+                    "CompanyID",
+                    "TaxScheme"
+                ],
+                "AccountingCustomerParty_PostalAddress": [
+                    "StreetName",
+                    "CityName",
+                    "CountrySubentity",
+                    "Country"
+                ],
+                "AccountingSupplierParty": [
+                    "PartyName",
+                    "PostalAddress",
+                    "PartyTaxScheme",
+                    "PartyLegalEntity",
+                    "Contact"
+                ],
+                "AccountingSupplierParty_Contact": [
+                    "Name",
+                    "Telephone",
+                    "ElectronicMail"
+                ],
+                "AccountingSupplierParty_PartyLegalEntity": [
+                    "RegistrationName",
+                    "CompanyID",
+                    "CompanyLegalForm"
+                ],
+                "AccountingSupplierParty_PartyName": [
+                    "Name"
+                ],
+                "AccountingSupplierParty_PartyTaxScheme": [
+                    "CompanyID",
+                    "TaxScheme"
+                ],
+                "AccountingSupplierParty_PostalAddress": [
+                    "StreetName",
+                    "CityName",
+                    "CountrySubentity",
+                    "Country"
+                ]
+            },
+            "CBC": [
+                "UBLVersionID",
+                "CustomizationID",
+                "ID",
+                "IssueDate",
+                "DueDate",
+                "InvoiceTypeCode",
+                "DocumentCurrencyCode"
+            ]
+        }
+    },
+    "Defaults": {
         "DocumentNameSpaces": {
             "": "urn:oasis:names:specification:ubl:schema:xsd:%s-2",
             "qdt": "urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2",
