@@ -35,6 +35,30 @@ class ElectornicInvoiceWrite
 
     protected $objXmlWriter;
 
+    private function setCompanyElementsOrdered(array $arrayParameters): void {
+        $this->setElementComment($arrayParameters['commentParentKey'], 'CAC', $arrayParameters['comments']);
+        $this->objXmlWriter->startElement('cac:' . $arrayParameters['tag']);
+        $arrayCustomOrder = $this->arraySettings['CustomOrder']['Header']['CAC'][$arrayParameters['commentParentKey']];
+        foreach ($arrayCustomOrder as $value) {
+            if (array_key_exists($value, $arrayParameters['data'])) {
+                $this->setElementComment(implode('_', [
+                    $arrayParameters['commentParentKey'], $value]), 'CAC', $arrayParameters['comments']);
+                if (is_array($arrayParameters['data'][$value])) {
+                    $this->objXmlWriter->startElement('cac:' . $value);
+                    foreach ($arrayParameters['data'][$value] as $key2 => $value2) {
+                        $this->setElementComment(implode('_', [
+                            $arrayParameters['commentParentKey'], $value, $key2]), 'CAC', $arrayParameters['comments']);
+                        $this->objXmlWriter->writeElement('cbc:' . $key2, $value2);
+                    }
+                    $this->objXmlWriter->endElement();
+                } else {
+                    $this->objXmlWriter->writeElement('cbc:' . $value, $arrayParameters['data'][$value]);
+                }
+            }
+        }
+        $this->objXmlWriter->endElement(); // $key
+    }
+
     private function setDocumentTag(array $arrayDocumentData): void {
         $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
         foreach ($arrayDocumentData['DocumentNameSpaces'] as $key => $value) {
@@ -67,32 +91,8 @@ class ElectornicInvoiceWrite
                     $this->objXmlWriter->writeComment($this->arraySettings['Comments'][$strSection][$strKey]);
                     break;
             }
-        }
-    }
-
-    private function setCompanyElementsOrdered(array $arrayParameters): void {
-        $this->setElementComment($arrayParameters['commentParentKey'], 'CAC', $arrayParameters['comments']);
-        $this->objXmlWriter->startElement('cac:' . $arrayParameters['tag']);
-        $arrayCustomOrder = $this->arraySettings['CustomOrder']['Header']['CAC'][$arrayParameters['commentParentKey']];
-        foreach ($arrayCustomOrder as $value) {
-            if (array_key_exists($value, $arrayParameters['data'])) {
-                $this->setElementComment(implode('_', [
-                    $arrayParameters['commentParentKey'], $value]), 'CAC', $arrayParameters['comments']);
-                if (is_array($arrayParameters['data'][$value])) {
-                    $this->objXmlWriter->startElement('cac:' . $value);
-                    foreach ($arrayParameters['data'][$value] as $key2 => $value2) {
-                        $this->setElementComment(implode('_', [
-                            $arrayParameters['commentParentKey'], $value, $key2]), 'CAC', $arrayParameters['comments']);
-                        $this->objXmlWriter->writeElement('cbc:' . $key2, $value2);
-                    }
-                    $this->objXmlWriter->endElement();
-                } else {
-                    $this->objXmlWriter->writeElement('cbc:' . $value, $arrayParameters['data'][$value]);
-                }
             }
         }
-        $this->objXmlWriter->endElement(); // $key
-    }
 
     private function setHeaderCommonAggregateComponentsCompanies(array $arrayParameters): void {
         $key              = $arrayParameters['tag'];
