@@ -190,12 +190,14 @@ class ElectornicInvoiceWrite
         ]);
         }
         // multiple accounts can be specified within PaymentMeans
+        if ($arrayData['DocumentTagName'] === 'Invoice') {
         foreach ($arrayAggegateComponents['PaymentMeans'] as $value) {
             $this->setHeaderCommonAggregateComponentsOrdered([
                 'data'     => $value,
                 'tag'      => 'PaymentMeans',
                 'comments' => $bolComments,
             ]);
+        }
         }
         $this->setHeaderCommonAggregateComponentsTaxTotal([
             'data'     => $arrayAggegateComponents['TaxTotal'],
