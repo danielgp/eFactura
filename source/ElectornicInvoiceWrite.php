@@ -181,18 +181,14 @@ class ElectornicInvoiceWrite
         $this->setDocumentTag($arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2'], $bolComments);
         $arrayAggegateComponents = $arrayData['Header']['CommonAggregateComponents-2'];
+        foreach (['AccountingSupplierParty', 'AccountingCustomerParty'] as $strCompanyType) {
         $this->setHeaderCommonAggregateComponentsCompanies([
-            'data'     => $arrayAggegateComponents['AccountingSupplierParty']['Party'],
-            'tag'      => 'AccountingSupplierParty',
+                'data'     => $arrayAggegateComponents[$strCompanyType]['Party'],
+                'tag'      => $strCompanyType,
             'subTag'   => 'Party',
             'comments' => $bolComments,
         ]);
-        $this->setHeaderCommonAggregateComponentsCompanies([
-            'data'     => $arrayAggegateComponents['AccountingCustomerParty']['Party'],
-            'tag'      => 'AccountingCustomerParty',
-            'subTag'   => 'Party',
-            'comments' => $bolComments,
-        ]);
+        }
         // multiple accounts can be specified within PaymentMeans
         foreach ($arrayAggegateComponents['PaymentMeans'] as $value) {
             $this->setHeaderCommonAggregateComponentsOrdered([
