@@ -1779,5 +1779,98 @@
         "UsageNote": "Documentul ataşat este utilizat când documentaţia trebuie să fie stocată cu factura pentru o referire ulterioară sau audit.",
         "RequirementID": "R35",
         "SemanticDataType": "Obiect binar"
+    },
+    "BG-25": {
+        "HierarchycalTagName": "Lines",
+        "Level": "+",
+        "Cardinality": "1..n",
+        "OperationalTerm": "LINIE A FACTURII",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre liniile facturii."
+        },
+        "RequirementID": "R17,R23,R27"
+    },
+    "BT-126": {
+        "HierarchycalTagName": "Lines_ID",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul liniei facturii",
+        "Description": {
+            "ro_RO": "Un identificator unic pentru o linie din factură."
+        },
+        "RequirementID": "R44",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-127": {
+        "HierarchycalTagName": "Lines_Note",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Nota liniei facturii",
+        "Description": {
+            "ro_RO": "O notă textuală care furnizează o informaţie nestructurată care este relevantă pentru linia facturii."
+        },
+        "RequirementID": "R28",
+        "SemanticDataType": "Text"
+    },
+    "BT-128": {
+        "HierarchycalTagName": "Lines_?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul obiectului liniei facturii",
+        "Description": {
+            "ro_RO": "Un identificator pentru un obiect pe care se bazează linia facturii, dat de către Vânzător."
+        },
+        "UsageNote": "Poate fi un număr de abonament, număr de telefon, un index de contor etc., după caz.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului obiectului liniei facturii."
+            },
+            "UsageNote": "Dacă destinatarului nu îi este clar ce schemă este utilizată pentru identificator, se recomandă să se utilizeze un identificator condiţional al schemei care trebuie să fie ales din codurile UNTDID 1153 [6]."
+        },
+        "RequirementID": "R33",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-129": {
+        "HierarchycalTagName": [
+            "Lines_CreditNoteQuantity",
+            "Lines_InvoicedQuantity"
+        ],
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Cantitatea facturată",
+        "Description": {
+            "ro_RO": "Cantitatea articolelor (bunuri sau servicii) luate în considerare în linia din factură."
+        },
+        "RequirementID": "R39,R56",
+        "SemanticDataType": "Cantitate"
+    },
+    "BT-130": {
+        "HierarchycalTagName": [
+            "Lines_CreditNoteQuantityUnitOfMeasure",
+            "Lines_InvoicedQuantityUnitOfMeasure"
+        ],
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Codul unităţii de măsură a cantităţii facturate",
+        "Description": {
+            "ro_RO": "Unitatea de măsură aplicabilă cantităţii facturate."
+        },
+        "UsageNote": "Unitatea de măsură trebuie să fie aleasă din listele din Recomandarea UN/ECE nr. 20 “Coduri pentru unităţi de măsură utilizate în comerţul internaţional” [7] şi Recomandarea UN/ECE nr 21 “Coduri pentru pasageri, tipuri de marfă, ambalaje şi materiale de ambalaj (cu Coduri complementare pentru numele ambalajelor)” [19] aplicând metoda descrisă în Recomandarea UN/ECE nr. 20 Intro 2.a). De notat că în cele mai multe cazuri nu este necesar ca Vânzătorul şi Cumpărătorul să implementeze aceste liste în totalitate în software-ul lor. Vânzătorii trebuie să preia doar unităţile necesare pentru bunurile şi serviciile lor; Cumpărătorii trebuie doar să verifice că unităţile utilizate în factură sunt aceleaşi cu unităţile utilizate în alte documente (cum ar fi Contract, Catalog, Comandă şi Aviz de expediţie).",
+        "RequirementID": "R39,R56",
+        "SemanticDataType": "Cantitate"
+    },
+    "BT-131": {
+        "HierarchycalTagName": "Lines_LineExtensionAmount",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea netă a liniei facturii",
+        "Description": {
+            "ro_RO": "Valoarea totală a liniei facturii."
+        },
+        "UsageNote": "Valoarea este “netă” fără TVA, adică include deducerile şi taxele suplimentare la nivelul liniei, precum şi alte taxe relevante.",
+        "RequirementID": "R39,R40,R56",
+        "SemanticDataType": "Sumă"
     }
 }

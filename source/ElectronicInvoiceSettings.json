@@ -1,87 +1,103 @@
 {
     "CustomOrder": {
-        "Header": {
-            "CAC": {
-                "AccountingCustomerParty": [
-                    "PartyName",
-                    "PostalAddress",
-                    "PartyTaxScheme",
-                    "PartyLegalEntity",
-                    "Contact"
-                ],
-                "AccountingCustomerParty_Contact": [
-                    "Name",
-                    "Telephone",
-                    "ElectronicMail"
-                ],
-                "AccountingCustomerParty_PartyLegalEntity": [
-                    "RegistrationName",
-                    "CompanyID",
-                    "CompanyLegalForm"
-                ],
-                "AccountingCustomerParty_PartyName": [
-                    "Name"
-                ],
-                "AccountingCustomerParty_PartyTaxScheme": [
-                    "CompanyID",
-                    "TaxScheme"
-                ],
-                "AccountingCustomerParty_PostalAddress": [
-                    "StreetName",
-                    "CityName",
-                    "CountrySubentity",
-                    "Country"
-                ],
-                "AccountingSupplierParty": [
-                    "PartyName",
-                    "PostalAddress",
-                    "PartyTaxScheme",
-                    "PartyLegalEntity",
-                    "Contact"
-                ],
-                "AccountingSupplierParty_Contact": [
-                    "Name",
-                    "Telephone",
-                    "ElectronicMail"
-                ],
-                "AccountingSupplierParty_PartyLegalEntity": [
-                    "RegistrationName",
-                    "CompanyID",
-                    "CompanyLegalForm"
-                ],
-                "AccountingSupplierParty_PartyName": [
-                    "Name"
-                ],
-                "AccountingSupplierParty_PartyTaxScheme": [
-                    "CompanyID",
-                    "TaxScheme"
-                ],
-                "AccountingSupplierParty_PostalAddress": [
-                    "StreetName",
-                    "CityName",
-                    "CountrySubentity",
-                    "Country"
-                ],
-                "PaymentMeans": [
-                    "PaymentMeansCode",
-                    "PaymentID",
-                    "PayeeFinancialAccount"
-                ],
-                "PaymentMeans_PayeeFinancialAccount": [
-                    "ID",
-                    "Name"
-                ]
-            },
-            "CBC": [
-                "UBLVersionID",
-                "CustomizationID",
-                "ID",
-                "IssueDate",
-                "DueDate",
-                "InvoiceTypeCode",
-                "DocumentCurrencyCode"
-            ]
-        }
+        "AccountingCustomerParty": [
+            "PartyName",
+            "PostalAddress",
+            "PartyTaxScheme",
+            "PartyLegalEntity",
+            "Contact"
+        ],
+        "AccountingCustomerParty_Contact": [
+            "Name",
+            "Telephone",
+            "ElectronicMail"
+        ],
+        "AccountingCustomerParty_PartyLegalEntity": [
+            "RegistrationName",
+            "CompanyID",
+            "CompanyLegalForm"
+        ],
+        "AccountingCustomerParty_PartyName": [
+            "Name"
+        ],
+        "AccountingCustomerParty_PartyTaxScheme": [
+            "CompanyID",
+            "TaxScheme"
+        ],
+        "AccountingCustomerParty_PostalAddress": [
+            "StreetName",
+            "CityName",
+            "CountrySubentity",
+            "Country"
+        ],
+        "AccountingSupplierParty": [
+            "PartyName",
+            "PostalAddress",
+            "PartyTaxScheme",
+            "PartyLegalEntity",
+            "Contact"
+        ],
+        "AccountingSupplierParty_Contact": [
+            "Name",
+            "Telephone",
+            "ElectronicMail"
+        ],
+        "AccountingSupplierParty_PartyLegalEntity": [
+            "RegistrationName",
+            "CompanyID",
+            "CompanyLegalForm"
+        ],
+        "AccountingSupplierParty_PartyName": [
+            "Name"
+        ],
+        "AccountingSupplierParty_PartyTaxScheme": [
+            "CompanyID",
+            "TaxScheme"
+        ],
+        "AccountingSupplierParty_PostalAddress": [
+            "StreetName",
+            "CityName",
+            "CountrySubentity",
+            "Country"
+        ],
+        "Header_CBC": [
+            "UBLVersionID",
+            "CustomizationID",
+            "ID",
+            "IssueDate",
+            "DueDate",
+            "InvoiceTypeCode",
+            "DocumentCurrencyCode"
+        ],
+        "Lines": [
+            "ID",
+            "Note",
+            "CreditNoteQuantity",
+            "InvoicedQuantity",
+            "LineExtensionAmount",
+            "Item",
+            "Price"
+        ],
+        "LegalMonetaryTotal": [
+            "LineExtensionAmount",
+            "AllowanceTotalAmount",
+            "ChargeTotalAmount",
+            "TaxExclusiveAmount",
+            "TaxAmount",
+            "TaxInclusiveAmount",
+            "PrepaidAmount",
+            "PayableRoundingAmount",
+            "PayableAmount"
+        ],
+        "PaymentMeans": [
+            "PaymentMeansCode",
+            "PaymentID",
+            "PayeeFinancialAccount"
+        ],
+        "PaymentMeans_PayeeFinancialAccount": [
+            "ID",
+            "Name"
+        ]
     },
     "Defaults": {
         "DocumentNameSpaces": {
