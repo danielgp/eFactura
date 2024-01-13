@@ -76,8 +76,6 @@ class ElectornicInvoiceWrite
 
     private function setElementComment(string $strKey, string $strSection, bool $includeComments): void {
         if ($includeComments && array_key_exists($strKey, $this->arraySettings['Comments'][$strSection])) {
-            switch ($strSection) {
-                case 'CAC':
                     $elementComment = $this->arraySettings['Comments'][$strSection][$strKey];
                     if (is_array($elementComment)) {
                         foreach ($elementComment as $value) {
@@ -86,11 +84,6 @@ class ElectornicInvoiceWrite
                     } else {
                         $this->objXmlWriter->writeComment($elementComment);
                     }
-                    break;
-                case 'CBC':
-                    $this->objXmlWriter->writeComment($this->arraySettings['Comments'][$strSection][$strKey]);
-                    break;
-            }
             }
         }
 
