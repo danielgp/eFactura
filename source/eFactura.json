@@ -172,11 +172,11 @@
             "udt": "urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2",
             "cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
             "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
-            "xs": "http://www.w3.org/2001/XMLSchema",
-            "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+            "xs": "https://www.w3.org/2001/XMLSchema",
+            "xsi": "https://www.w3.org/2001/XMLSchema-instance"
         },
         "EnvironmentName": "test",
-        "SchemaLocation": "urn:oasis:names:specification:ubl:schema:xsd:%s-2 http://docs.oasis-open.org/ubl/os-UBL-%s/xsd/maindoc/UBL-%s-%s.xsd"
+        "SchemaLocation": "urn:oasis:names:specification:ubl:schema:xsd:%s-2 https://docs.oasis-open.org/ubl/os-UBL-%s/xsd/maindoc/UBL-%s-%s.xsd"
     },
     "Domain": "https://webserviceapl.anaf.ro/{environmentName}/FCTEL/rest/{featureName}",
     "FeatureNames": {
