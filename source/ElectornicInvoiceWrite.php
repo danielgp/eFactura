@@ -76,16 +76,16 @@ class ElectornicInvoiceWrite
 
     private function setElementComment(string $strKey, string $strSection, bool $includeComments): void {
         if ($includeComments && array_key_exists($strKey, $this->arraySettings['Comments'][$strSection])) {
-                    $elementComment = $this->arraySettings['Comments'][$strSection][$strKey];
-                    if (is_array($elementComment)) {
-                        foreach ($elementComment as $value) {
-                            $this->objXmlWriter->writeComment($value);
-                        }
-                    } else {
-                        $this->objXmlWriter->writeComment($elementComment);
-                    }
+            $elementComment = $this->arraySettings['Comments'][$strSection][$strKey];
+            if (is_array($elementComment)) {
+                foreach ($elementComment as $value) {
+                    $this->objXmlWriter->writeComment($value);
+                }
+            } else {
+                $this->objXmlWriter->writeComment($elementComment);
             }
         }
+    }
 
     private function setHeaderCommonAggregateComponentsCompanies(array $arrayParameters): void {
         $key              = $arrayParameters['tag'];
@@ -182,22 +182,22 @@ class ElectornicInvoiceWrite
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2'], $bolComments);
         $arrayAggegateComponents = $arrayData['Header']['CommonAggregateComponents-2'];
         foreach (['AccountingSupplierParty', 'AccountingCustomerParty'] as $strCompanyType) {
-        $this->setHeaderCommonAggregateComponentsCompanies([
+            $this->setHeaderCommonAggregateComponentsCompanies([
                 'data'     => $arrayAggegateComponents[$strCompanyType]['Party'],
                 'tag'      => $strCompanyType,
-            'subTag'   => 'Party',
-            'comments' => $bolComments,
-        ]);
-        }
-        // multiple accounts can be specified within PaymentMeans
-        if ($arrayData['DocumentTagName'] === 'Invoice') {
-        foreach ($arrayAggegateComponents['PaymentMeans'] as $value) {
-            $this->setHeaderCommonAggregateComponentsOrdered([
-                'data'     => $value,
-                'tag'      => 'PaymentMeans',
+                'subTag'   => 'Party',
                 'comments' => $bolComments,
             ]);
         }
+        // multiple accounts can be specified within PaymentMeans
+        if ($arrayData['DocumentTagName'] === 'Invoice') {
+            foreach ($arrayAggegateComponents['PaymentMeans'] as $value) {
+                $this->setHeaderCommonAggregateComponentsOrdered([
+                    'data'     => $value,
+                    'tag'      => 'PaymentMeans',
+                    'comments' => $bolComments,
+                ]);
+            }
         }
         $this->setHeaderCommonAggregateComponentsTaxTotal([
             'data'     => $arrayAggegateComponents['TaxTotal'],
@@ -210,14 +210,14 @@ class ElectornicInvoiceWrite
             'comments' => $bolComments,
         ]);
         // multiple Lines
-        /* foreach ($arrayData['Lines'] as $key => $value) {
-          $this->setHeaderCommonAggregateComponentsOthers([
-          'data'           => $value,
-          'tagForComments' => 'Lines',
-          'tag'            => $arrayData['DocumentTagName'] . 'Line',
-          'comments'       => $bolComments,
-          ]);
-          } */
+        foreach ($arrayData['Lines'] as $value) {
+            $this->setHeaderCommonAggregateComponentsOthers([
+                'data'           => $value,
+                'tagForComments' => 'Lines',
+                'tag'            => $arrayData['DocumentTagName'] . 'Line',
+                'comments'       => $bolComments,
+            ]);
+        }
         $this->objXmlWriter->endElement(); // Invoice or CreditNote
         $this->objXmlWriter->flush();
     }
