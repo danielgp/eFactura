@@ -31,6 +31,8 @@ namespace danielgp\efactura;
 trait TraitBasic
 {
 
+    protected $arraySettings = [];
+
     private function getTagWithCurrencyParameter($childLineExtensionAmount) {
         return [
             'currencyID' => $childLineExtensionAmount->attributes()->currencyID->__toString(),
@@ -43,5 +45,23 @@ trait TraitBasic
             'unitCode' => $childLineExtensionAmount->attributes()->unitCode->__toString(),
             'value'    => (float) $childLineExtensionAmount->__toString(),
         ];
+    }
+
+    private function getJsonFromFile(string $strFileName): array {
+        $strFileName = __DIR__ . DIRECTORY_SEPARATOR . $strFileName;
+        if (!file_exists($strFileName)) {
+            throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));
+        }
+        $fileHandle = fopen($strFileName, 'r');
+        if ($fileHandle === false) {
+            throw new \RuntimeException(sprintf('Unable to open file %s for read purpose!', $strFileName));
+        }
+        $fileContent   = fread($fileHandle, ((int) filesize($strFileName)));
+        fclose($fileHandle);
+        $arrayToReturn = json_decode($fileContent, true);
+        if (json_last_error() != JSON_ERROR_NONE) {
+            throw new \RuntimeException(sprintf('Unable to interpret JSON from %s file...', $strFileName));
+        }
+        return $arrayToReturn;
     }
 }

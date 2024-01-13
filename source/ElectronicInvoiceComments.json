@@ -1,0 +1,1783 @@
+{
+    "BT-1": {
+        "HierarchycalTagName": "ID",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm":"Numărul facturii",
+        "Description": {
+            "ro_RO" : "O identificare unică a facturii.",
+            "en_US": "An identifier for this document, assigned by the sender."
+        },
+        "UsageNote": "Număr secvenţial cerut în articolul 226(2) al directivei 2006/112/CE [2], pentru identificarea în manieră unică a Facturii în contextul afacerii, intervalului de timp, sistemelor de exploatare şi înregistrărilor Vânzătorului. Poate fi bazat pe una sau mai multe serii de numere, care pot include caractere alfanumerice. Nu trebuie utilizată nici o schemă de identificare.",
+        "RequirementID": "R56",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-2": {
+        "HierarchycalTagName": "IssueDate",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm":"Data emiterii facturii",
+        "Description": {
+            "ro_RO" : "Data la care a fost emisă factura.",
+            "en_US": "The date, assigned by the sender, on which this document was issued."
+        },
+        "RequirementID": "R56",
+        "SemanticDataType": "Dată"
+    },
+    "BT-3": {
+        "HierarchycalTagName": [
+            "CreditNoteTypeCode",
+            "InvoiceTypeCode"
+        ],
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm":"Codul tipului facturii",
+        "Description": {
+            "ro_RO" : "Un cod care specifică tipul funcţional al facturii.",
+            "en_US": "A code signifying the type of the Invoice."
+        },
+        "Usage Note": "Facturile comerciale şi notele de creditare sunt definite în conformitate cu codurile de date din UNTDID 1001 [6].\nDacă este cazul, pot fi utilizate alte coduri de date din UNTDID 1001 [6] cu facturile sau notele de creditare specifice.",
+        "RequirementID": "R44",
+        "SemanticDataType": "Cod"
+    },
+    "BT-5": {
+        "HierarchycalTagName": "DocumentCurrencyCode",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm":"Codul monedei facturii",
+        "Description": {
+            "ro_RO" : "Moneda în care sunt exprimate toate sumele din factură, cu excepţia sumei totale a TVA care este în moneda de contabilizare. ",
+            "en_US": "A code signifying the default currency for this document."
+        },
+        "UsageNote": "În conformitate cu articolul 230 al Directivei 2006/112/EC privind TVA [2], într-o factură trebuie să fie utilizată numai o singură monedă, cu excepţia sumei totale a TVA exprimată în moneda de contabilizare (BT-111).\nListele monedelor valide sunt înregistrate la Agenţia de Mentenanţă a ISO 4217 “Coduri pentru reprezentarea monedelor şi tipurilor de fonduri”.",
+        "RequirementID": "R54,47",
+        "SemanticDataType": "Cod"
+    },
+    "BT-6": {
+        "HierarchycalTagName": "TaxCurrencyCode",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm":"Codul monedei de contabilizare a TVA",
+        "Description": {
+            "ro_RO": "Moneda utilizată pentru contabilizarea şi declararea TVA aşa cum se acceptă sau se cere în ţara Vânzătorului.",
+            "en_US": "A code signifying the currency used for tax amounts in the Invoice."
+        },
+        "Usage Note": "Trebuie utilizat în combinaţie cu suma totală a TVA în moneda de contabilizare (BT-111) când codul monedei de contabilizare a TVA diferă de codul monedei facturii.\nListele monedelor valide sunt înregistrate la Agenţia de Mentenanţă a ISO 4217 “Coduri pentru reprezentarea monedelor şi fondurilor”. Pentru informaţii suplimentare, a se vedea articolul 230 al Directivei Consiliului 2006/112/CE [2].",
+        "RequirementID": "R54",
+        "SemanticDataType": "Cod"
+    },
+    "BT-7": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"Data de exigibilitate a taxei pe valoarea adăugată",
+        "Description": {
+            "ro_RO": "Data la care TVA devine exigibilă pentru Vânzător şi pentru Cumpărător în măsura în care această dată poate fi determinată şi diferă de data emiterii facturii, în conformitate cu directiva TVA."
+        },
+        "Usage Note": "Data de exigibilitate a taxei este, de obicei, data la care bunurile au fost livrate sau serviciile finalizate (eveniment generator de taxe). Există unele variaţii. Pentru informaţii suplimentare, a se vedea articolul 226 (7) al Directivei Consiliului 2006/112/CE [2].\nAcest element este cerut dacă data de exigibilitate a TVA este diferită de data emiterii facturii.\nSe recomandă ca atât Cumpărătorul, cât şi Vânzătorul să utilizeze data de exigibilitate a taxei atunci când aceasta este furnizată de Vânzător. Utilizarea BT-7 şi BT-8 este exclusiv reciprocă.",
+        "RequirementID": "R45,R46",
+        "SemanticDataType": "Dată"
+    },
+    "BT-8": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"Codul datei de exigibilitate a taxei pe valoarea adăugată",
+        "Description": {
+            "ro_RO": "Codul datei la care TVA devine exigibilă pentru Vânzător şi pentru Cumpărător."
+        },
+        "Usage Note": "Codul trebuie să facă distincţie între următoarele coduri din UNTDID 2005 [6]:\n- Data emiterii facturii\n- Data reală a livrării\n- Suma plătită în acea zi\nCodul datei de exigibilitate a TVA este utilizat dacă data de exigibilitate a TVA nu este cunoscută la momentul emiterii facturii. Utilizarea BT-7 şi BT-8 este exclusiv reciprocă.",
+        "RequirementID": "R45,R46",
+        "SemanticDataType": "Cod"
+    },
+    "BT-9": {
+        "HierarchycalTagName": "DueDate",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"Data scadenţei",
+        "Description": {
+            "ro_RO": "Data până la care trebuie făcută plata.",
+            "en_US": "The date on which Invoice is due."
+        },
+        "UsageNote": "Data scadenţei reflectă scadenţa plăţii nete. Pentru plăţile parţiale aceasta indică prima scadenţă de plată. Descrierea corespunzătoare a condiţiilor de plată mai complexe poate fi stabilită în Condiţiile de plată BT-20.",
+        "RequirementID": "R60",
+        "SemanticDataType": "Dată"
+    },
+    "BT-10": {
+        "HierarchycalTagName": "BuyerReference",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Referinţa Cumpărătorului",
+        "Description": {
+            "ro_RO": "Un identificator atribuit de către Cumpărător utilizat pentru circuitul intern al facturii.",
+            "en_US": "A reference provided by the buyer used for internal routing of the document."
+        },
+        "UsageNote": "Identificatorul este definit de către cumpărător (de exemplu ID al contactului, departamentul, ID al biroului, codul proiectului), dar este indicat de Vânzător în factură.",
+        "RequirementID": "R8",
+        "SemanticDataType": "Text"
+    },
+    "BT-11": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Referinţa proiectului",
+        "Description": {
+            "ro_RO": "Identificarea proiectului la care se referă factura",
+            "en_US": "Information about a project."
+        },
+        "RequirementID": "R44",
+        "SemanticDataType": "Referinţa documentului"
+    },
+    "BT-12": {
+        "HierarchycalTagName": "ContractDocumentReference",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"Referinţa contractului",
+        "Description": {
+            "ro_RO": "Identificarea unui contract.",
+            "en_US": "A reference to a contract associated with this document."
+        },
+        "UsageNote": "Se recomandă ca identificatorul contractului să fie unic în contextul relaţiilor comerciale specifice şi pentru o perioadă de timp definită.",
+        "RequirementID": "R7",
+        "SemanticDataType": "Referinţa documentului"
+    },
+    "BT-13": {
+        "HierarchycalTagName": "OrderReference",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Referinţa comenzii",
+        "Description": {
+            "ro_RO": "Un identificator al comenzii la care se referă, generat de către Cumpărător.",
+            "en_US": "A reference to the Order with which this Invoice is associated."
+        },
+        "RequirementID": "R5,R56",
+        "SemanticDataType": "Referinţa documentului"
+    },
+    "BT-14": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R41",
+        "SemanticDataType": "Referinţa documentului"
+    },
+    "BT-15": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R10,R56",
+        "SemanticDataType": "Referinţa documentului"
+    },
+    "BT-16": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R9,R56",
+        "SemanticDataType": "Referinţa documentului"
+    },
+    "BT-17": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R7,R4",
+        "SemanticDataType": "Referinţa documentului"
+    },
+    "BT-18": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R33",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-19": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R2,R4",
+        "SemanticDataType": "Text"
+    },
+    "BT-20": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R60",
+        "SemanticDataType": "Text"
+    },
+    "BG-1": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..n",
+        "OperationalTerm":"___",
+        "OperationalTerm":"COMENTARIU ÎN FACTURĂ",
+        "RequirementID": "R56"
+    },
+    "BT-21": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R56",
+        "SemanticDataType": "Text"
+    },
+    "BT-22": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R56",
+        "SemanticDataType": "Text"
+    },
+    "BG-2": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "1..n",
+        "OperationalTerm":"CONTROLUL PROCESULUI",
+        "RequirementID": "R44"
+    },
+    "BT-23": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R44",
+        "SemanticDataType": "Text"
+    },
+    "BT-24": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R44",
+        "SemanticDataType": "Identificator"
+    },
+    "BG-3": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..n",
+        "OperationalTerm":"REFERINŢĂ LA O FACTURĂ ANTERIOARĂ",
+        "RequirementID": "R11,R12"
+    },
+    "BT-25": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R11,R12",
+        "SemanticDataType": "Document de referinţă"
+    },
+    "BT-26": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"___",
+        "RequirementID": "R11,R12",
+        "SemanticDataType": "Dată"
+    },
+    "BG-4": {
+        "HierarchycalTagName": "AccountingSupplierParty",
+        "Level": "+",
+        "Cardinality": "1..n",
+        "OperationalTerm":"VÂNZĂTOR",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre Cumpărător.",
+            "en_US": "The accounting supplier party."
+        },
+        "RequirementID": "R48"
+    },
+    "BT-27": {
+        "HierarchycalTagName": "AccountingSupplierParty_PartyName_Name",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Numele vânzătorului",
+        "Description": {
+            "ro_RO": "Denumirea oficială completă sub care Vânzătorul este înscris în registrul naţional al persoanelor juridice sau în calitate de Contribuabil sau îşi exercită activităţile în calitate de persoană sau grup de persoane."
+        },
+        "RequirementID": "R48",
+        "SemanticDataType": "Text"
+    },
+    "BT-28": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Denumirea comercială a Vânzătorului",
+        "Description": {
+            "ro_RO": "Un nume sub care este cunoscut Vânzătorul, altul decât numele Vânzătorului (cunoscut, de asemenea, ca denumirea comercială)."
+        },
+        "UsageNote": "Poate fi folosit dacă diferă de numele Vânzătorului.",
+        "RequirementID": "R48",
+        "SemanticDataType": "Text"
+    },
+    "BT-29": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..n",
+        "OperationalTerm": "Identificatorul Vânzătorului",
+        "Description": {
+            "ro_RO": "O identificare a Vânzătorului."
+        },
+        "UsageNote": "Pentru multe sisteme, identificatorul Vânzătorului este un element de informaţie cheie. Pot fi atribuiţi sau specificaţi mai mulţi identificatori ai Vânzătorului. Aceştia pot fi diferenţiaţi utilizând diferite scheme de identificare. Dacă schema nu este specificată, se recomandă să fie cunoscut de Cumpărător şi Vânzător, de exemplu un identificator comunicat anterior între Cumpărător şi Vânzător.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului Vânzătorului."
+            },
+            "UsageNote": "Dacă se utilizează, identificatorul schemei de identificare trebuie să fie ales dintre codurile listei publicate de agenţia de mentenanţă a ISO/IEC 6523."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-30": {
+        "HierarchycalTagName": "AccountingSupplierParty_PartyLegalEntity_RegistrationName",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul de înregistrare legală a Vânzătorului",
+        "Description": {
+            "ro_RO": "Un identificator emis de un organism oficial de înregistrare care identifică Vânzătorul ca o entitate sau persoană juridică."
+        },
+        "UsageNote": "Dacă schema de identificare nu este specificată, se recomandă să fie cunoscut de Cumpărător şi Vânzător.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului Vânzătorului."
+            },
+            "UsageNote": "Dacă se utilizează, identificatorul schemei de identificare trebuie să fie ales dintre codurile listei publicate de agenţia de mentenanţă a ISO/IEC 6523."
+        },
+        "RequirementID": "R52",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-31": {
+        "HierarchycalTagName": [
+            "AccountingSupplierParty_PartyLegalEntity_CompanyID",
+            "AccountingSupplierParty_PartyTaxScheme_CompanyID"
+        ],
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul de TVA al Vânzătorului",
+        "Description": {
+            "ro_RO": "Identificatorul de TVA al Vânzătorului (cunoscut, de asemenea, ca numărul de identificare de TVA al Vânzătorului)."
+        },
+        "UsageNote": "Numărul de TVA are ca prefix codul ţării. Un Vânzător înregistrat ca plătitor de TVA trebuie să includă ID-ul său de TVA, cu excepţia cazului în care utilizează un reprezentant fiscal.",
+        "RequirementID": "R52",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-32": {
+        "HierarchycalTagName": "AccountingSupplierParty_PartyLegalEntity_CompanyLegalForm",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul de înregistrare fiscală a Vânzătorului",
+        "Description": {
+            "ro_RO": "Identificarea locală (definită prin adresa Vânzătorului) a Vânzătorului pentru scopuri fiscale sau o referinţă care-i permite Vânzătorului să  demonstreze că este înregistrat la administraţia fiscală."
+        },
+        "UsageNote": "Această informaţie poate afecta modul în care Cumpărătorul achită plata (cum ar fi contribuţiile sociale). De exemplu, în unele ţări, dacă Vânzătorul nu este înregistrat ca plătitor de taxe, atunci Cumpărătorul trebuie să reţină valoarea taxei şi să plătească pentru Vânzător.",
+        "RequirementID": "R47",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-33": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Informaţii juridice suplimentare despre Vânzător",
+        "Description": {
+            "ro_RO": "Informaţii juridice suplimentare cu privire la Vânzător."
+        },
+        "UsageNote": "De exemplu, capitalul social.",
+        "RequirementID": "R47",
+        "SemanticDataType": "Text"
+    },
+    "BT-34": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa electronică a Vânzătorului",
+        "Description": {
+            "ro_RO": "Identifică adresa electronică a Vânzătorului la care poate fi transmis la nivel de aplicaţie răspunsul la factură."
+        },
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a adresei electronice a Vânzătorului."
+            },
+            "UsageNote": "Identificatorul schemei trebuie să fie ales dintr-o listă ţinută la zi de către Mecanismul de Interconectare în Europa (Connecting Europe Facility)."
+        },
+        "RequirementID": "R13,R57",
+        "SemanticDataType": "Identificator"
+    },
+    "BG-5": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"ADRESA POŞTALĂ A VÂNZĂTORULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre adresa Vânzătorului."
+        },
+        "UsageNote": "Pentru conformitate cu cerinţelor legale, trebuie să fie completate suficiente componente ale adresei.",
+        "RequirementID": "R53"
+    },
+    "BT-35": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_StreetName",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa Vânzătorului - Linia 1",
+        "Description": {
+            "ro_RO": "Linia principală a unei adrese."
+        },
+        "UsageNote": "De obicei numele şi numărul străzii sau căsuţa poştală.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-36": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_StreetName2",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa Vânzătorului - Linia 2",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-162": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_StreetName3",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa Vânzătorului - Linia 2",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-37": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_CityName",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Localitatea Vânzătorului",
+        "Description": {
+            "ro_RO": "Numele uzual al municipiului, oraşului sau satului, în care se află adresa Vânzătorului."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-38": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_PostalCode",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul poştal al Vânzătorului",
+        "Description": {
+            "ro_RO": "Identificatorul pentru un grup de proprietăţi adresabil conform serviciului poştal relevant."
+        },
+        "UsageNote": "Cum ar fi un cod poştal sau un număr poştal de expediere",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-39": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_CountrySubentity",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Subdiviziunea ţării Vânzătorului",
+        "Description": {
+            "ro_RO": "Subdiviziunea administrativă a unei ţări."
+        },
+        "UsageNote": "Cum ar fi o regiune, un judeţ, un stat, o provincie etc.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-40": {
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_Country_IdentificationCode",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul ţării Vânzătorului",
+        "Description": {
+            "ro_RO": "Un cod care identifică ţara."
+        },
+        "UsageNote": "Dacă nu este specificat un reprezentant fiscal, acesta este ţara în care trebuie plătită TVA. Listele ţărilor valide sunt înregistrate la Agenţia de Mentenanţă a EN ISO 3166-1, “Coduri pentru reprezentarea denumirilor de ţări şi a subdiviziunilor lor”.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Cod"
+    },
+    "BG-6": {
+        "HierarchycalTagName": "AccountingSupplierParty_Contact",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"CONTACTUL VÂNZĂTORULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii de contact despre Vânzător."
+        },
+        "RequirementID": "R57"
+    },
+    "BT-41": {
+        "HierarchycalTagName": "AccountingSupplierParty_Contact_Name",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Punctul de contact al Vânzătorului",
+        "Description": {
+            "ro_RO": "Un punct de contact pentru o entitate sau persoană juridică."
+        },
+        "UsageNote": "Cum ar fi numele persoanei, identificarea unui contact, departament sau serviciu.",
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-42": {
+        "HierarchycalTagName": "AccountingSupplierParty_Contact_Telephone",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Numărul de telefon al contactului Vânzătorului",
+        "Description": {
+            "ro_RO": "Un număr de telefon pentru punctul de contact."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-43": {
+        "HierarchycalTagName": "AccountingSupplierParty_Contact_ElectronicMail",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa de email a contactului Vânzătorului",
+        "Description": {
+            "ro_RO": "O adresă de e-mail pentru punctul de contact."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BG-7": {
+        "HierarchycalTagName": "AccountingCustomerParty",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm":"CUMPĂRĂTOR",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre Cumpărător."
+        },
+        "RequirementID": "R57"
+    },
+    "BT-44": {
+        "HierarchycalTagName": "AccountingCustomerParty_PartyName_Name",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Numele Cumpărătorului",
+        "Description": {
+            "ro_RO": "Numele complet al Cumpărătorului."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-45": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Denumirea comercială a Cumpărătorului",
+        "Description": {
+            "ro_RO": "Un nume sub care este cunoscut Cumpărătorul, altul decât numele Cumpărătorului (cunoscut, de asemenea, ca denumirea comercială)."
+        },
+        "UsageNote": "Acesta poate fi utilizat dacă este diferit de numele Cumpărătorului.",
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-46": {
+        "HierarchycalTagName": "AccountingCustomerParty_PartyLegalEntity_CompanyLegalForm",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul Cumpărătorului",
+        "Description": {
+            "ro_RO": "Un identificator al Cumpărătorului."
+        },
+        "UsageNote": "Dacă schema nu este specificată, se recomandă să fie cunoscut de Cumpărător şi Vânzător, de exemplu un identificator comunicat anterior între Vânzător şi Cumpărător.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului Cumpărătorului."
+            },
+            "UsageNote": "Dacă se utilizează, identificatorul schemei de identificare trebuie să fie ales dintre codurile listei publicate de agenţia de mentenanţă a ISO/IEC 6523."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-47": {
+        "HierarchycalTagName": "AccountingCustomerParty_PartyLegalEntity_RegistrationName",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul de înregistrare legală a Cumpărătorului",
+        "Description": {
+            "ro_RO": "Un identificator emis de un organism oficial de înregistrare care identifică Cumpărătorul ca o entitate sau persoană juridică."
+        },
+        "UsageNote": "Dacă schema de identificare nu este specificată, se recomandă să fie cunoscut de Cumpărător şi Vânzător, de exemplu identificatorul care este utilizat exclusiv în mediul juridic aplicabil.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului de înregistrare legală a Cumpărătorului."
+            },
+            "UsageNote": "Dacă se utilizează, identificatorul schemei de identificare trebuie să fie ales dintre codurile listei publicate de agenţia de mentenanţă a ISO/IEC 6523."
+        },
+        "RequirementID": "R47,R52,R57",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-48": {
+        "HierarchycalTagName": [
+            "AccountingCustomerParty_PartyTaxScheme_CompanyID",
+            "AccountingCustomerParty_PartyLegalEntity_CompanyID"
+        ],
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul de TVA al Cumpărătorului",
+        "Description": {
+            "ro_RO": "Identificatorul de TVA al Cumpărătorului (cunoscut, de asemenea, ca numărul de identificare de TVA al Cumpărătorului)."
+        },
+        "UsageNote": "Numărul de TVA având ca prefix codul ţării bazat pe EN ISO 3166-1 “Coduri pentru reprezentarea denumirilor de ţări şi a subdiviziunilor lor”.",
+        "RequirementID": "R45,R52,R57",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-49": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa electronică a Cumpărătorului",
+        "Description": {
+            "ro_RO": "Identifică adresa electronică a Cumpărătorului la care se trimite factura."
+        },
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a adresei electronice a Cumpărătorului."
+            },
+            "UsageNote": "Identificatorul schemei trebuie să fie ales dintr-o listă ţinută la zi de către Mecanismul de Interconectare în Europa (Connecting Europe Facility)."
+        },
+        "RequirementID": "R13,R57",
+        "SemanticDataType": "Identificator"
+    },
+    "BG-8": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm": "ADRESA POŞTALĂ A CUMPĂRĂTORULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre adresa poştală a Cumpărătorului."
+        },
+        "UsageNote": "Pentru conformitate cu cerinţelor legale, trebuie să fie completate suficiente componente ale adresei.",
+        "RequirementID": "R53"
+    },
+    "BT-50": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_StreetName",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa Cumpărătorului - Linia 1",
+        "Description": {
+            "ro_RO": "Linia principală a unei adrese."
+        },
+        "UsageNote": "De obicei numele şi numărul străzii sau căsuţa poştală.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-51": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_StreetName2",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa Cumpărătorului - Linia 2",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-163": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_StreetName3",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa Cumpărătorului - Linia 2",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-52": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_CityName",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Localitatea Cumpărătorului",
+        "Description": {
+            "ro_RO": "Numele uzual al municipiului, oraşului sau satului, în care se află adresa Cumpărătorului."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-53": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_PostalCode",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul poştal al Cumpărătorului",
+        "Description": {
+            "ro_RO": "Identificatorul pentru un grup de proprietăţi adresabil conform serviciului poştal relevant."
+        },
+        "UsageNote": "Cum ar fi un cod poştal sau un număr poştal de expediere.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-54": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_CountrySubentity",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Subdiviziunea ţării Cumpărătorului",
+        "Description": {
+            "ro_RO": "Subdiviziunea administrativă a unei ţări."
+        },
+        "UsageNote": "Cum ar fi o regiune, un judeţ, un stat, o provincie etc.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-55": {
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_Country_IdentificationCode",
+        "Level": "+++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Codul ţării Cumpărătorului",
+        "Description": {
+            "ro_RO": "Un cod care identifică ţara."
+        },
+        "UsageNote": "Listele ţărilor valide sunt înregistrate la Agenţia de Mentenanţă a EN ISO 3166-1, “Coduri pentru reprezentarea denumirilor de ţări şi a subdiviziunilor lor”.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Cod"
+    },
+    "BG-9": {
+        "HierarchycalTagName": "AccountingCustomerParty_Contact",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm":"CONTACTUL CUMPĂRĂTORULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii de contact despre Cumpărător."
+        },
+        "UsageNote": "Detaliile contactului pot fi date de către Cumpărător la momentul comenzii sau prin datele de referinţă schimbate înainte de comandă. Se recomandă ca detaliile contactului să nu fie utilizate pentru rutarea internă de către destinatar a facturii primite; pentru acest scop, se recomandă să se utilizeze identificatorul de referinţă al Cumpărătorului.",
+        "RequirementID": "R57"
+    },
+    "BT-56": {
+        "HierarchycalTagName": "AccountingCustomerParty_Contact_Name",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Punctul de contact al Cumpărătorului",
+        "Description": {
+            "ro_RO": "Un punct de contact pentru o entitate sau persoană juridică."
+        },
+        "UsageNote": "Cum ar fi numele persoanei, identificarea unui contact, departament sau serviciu.",
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-57": {
+        "HierarchycalTagName": "AccountingCustomerParty_Contact_Telephone",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Numărul de telefon al contactului Cumpărătorului",
+        "Description": {
+            "ro_RO": "Un număr de telefon pentru punctul de contact."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-58": {
+        "HierarchycalTagName": "AccountingCustomerParty_Contact_ElectronicMail",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa de email a contactului Cumpărătorului",
+        "Description": {
+            "ro_RO": "O adresă de e-mail pentru punctul de contact."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BG-10": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm": "BENEFICIAR",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre Beneficiar, adică rolul celui care primeşte plata."
+        },
+        "UsageNote": "Rolul Beneficiarului poate fi îndeplinit de o altă parte decât Vânzătorul, de exemplu un serviciu de factoring.",
+        "RequirementID": "R1,R57"
+    },
+    "BT-59": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Numele Beneficiarului",
+        "Description": {
+            "ro_RO": "Numele Beneficiarului."
+        },
+        "UsageNote": "Trebuie utilizat atunci când Beneficiarul este diferit de Vânzător. Totuşi, numele Beneficiarului poate fi acelaşi ca al Vânzătorului.",
+        "RequirementID": "R1,R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-60": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul Beneficiarului",
+        "Description": {
+            "ro_RO": "Un identificator pentru Beneficiar."
+        },
+        "UsageNote": "Dacă schema de identificare nu este specificată, se recomandă să fie cunoscut de Cumpărător şi Vânzător, de exemplu un identificator al Vânzătorului schimbat în prealabil între Cumpărător şi Vânzător.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului Beneficiarului."
+            },
+            "UsageNote": "Dacă se utilizează, schema de identificare trebuie să fie aleasă dintre codurile listei publicate de agenţia de mentenanţă a ISO/IEC 6523."
+        },
+        "RequirementID": "R1,R57",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-61": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul înregistrării legale a Beneficiarului",
+        "Description": {
+            "ro_RO": "Un identificator emis de un organism oficial de înregistrare care identifică Beneficiarul ca o entitate sau persoană juridică."
+        },
+        "UsageNote": "Dacă schema de identificare nu este specificată, se recomandă să fie cunoscut de Cumpărător şi Vânzător, de exemplu identificatorul care este utilizat exclusiv în mediul juridic aplicabil.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului înregistrării legale a Beneficiarului."
+            },
+            "UsageNote": "Dacă se utilizează, schema de identificare trebuie să fie aleasă dintre codurile listei publicate de agenţia de mentenanţă a ISO/IEC 6523."
+        },
+        "RequirementID": "R1",
+        "SemanticDataType": "Identificator"
+    },
+    "BG-11": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm": "REPREZENTANTUL FISCAL AL VÂNZĂTORULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre reprezentantul fiscal al Vânzătorului."
+        },
+        "RequirementID": "R57"
+    },
+    "BT-62": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Numele reprezentantului fiscal al Vânzătorului",
+        "Description": {
+            "ro_RO": "Numele complet al părţii care este reprezentantul fiscal al Vânzătorului."
+        },
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-63": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Identificatorul de TVA al reprezentantului fiscal al Vânzătorului",
+        "Description": {
+            "ro_RO": "Identificatorul de TVA al părţii care este reprezentantul fiscal al Vânzătorului."
+        },
+        "UsageNote": "Numărul de TVA având ca prefix codul ţării bazat pe EN ISO 3166-1 “Coduri pentru reprezentarea denumirilor de ţări şi a subdiviziunilor lor”.",
+        "RequirementID": "R52",
+        "SemanticDataType": "Text"
+    },
+    "BG-12": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "ADRESA POŞTALĂ A REPREZENTANTULUI FISCAL AL VÂNZĂTORULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre adresa poştală a părţii care este reprezentantul fiscal."
+        },
+        "UsageNote": "Dacă Vânzătorul are un reprezentant fiscal care trebuie să plătească TVA datorat, trebuie să se furnizeze în factură, numele/adresa poştală a reprezentantului fiscal al Vânzătorului.  Pentru conformitate cu cerinţelor legale, trebuie să fie completate suficiente componente ale adresei.",
+        "RequirementID": "R53"
+    },
+    "BT-64": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa reprezentantului fiscal - Linia 1",
+        "Description": {
+            "ro_RO": "Linia principală a unei adrese."
+        },
+        "UsageNote": "De obicei numele şi numărul străzii sau căsuţa poştală.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-65": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa reprezentantului fiscal - Linia 2",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-164": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa reprezentantului fiscal - Linia 2",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-66": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Localitatea reprezentantului fiscal",
+        "Description": {
+            "ro_RO": "Numele uzual al municipiului, oraşului sau satului, în care se află adresa reprezentantului fiscal."
+        },
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-67": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul poştal al reprezentantului fiscal",
+        "Description": {
+            "ro_RO": "Identificatorul pentru un grup de proprietăţi adresabil conform serviciului poştal relevant."
+        },
+        "UsageNote": "Cum ar fi un cod poştal sau un număr poştal de expediere.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-68": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Subdiviziunea ţării reprezentantului fiscal",
+        "Description": {
+            "ro_RO": "Subdiviziunea administrativă a unei ţări."
+        },
+        "UsageNote": "Cum ar fi o regiune, un judeţ, un stat, o provincie etc.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Text"
+    },
+    "BT-69": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Codul ţării reprezentantului fiscal",
+        "Description": {
+            "ro_RO": "Un cod care identifică ţara."
+        },
+        "UsageNote": "Listele ţărilor valide sunt înregistrate la Agenţia de Mentenanţă a EN ISO 3166-1, “Coduri pentru reprezentarea denumirilor de ţări şi a subdiviziunilor lor”.",
+        "RequirementID": "R53",
+        "SemanticDataType": "Cod"
+    },
+    "BG-13": {
+        "HierarchycalTagName": "DeliveryTerms",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm": "INFORMAŢII REFERITOARE LA LIVRARE",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre unde şi când trebuie livrate bunurile şi serviciile facturate."
+        },
+        "RequirementID": "R31,R32,R57"
+    },
+    "BT-70": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Numele părţii către care se face livrarea",
+        "Description": {
+            "ro_RO": "Numele părţii căreia îi sunt livrate bunurile şi serviciile."
+        },
+        "UsageNote": "Trebuie să fie utilizat dacă partea căreia i se livrează este diferită de Cumpărător.",
+        "RequirementID": "R57",
+        "SemanticDataType": "Text"
+    },
+    "BT-71": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul locului către care se face livrarea",
+        "Description": {
+            "ro_RO": "Un identificator pentru locul unde sunt livrate bunurile şi serviciile."
+        },
+        "UsageNote": "Dacă schema de identificare nu este specificată, se recomandă să fie cunoscut de Cumpărător şi Vânzător, de exemplu un identificator al Vânzătorului schimbat în prealabil între Cumpărător şi Vânzător.",
+        "attribute": {
+            "Cardinality": "0..1",
+            "OperationalTerm": "Identificatorul schemei",
+            "Description": {
+                "ro_RO": "Identificatorul schemei de identificare a identificatorului locului de livrare."
+            },
+            "UsageNote": "Dacă se utilizează, schema de identificare trebuie să fie aleasă dintre codurile listei publicate de agenţia de mentenanţă a ISO/IEC 6523."
+        },
+        "RequirementID": "R32",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-72": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Data reală a livrării",
+        "Description": {
+            "ro_RO": "Data la care s-a făcut sau s-a finalizat livrarea bunurilor sau a serviciilor."
+        },
+        "RequirementID": "R31",
+        "SemanticDataType": "Dată"
+    },
+    "BG-14": {
+        "HierarchycalTagName": "InvoicePeriod",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "PERIOADA DE FACTURARE",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre perioada de facturare."
+        },
+        "UsageNote": "Utilizată pentru a indica când începe şi când se sfârşeşte perioada acoperită de factură. Numită, de asemenea, perioada de livrare.",
+        "RequirementID": "R34"
+    },
+    "BT-73": {
+        "HierarchycalTagName": "InvoicePeriod_StartDate",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Data de început a perioadei de facturare",
+        "Description": {
+            "ro_RO": "Data la care începe perioada de facturare."
+        },
+        "UsageNote": "Data iniţială a livrării bunurilor sau serviciilor.",
+        "RequirementID": "R34",
+        "SemanticDataType": "Dată"
+    },
+    "BT-74": {
+        "HierarchycalTagName": "InvoicePeriod_EndDate",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Data de sfârşit a perioadei de facturare",
+        "Description": {
+            "ro_RO": "Data la care se sfârşeşte perioada de facturare."
+        },
+        "UsageNote": "Data la care livrarea bunurilor sau serviciilor a fost finalizată.",
+        "RequirementID": "R34",
+        "SemanticDataType": "Dată"
+    },
+    "BG-15": {
+        "HierarchycalTagName": "Delivery",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "ADRESA DE LIVRARE",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre adresa la care au fost livrate bunurile şi serviciile facturate."
+        },
+        "UsageNote": "În cazul în care livrarea se face la un punct de ridicare, adresa de livrare este adresa punctului de ridicare. Pentru conformitate cu cerinţele legale, trebuie să fie completate suficiente componente ale adresei.",
+        "RequirementID": "R32"
+    },
+    "BT-75": {
+        "HierarchycalTagName": "Delivery_StreetName",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa de livrare - Linia 1",
+        "Description": {
+            "ro_RO": "Linia principală a unei adrese."
+        },
+        "UsageNote": "De obicei numele şi numărul străzii.",
+        "RequirementID": "R32",
+        "SemanticDataType": "Text"
+    },
+    "BT-76": {
+        "HierarchycalTagName": "Delivery_StreetName2",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa de livrare - Linia 2",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R32",
+        "SemanticDataType": "Text"
+    },
+    "BT-165": {
+        "HierarchycalTagName": "Delivery_StreetName3",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Adresa de livrare - Linia 3",
+        "Description": {
+            "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
+        },
+        "RequirementID": "R32",
+        "SemanticDataType": "Text"
+    },
+    "BT-77": {
+        "HierarchycalTagName": "Delivery_CityName",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Localitatea de livrare",
+        "Description": {
+            "ro_RO": "Numele uzual al municipiului, oraşului sau satului, în care se află adresa de livrare."
+        },
+        "RequirementID": "R32",
+        "SemanticDataType": "Text"
+    },
+    "BT-78": {
+        "HierarchycalTagName": "Delivery_PostalCode",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul poştal de livrare",
+        "Description": {
+            "ro_RO": "Identificatorul pentru un grup de proprietăţi adresabil conform serviciului poştal relevant."
+        },
+        "UsageNote": "Cum ar fi un cod poştal sau un număr poştal de expediere.",
+        "RequirementID": "R32",
+        "SemanticDataType": "Text"
+    },
+    "BT-79": {
+        "HierarchycalTagName": "Delivery_CountrySubentity",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Subdiviziunea ţării de livrare",
+        "Description": {
+            "ro_RO": "Subdiviziunea administrativă a unei ţări."
+        },
+        "UsageNote": "Cum ar fi o regiune, un judeţ, un stat, o provincie etc.",
+        "RequirementID": "R32",
+        "SemanticDataType": "Text"
+    },
+    "BT-80": {
+        "HierarchycalTagName": "Delivery_Country_IdentificationCode",
+        "Level": "+++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Codul ţării de livrare",
+        "Description": {
+            "ro_RO": "Un cod care identifică ţara."
+        },
+        "UsageNote": "Listele ţărilor valide sunt înregistrate la Agenţia de Mentenanţă a EN ISO 3166-1, “Coduri pentru reprezentarea denumirilor de ţări şi a subdiviziunilor lor”.",
+        "RequirementID": "R32",
+        "SemanticDataType": "Cod"
+    },
+    "BG-16": {
+        "HierarchycalTagName": "PaymentMeans",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "INSTRUCŢIUNI DE PLATĂ",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre plată."
+        },
+        "RequirementID": "R58"
+    },
+    "BT-81": {
+        "HierarchycalTagName": "PaymentMeans_PaymentMeansCode",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul tipului de instrument de plată",
+        "Description": {
+            "ro_RO": "Cod care indică modul în care o plată trebuie să fie sau a fost efectuată."
+        },
+        "UsageNote": "Trebuie să se utilizeze coduri din lista de coduri 4461 din dicţionarul de date UNTDID [6]. Se recomandă să se facă distincţie între plăţi SEPA şi plăţi non-SEPA, precum şi între plăţi prin virament, debitare directă, plăţi cu card şi orice alt instrument de plată.",
+        "RequirementID": "R58",
+        "SemanticDataType": "Cod"
+    },
+    "BT-82": {
+        "HierarchycalTagName": "PaymentMeans_Note",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Explicaţii privind instrumentul de plată",
+        "Description": {
+            "ro_RO": "Text care indică modul în care o plată trebuie să fie sau a fost efectuată."
+        },
+        "UsageNote": "Cum ar fi cu numerar, virament, debitare directă, card de credit etc.",
+        "RequirementID": "R58",
+        "SemanticDataType": "Text"
+    },
+    "BT-83": {
+        "HierarchycalTagName": "PaymentMeans_PaymentID",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Aviz de plată",
+        "Description": {
+            "ro_RO": "Valoare textuală utilizată pentru a stabili o legătură între plată şi Factură, emisă de Vânzător."
+        },
+        "UsageNote": "Utilizat pentru informaţiile critice de reconciliere ale creditorului. Acest element de informaţie ajută Vânzătorul să atribuie o plată intrată procesului de plată corespunzător. Atunci când se specifică valoarea textuală, care, de obicei, este numărul de factură al facturii plătite, dar poate fi o altă referinţă a vânzătorului, se recomandă ca, atunci când face plata, Cumpărătorul să indice în ordinul său de plată această referinţă. Într-o operaţie de plată, această referinţă este transferată înapoi la Vânzător ca aviz de plată.\nPentru a permite prelucrarea automată a plăţilor SEPA transfrontaliere, se recomandă ca în acest câmp să se utilizeze numai caractere latine, cu un maximum de 140 caractere. Pentru informaţii suplimentare cu privire la caracterele autorizate, a se vedea secţiunea de referinţă 1.4 din ghidurile de implementare a schemei de virament SEPA şi debitare directă SEPA [13] şi [14]. În interiorul frontierelor naţionale pot fi aplicate şi alte reguli pentru plăţile SEPA.\nDacă avizul de plată este structurat conform standardului ISO 11649:2009 [16] pentru o referinţă a Creditorului structurată RF, acesta trebuie să fie prezentat în mesajele de plată SEPA în câmpul Referinţa Creditorului din avizul de plată structurat. Dacă avizul de plată este structurat conform standardului EACT pentru reconciliere automată [17], acesta trebuie să fie prezentat în mesajele de plată SEPA în câmpul aviz de plată nestructurat.\nDacă avizul de plată trebuie să fie prezentat în câmpul Identificare de la cap la cap sau în câmpul Referinţa Creditorului din Avizul de plată structurat din mesajele de plată SEPA, atunci în plus faţă de restricţia setului de caractere latine, conţinutul trebuie să nu înceapă sau să se sfârşească cu '/' şi în conţinut trebuie să nu existe '//'. A se vedea referinţa [15].",
+        "RequirementID": "R56,R62",
+        "SemanticDataType": "Text"
+    },
+    "BG-17": {
+        "HierarchycalTagName": "PaymentMeans_PayeeFinancialAccount",
+        "Level": "++",
+        "Cardinality": "0..n",
+        "OperationalTerm": "VIRAMENT",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali pentru a specifica plăţile prin virament."
+        },
+        "RequirementID": "R58"
+    },
+    "BT-84": {
+        "HierarchycalTagName": "PaymentMeans_PayeeFinancialAccount_ID",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul contului de plată",
+        "Description": {
+            "ro_RO": "Un identificator unic al contului bancar de plată, la un furnizor de servicii de plată la care se recomandă să se facă plata"
+        },
+        "UsageNote": "Exemplu: IBAN (în cazul unei plăţi SEPA) sau număr de cont naţional.",
+        "RequirementID": "R61,R65",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-85": {
+        "HierarchycalTagName": "PaymentMeans_PayeeFinancialAccount_Name",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Numele contului de plată",
+        "Description": {
+            "ro_RO": "Numele contului de plată, la un furnizor de servicii de plată la care se recomandă să se facă plata."
+        },
+        "RequirementID": "R61,R65",
+        "SemanticDataType": "Text"
+    },
+    "BT-86": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul furnizorului de servicii de plată",
+        "Description": {
+            "ro_RO": "Un identificator pentru furnizorul serviciului de plată unde este localizat contul de plată."
+        },
+        "UsageNote": "Exemplu: cod BIC sau un cod naţional de clearing, dacă este cazul. Nu trebuie utilizată nicio schemă de identificare.",
+        "RequirementID": "R61,R65",
+        "SemanticDataType": "Identificator"
+    },
+    "BG-18": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "INFORMAŢII PRIVIND CARDUL DE PLATĂ",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre cardul utilizat pentru plată în acelaşi timp cu emiterea facturii."
+        },
+        "UsageNote": "Utilizat numai dacă Cumpărătorul a optat să plătească utilizând un card de plată cum ar fi un card de credit sau de debit.",
+        "RequirementID": "R64"
+    },
+    "BT-87": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Numărul contului principal al cardului de plată",
+        "Description": {
+            "ro_RO": "Numărul de cont principal (PAN – Primary Account Number) al cardului utilizat pentru plată."
+        },
+        "UsageNote": "În conformitate cu standardele de securitate privind plata cu card, se recomandă ca o factură să nu includă niciodată întregul număr de cont principal al cardului. În acest moment PCI Security Standards Council a definit că primele 6 cifre şi ultimele 4 cifre reprezintă numărul maxim de cifre care trebuie arătate.",
+        "RequirementID": "R64",
+        "SemanticDataType": "Text"
+    },
+    "BT-88": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Numele deţinătorului cardului de plată",
+        "Description": {
+            "ro_RO": "Numele deţinătorului cardului de plată."
+        },
+        "RequirementID": "R64",
+        "SemanticDataType": "Text"
+    },
+    "BG-19": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "DEBITARE DIRECTĂ",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali pentru a specifica o debitare directă."
+        },
+        "UsageNote": "Acest grup poate fi utilizat pentru a da un preaviz în factură că plata va fi făcută prin SEPA sau alt tip de debitare directă iniţiată de Vânzător, în conformitate cu regulile SEPA sau ale altei scheme de debitare directă.",
+        "RequirementID": "R69"
+    },
+    "BT-89": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul referinţei mandatului",
+        "Description": {
+            "ro_RO": "Identificator unic atribuit de către Beneficiar, utilizat ca referinţă pentru mandatul de debitare directă."
+        },
+        "UsageNote": "Utilizat în scopul de a-l notifica în prealabil pe Cumpărător despre o debitare directă SEPA.",
+        "RequirementID": "R69",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-90": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul creditorului atribuit de bancă",
+        "Description": {
+            "ro_RO": "Identificator unic de referinţă bancară al Beneficiarului sau Vânzătorului atribuit de banca Beneficiarului sau Vânzătorului."
+        },
+        "UsageNote": "Utilizat în scopul de a-l notifica în prealabil pe Cumpărător despre o debitare directă SEPA.",
+        "RequirementID": "R69",
+        "SemanticDataType": "Identificator"
+    },
+    "BT-91": {
+        "HierarchycalTagName": "?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Identificatorul contului debitat",
+        "Description": {
+            "ro_RO": "Contul care trebuie debitat prin debitare directă."
+        },
+        "RequirementID": "R69",
+        "SemanticDataType": "Identificator"
+    },
+    "BG-20": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..n",
+        "OperationalTerm": "DEDUCERI LA NIVELUL DOCUMENTULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre deducerile aplicabile facturii în ansamblu."
+        },
+        "UsageNote": "De asemenea, în acest grup pot fi specificate deduceri, cum ar fi taxele reţinute la sursă.",
+        "RequirementID": "R15"
+    },
+    "BT-92": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea deducerilor la nivelul documentului",
+        "Description": {
+            "ro_RO": "Valoarea deducerii, fără TVA."
+        },
+        "RequirementID": "R15,R19",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-93": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoarea de bază a deducerii la nivelul documentului",
+        "Description": {
+            "ro_RO": "Valoarea de bază care poate fi utilizată, împreună cu procentajul deducerii la nivelul documentului, pentru a calcula valoarea deducerii la nivelul documentului."
+        },
+        "RequirementID": "R15,R42",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-94": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Procentajul deducerii la nivelul documentului",
+        "Description": {
+            "ro_RO": "Procentajul care poate fi utilizat, împreună cu valoarea de bază a deducerii la nivelul documentului, pentru a calcula valoarea deducerii la nivelul documentului."
+        },
+        "RequirementID": "R15,R42",
+        "SemanticDataType": "Procentaj"
+    },
+    "BT-95": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Codul categoriei de TVA pentru deduceri la nivelul documentului",
+        "Description": {
+            "ro_RO": "O identificare codificată a categoriei de TVA care se aplică deducerii la nivelul documentului."
+        },
+        "UsageNote": "Sunt utilizate următoarele articole din dicţionarul de date UNTDID 5305 [6] (informaţii mai ample sunt date între paranteze):\n- Cota normală (Stabilită în mod normal pentru TVA)\n- Bunuri cu cotă zero (Stabilită pentru TVA cu o cotă procentuală zero)\n- Scutit de taxă (TVA/IGIC/IPSI)\n- TVA cu taxare inversă (Se aplică regulile taxării inverse a TVA/IGIC/IPSI)\n- Scutit de TVA pentru livrări intracomunitare de bunuri (TVA/IGIC/IPSI nu se percepe în baza regulilor pentru livrări intracomunitare)\n- Articol cu export liber, nu se aplică taxe (TVA/IGIC/IPSI nu se percepe ca urmare a exportării în afara UE)\n- Servicii scutite de taxe (Vânzarea nu este supusă TVA/IGIC/IPSI)\n- Impozit general indirect în Insulele Canare (Răspunzător pentru taxa IGIC)\n- Răspunzător pentru IPSI (taxa Ceuta/Melilla)",
+        "RequirementID": "R15,R16,R45,R48",
+        "SemanticDataType": "Cod"
+    },
+    "BT-96": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Cota de TVA pentru deduceri la nivelul documentului",
+        "Description": {
+            "ro_RO": "Cota TVA, reprezentată ca procentaj care se aplică deducerii la nivelul documentului."
+        },
+        "RequirementID": "R15,R16,R45,R48",
+        "SemanticDataType": "Procentaj"
+    },
+    "BT-97": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Motivul deducerii la nivelul documentului",
+        "Description": {
+            "ro_RO": "Motivul deducerii la nivelul documentului, exprimat ca text."
+        },
+        "RequirementID": "R15",
+        "SemanticDataType": "Text"
+    },
+    "BT-98": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul motivului deducerii la nivelul documentului",
+        "Description": {
+            "ro_RO": "Motivul deducerii la nivelul documentului, exprimat ca un cod."
+        },
+        "UsageNote": "Se utilizează codurile UNTDID 5189 [6]. Codul motivului deducerii la nivelul documentului şi motivul deducerii la nivelul documentului trebuie să indice acelaşi motiv al deducerii.",
+        "RequirementID": "R15",
+        "SemanticDataType": "Text"
+    },
+    "BG-21": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..n",
+        "OperationalTerm": "TAXE SUPLIMENTARE LA NIVELUL DOCUMENTULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre taxele suplimentare şi taxele, altele decât TVA, aplicabile facturii în ansamblu."
+        },
+        "RequirementID": "R15"
+    },
+    "BT-99": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea taxelor suplimentare la nivelul documentulu",
+        "Description": {
+            "ro_RO": "Valoarea unei taxe suplimentare, fără TVA."
+        },
+        "RequirementID": "R15,R16,R19",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-100": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoarea de bază a taxelor suplimentare la nivelul documentului",
+        "Description": {
+            "ro_RO": "Valoarea de bază care poate fi utilizată, împreună cu procentajul taxei suplimentare la nivelul documentului, pentru a calcula valoarea taxei suplimentare la nivelul documentului."
+        },
+        "RequirementID": "R15,R16,R19",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-101": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Procentajul taxelor suplimentare la nivelul documentului",
+        "Description": {
+            "ro_RO": "Procentajul care poate fi utilizat, împreună cu valoarea taxei suplimentare la nivelul documentului, pentru a calcula valoarea taxei suplimentare la nivelul documentului."
+        },
+        "RequirementID": "R15,R16,R19",
+        "SemanticDataType": "Procentaj"
+    },
+    "BT-102": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Codul categoriei de TVA pentru taxe suplimentare la nivelul documentului",
+        "Description": {
+            "ro_RO": "Identificarea codificată a categoriei de TVA care se aplică taxelor suplimentare la nivelul documentului."
+        },
+        "UsageNote": "Sunt utilizate următoarele articole din dicţionarul de date UNTDID 5305 [6] (informaţii mai ample sunt date între paranteze):\n- Cota normală (Stabilită în mod normal pentru TVA)\n- Bunuri cu cotă zero (Stabilită pentru TVA cu o cotă procentuală zero)\n- Scutit de taxă (TVA/IGIC/IPSI)\n- TVA cu taxare inversă (Se aplică regulile taxării inverse a TVA/IGIC/IPSI)\n- Scutit de TVA pentru livrări intracomunitare de bunuri (TVA/IGIC/IPSI nu se percepe în baza regulilor pentru livrări intracomunitare)\n- Articol cu export liber, nu se aplică taxe (TVA/IGIC/IPSI nu se percepe ca urmare a exportării în afara UE)\n- Servicii scutite de taxe (Vânzarea nu este supusă TVA/IGIC/IPSI)\n- Impozit general indirect în Insulele Canare (Răspunzător pentru taxa IGIC)\n- Răspunzător pentru IPSI (taxa Ceuta/Melilla)",
+        "RequirementID": "R15,R45,R48",
+        "SemanticDataType": "Cod"
+    },
+    "BT-103": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Cota TVA pentru taxe suplimentare la nivelul documentului",
+        "Description": {
+            "ro_RO": "Cota TVA, reprezentată ca procentaj care se aplică taxelor suplimentare la nivelul documentului."
+        },
+        "RequirementID": "R15,R45,R48",
+        "SemanticDataType": "Procentaj"
+    },
+    "BT-104": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Motivul taxei suplimentare la nivelul documentului",
+        "Description": {
+            "ro_RO": "Motivul taxelor suplimentare la nivelul documentului, exprimat ca text."
+        },
+        "RequirementID": "R15,R16",
+        "SemanticDataType": "Text"
+    },
+    "BT-105": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul motivului taxei suplimentare la nivelul documentului",
+        "Description": {
+            "ro_RO": "Motivul taxelor suplimentare la nivelul documentului, exprimat ca un cod."
+        },
+        "UsageNote": "Se utilizează codurile UNTDID 7161 [6]. Codul motivului taxei suplimentare la nivelul Documentului şi motivul taxei suplimentare la nivelul Documentului trebuie să indice acelaşi motiv al taxei suplimentare.",
+        "RequirementID": "R15,R16",
+        "SemanticDataType": "Cod"
+    },
+    "BG-22": {
+        "HierarchycalTagName": "LegalMonetaryTotal",
+        "Level": "+",
+        "Cardinality": "1..1",
+        "OperationalTerm": "TOTALURILE DOCUMENTULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre totalurile monetare ale facturii."
+        },
+        "RequirementID": "R40"
+    },
+    "BT-106": {
+        "HierarchycalTagName": "LegalMonetaryTotal_LineExtensionAmount",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Suma valorilor nete ale liniilor facturii",
+        "Description": {
+            "ro_RO": "Suma tuturor valorilor nete ale liniilor facturii."
+        },
+        "RequirementID": "R40",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-107": {
+        "HierarchycalTagName": "LegalMonetaryTotal_AllowanceTotalAmount",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Suma deducerilor la nivelul documentului",
+        "Description": {
+            "ro_RO": "Suma tuturor deducerilor la nivelul documentului facturii."
+        },
+        "UsageNote": "Deducerile la nivel de linie sunt incluse în valoarea netă a liniei facturii care este utilizată în Suma valorilor nete ale liniilor facturii.",
+        "RequirementID": "R19,R40",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-108": {
+        "HierarchycalTagName": "LegalMonetaryTotal_ChargeTotalAmount",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Suma taxelor suplimentare la nivelul documentului",
+        "Description": {
+            "ro_RO": "Suma tuturor taxelor suplimentare la nivelul documentului facturii."
+        },
+        "UsageNote": "Taxele suplimentare la nivelul liniilor sunt incluse în valoarea netă a liniei facturii care este utilizată în Suma valorilor nete ale liniilor facturii.",
+        "RequirementID": "R19,R40",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-109": {
+        "HierarchycalTagName": "LegalMonetaryTotal_TaxExclusiveAmount",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea totală a facturii fără TVA",
+        "Description": {
+            "ro_RO": "Valoarea totală a facturii fără TVA."
+        },
+        "UsageNote": "Valoarea totală a facturii fără TVA este Suma totalurilor nete ale liniilor facturii minus Suma deducerilor la nivelul documentului plus Suma taxelor suplimentare la nivelul documentului.",
+        "RequirementID": "R40",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-110": {
+        "HierarchycalTagName": [
+            "LegalMonetaryTotal_TaxAmount",
+            "TaxTotal_TaxAmount"
+        ],
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoarea totală a TVA a facturii",
+        "Description": {
+            "ro_RO": "Valoarea totală a TVA aferentă facturii."
+        },
+        "UsageNote": "Valoarea TVA totală a facturii este suma tuturor valorilor TVA pentru diferitele categorii de TVA.",
+        "RequirementID": "R40,R49",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-111": {
+        "HierarchycalTagName": "LegalMonetaryTotal_TaxAmount?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoarea TVA totală a facturii în moneda de contabilizare",
+        "Description": {
+            "ro_RO": "Totalul TVA exprimat în moneda de contabilizare acceptată sau cerută în ţara Vânzătorului."
+        },
+        "UsageNote": "Trebuie utilizat când moneda de contabilizare a TVA (BT-6) diferă de codul monedei facturii (BT-5) în conformitate cu articolul 230 din Directiva 2006/112/CE referitoare la TVA.\nValoarea TVA în moneda de contabilizare nu este utilizată în calcularea totalurilor facturii.",
+        "RequirementID": "R54",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-112": {
+        "HierarchycalTagName": "LegalMonetaryTotal_TaxInclusiveAmount",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea totală a facturii cu TVA",
+        "Description": {
+            "ro_RO": "Valoarea totală a facturii cu TVA."
+        },
+        "UsageNote": "Valoarea totală a facturii cu TVA este valoarea totală a facturii fără TVA plus valoarea totală a TVA.",
+        "RequirementID": "R40,R67",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-113": {
+        "HierarchycalTagName": "LegalMonetaryTotal_PrepaidAmount",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Sumă plătită",
+        "Description": {
+            "ro_RO": "Suma valorilor care au fost plătite anticipat."
+        },
+        "UsageNote": "Această valoare este scăzută din valoarea totală a facturii cu TVA pentru a calcula suma rămasă de plată.",
+        "RequirementID": "R40,R66",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-114": {
+        "HierarchycalTagName": "LegalMonetaryTotal_PayableRoundingAmount",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoare de rotunjire",
+        "Description": {
+            "ro_RO": "Valoarea care trebuie adunată la totalul facturii pentru a rotunji suma de plată."
+        },
+        "RequirementID": "R40",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-115": {
+        "HierarchycalTagName": "LegalMonetaryTotal_PayableAmount",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Suma de plată",
+        "Description": {
+            "ro_RO": "Valoarea restantă care este cerută la plată."
+        },
+        "UsageNote": "Această valoare este valoarea totală a facturii cu TVA minus suma plătită care a fost plătită anticipat. Valoarea este zero în cazul plăţii integrale a facturii. Valoarea poate fi negativă; în acest caz, Vânzătorul îi datorează suma respectivă Cumpărătorului.",
+        "RequirementID": "R40,R59,R68",
+        "SemanticDataType": "Sumă"
+    },
+    "BG-23": {
+        "HierarchycalTagName": "TaxTotal",
+        "Level": "+",
+        "Cardinality": "1..n",
+        "OperationalTerm": "DETALIEREA TVA",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre repartizarea TVA pe diferite categorii, cote şi motive de exceptare."
+        },
+        "RequirementID": "R38,R45,R47,R48,R49"
+    },
+    "BT-116": {
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_TaxableAmount",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Baza de calcul pentru categoria de TVA",
+        "Description": {
+            "ro_RO": "Suma tuturor valorilor impozabile aferente unui cod al unei categorii specifice de TVA şi unei cote a TVA (dacă cota categoriei de TVA este aplicabilă)."
+        },
+        "UsageNote": "Suma valorilor nete ale liniilor facturii minus deducerile plus taxele suplimentare de la nivelul documentului aferente unui cod al unei categorii specifice de TVA şi unei cote a TVA (dacă cota categoriei de TVA este aplicabilă).",
+        "RequirementID": "R50",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-117": {
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_TaxAmount",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea TVA pentru fiecare categorie de TVA",
+        "Description": {
+            "ro_RO": "Valoarea totală a TVA pentru o categorie de TVA dată."
+        },
+        "UsageNote": "Calculată prin multiplicarea valorii bazei de calcul pentru categoria de TVA cu cota categoriei de TVA pentru categoria de TVA corespunzătoare.",
+        "RequirementID": "R49",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-118": {
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_TaxCategory_ID",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Codul categoriei de TVA",
+        "Description": {
+            "ro_RO": "Identificarea codificată a unei categorii de TVA."
+        },
+        "UsageNote": "Sunt utilizate următoarele articole din dicţionarul de date UNTDID 5305 [6] (informaţii mai ample sunt date între paranteze):\n- Cota normală (Stabilită în mod normal pentru TVA)\n- Bunuri cu cotă zero (Stabilită pentru TVA cu o cotă procentuală zero)\n- Scutit de taxă (TVA/IGIC/IPSI)\n- TVA cu taxare inversă (Se aplică regulile taxării inverse a TVA/IGIC/IPSI)\n- Scutit de TVA pentru livrări intracomunitare de bunuri (TVA/IGIC/IPSI nu se percepe în baza regulilor pentru livrări intracomunitare)\n- Articol cu export liber, nu se aplică taxe (TVA/IGIC/IPSI nu se percepe ca urmare a exportării în afara UE)\n- Servicii scutite de taxe (Vânzarea nu este supusă TVA/IGIC/IPSI)\n- Impozit general indirect în Insulele Canare (Răspunzător pentru taxa IGIC)\n- Răspunzător pentru IPSI (taxa Ceuta/Melilla)",
+        "RequirementID": "R38,R45,R49",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-119": {
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_TaxCategory_Percent",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Cota categoriei de TVA",
+        "Description": {
+            "ro_RO": "Cota TVA, reprezentată ca procentaj care se aplică pentru categoria de TVA corespunzătoare."
+        },
+        "UsageNote": "Codul categoriei de TVA şi cota categoriei de TVA trebuie să fie coerente.",
+        "RequirementID": "R38,R49",
+        "SemanticDataType": "Procentaj"
+    },
+    "BT-120": {
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Motivul scutirii de TVA",
+        "Description": {
+            "ro_RO": "Un text care explică de ce suma respectivă este scutită de TVA sau de ce TVA nu este aplicabilă."
+        },
+        "UsageNote": "Articolul 226 punctele 11 până la 15 din Directiva 2006/112/CE [2].",
+        "RequirementID": "R48,R49,R51",
+        "SemanticDataType": "Text"
+    },
+    "BT-121": {
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul motivului scutirii de TVA",
+        "Description": {
+            "ro_RO": "Un enunţ codat care explică de ce suma respectivă este scutită de TVA."
+        },
+        "UsageNote": "Lista codurilor este emisă şi ţinută la zi prin Mecanismul pentru interconexiune în Europa (Connecting Europe Facility).",
+        "RequirementID": "R48,R49,R51,R55",
+        "SemanticDataType": "Cod"
+    },
+    "BG-24": {
+        "HierarchycalTagName": "?",
+        "Level": "+",
+        "Cardinality": "0..n",
+        "OperationalTerm": "DOCUMENTE JUSTIFICATIVE SUPLIMENTARE",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre documentele justificative suplimentare care dovedesc solicitările formulate în factură."
+        },
+        "UsageNote": "Documentele justificative suplimentare pot fi utilizate atât pentru a face referire la numărul documentului care este presupus a fi cunoscut de către destinatar, la un document extern (referit printr-un URL) sau la un document integrat (cum ar fi o fişă de pontaj în format pdf). Apelarea la un link către un document extern va fi necesară, de exemplu, în cazul ataşamentelor mari şi/sau când e vorba de informaţii sensibile, de exemplu servicii legate de o persoană, care trebuie să fie separate de factura propriu-zisă.",
+        "RequirementID": "R36"
+    },
+    "BT-122": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Referinţa documentului justificativ",
+        "Description": {
+            "ro_RO": "Un identificator al documentului justificativ."
+        },
+        "RequirementID": "R36",
+        "SemanticDataType": "Document de referinţă"
+    },
+    "BT-123": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Descrierea documentului justificativ",
+        "Description": {
+            "ro_RO": "O descriere a documentului justificativ."
+        },
+        "UsageNote": "Cum ar fi: fişe de pontaj, raport de utilizare etc.",
+        "RequirementID": "R36",
+        "SemanticDataType": "Text"
+    },
+    "BT-124": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Localizarea documentului extern",
+        "Description": {
+            "ro_RO": "URL (Uniform Resource Locator) care identifică unde este localizat documentul extern."
+        },
+        "UsageNote": "O modalitate de localizare a resurselor incluzând mecanismul său primar de acces, de exemplu, http:// sau ftp://.\nLocalizarea documentului extern trebuie să fie utilizată dacă Cumpărătorul cere informaţii suplimentare cu privire la factură.\nDocumentele externe nu fac parte din factură. Accesul la documente externe poate implica riscuri.",
+        "RequirementID": "R36",
+        "SemanticDataType": "Text"
+    },
+    "BT-125": {
+        "HierarchycalTagName": "?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Document ataşat",
+        "Description": {
+            "ro_RO": "Un document ataşat integrat ca obiect binar sau trimis împreună cu factura."
+        },
+        "UsageNote": "Documentul ataşat este utilizat când documentaţia trebuie să fie stocată cu factura pentru o referire ulterioară sau audit.",
+        "RequirementID": "R35",
+        "SemanticDataType": "Obiect binar"
+    }
+}

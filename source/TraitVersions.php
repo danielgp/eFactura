@@ -31,7 +31,7 @@ namespace danielgp\efactura;
 trait TraitVersions
 {
 
-    protected $arraySettings = [];
+    use TraitBasic;
 
     private function establishCurrentVersion(array $arrayKnownVersions): array {
         $arrayVersionToReturn = [];
@@ -70,21 +70,48 @@ trait TraitVersions
         return $arrayOutput;
     }
 
-    private function getSettingsFromFileIntoMemory(): void {
-        $strFileName = __DIR__ . DIRECTORY_SEPARATOR . 'eFactura.json';
-        if (!file_exists($strFileName)) {
-            throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));
+    private function getSettingsFromFileIntoMemory(bool $bolComments): void {
+        $this->arraySettings             = $this->getJsonFromFile('ElectronicInvoiceSettings.json');
+        $this->arraySettings['Comments'] = [
+            'CAC' => [],
+            'CBC' => [],
+        ];
+        if ($bolComments) {
+            $this->getCommentsFromFileIntoSetting();
         }
-        $fileHandle = fopen($strFileName, 'r');
-        if ($fileHandle === false) {
-            throw new \RuntimeException(sprintf('Unable to open file %s for read purpose!', $strFileName));
+    }
+
+    private function getCommentsFromFileIntoSetting(): void {
+        $strGlue                = ' | ';
+        $arrayFlattenedComments = [];
+        $arrayComments          = $this->getJsonFromFile('ElectronicInvoiceComments.json');
+        foreach ($arrayComments as $key => $value) {
+            $strComment = implode($strGlue, [
+                    $key,
+                    $value['OperationalTerm'],
+                    $value['RequirementID'],
+                ]) . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
+            if (is_array($value['HierarchycalTagName'])) {
+                foreach ($value['HierarchycalTagName'] as $value2) {
+                    $arrayFlattenedComments[$value2] = $strComment;
+                }
+            } else {
+                $arrayFlattenedComments[$value['HierarchycalTagName']] = $strComment;
+            }
         }
-        $fileContent   = fread($fileHandle, ((int) filesize($strFileName)));
-        fclose($fileHandle);
-        $arrayToReturn = json_decode($fileContent, true);
-        if (json_last_error() != JSON_ERROR_NONE) {
-            throw new \RuntimeException(sprintf('Unable to interpret JSON from %s file...', $strFileName));
+        $this->arraySettings['Comments'] = $arrayFlattenedComments;
+    }
+
+    private function setElementComment(string $strKey): void {
+        if (array_key_exists($strKey, $this->arraySettings['Comments'])) {
+            $elementComment = $this->arraySettings['Comments'][$strKey];
+            if (is_array($elementComment)) {
+                foreach ($elementComment as $value) {
+                    $this->objXmlWriter->writeComment($value);
+                }
+            } else {
+                $this->objXmlWriter->writeComment($elementComment);
+            }
         }
-        $this->arraySettings = $arrayToReturn;
     }
 }
