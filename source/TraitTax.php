@@ -49,12 +49,11 @@ trait TraitTax
     }
 
     private function getTaxSubTotal($child3): array {
-        $arrayOutput = [
+        return [
             'TaxAmount'     => $this->getTagWithCurrencyParameter($child3->children('cbc', true)->TaxAmount),
             'TaxableAmount' => $this->getTagWithCurrencyParameter($child3->children('cbc', true)->TaxableAmount),
             'TaxCategory'   => $this->getTaxCategory($child3->children('cac', true)->TaxCategory),
         ];
-        return $arrayOutput;
     }
 
     private function getTaxTotal($child2): array {

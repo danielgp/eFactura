@@ -213,7 +213,6 @@
         "HierarchycalTagName": "?",
         "Level": "+",
         "Cardinality": "0..n",
-        "OperationalTerm":"___",
         "OperationalTerm":"COMENTARIU ÎN FACTURĂ",
         "RequirementID": "R56"
     },

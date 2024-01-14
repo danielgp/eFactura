@@ -33,7 +33,7 @@ trait TraitLines
 
     use TraitTax;
 
-    private function getDocumentLines($objFile, string $strTag) {
+    private function getDocumentLines($objFile, string $strTag): array {
         $arrayLines = [];
         $intLineNo  = 0;
         foreach ($objFile->children('cac', true) as $strNodeName => $child) {

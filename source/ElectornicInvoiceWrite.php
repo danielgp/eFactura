@@ -33,7 +33,7 @@ class ElectornicInvoiceWrite
 
     use TraitVersions;
 
-    protected $objXmlWriter;
+    protected \XMLWriter $objXmlWriter;
 
     private function setCompanyElementsOrdered(array $arrayInput): void {
         $this->setElementComment($arrayInput['commentParentKey']);

@@ -31,16 +31,16 @@ namespace danielgp\efactura;
 trait TraitBasic
 {
 
-    protected $arraySettings = [];
+    protected array $arraySettings = [];
 
-    private function getTagWithCurrencyParameter($childLineExtensionAmount) {
+    private function getTagWithCurrencyParameter($childLineExtensionAmount): array {
         return [
             'currencyID' => $childLineExtensionAmount->attributes()->currencyID->__toString(),
             'value'      => (float) $childLineExtensionAmount->__toString(),
         ];
     }
 
-    private function getTagWithUnitCodeParameter($childLineExtensionAmount) {
+    private function getTagWithUnitCodeParameter($childLineExtensionAmount): array {
         return [
             'unitCode' => $childLineExtensionAmount->attributes()->unitCode->__toString(),
             'value'    => (float) $childLineExtensionAmount->__toString(),

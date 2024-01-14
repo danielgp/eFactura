@@ -88,7 +88,7 @@ trait TraitHeader
         return array_merge($arrayOutput, $this->getHeaderTypeCode($strType, $objCommonBasicComponents));
     }
 
-    private function getHeaderTypeCode(string $strType, $objCommonBasicComponents) {
+    private function getHeaderTypeCode(string $strType, $objCommonBasicComponents): array {
         $arrayOutput = [];
         switch ($strType) {
             case 'CreditNote':

@@ -100,10 +100,9 @@ trait TraitCompanies
     }
 
     private function getPartyIdentification($child3): array {
-        $arrayOutput = [
+        return [
             'ID' => $child3->children('cbc', true)->ID->__toString(),
         ];
-        return $arrayOutput;
     }
 
     private function getPartyLegalEntity($child3): array {
