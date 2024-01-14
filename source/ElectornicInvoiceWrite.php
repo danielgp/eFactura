@@ -46,16 +46,18 @@ class ElectornicInvoiceWrite
                     $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $value
                         . 'UnitOfMeasure']));
                 }
-                if (substr($value, -6) === 'Amount') {
-                    $this->objXmlWriter->startElement('cbc:' . $value);
-                    $this->objXmlWriter->writeAttribute('currencyID', $arrayInput['data'][$value]['currencyID']);
-                    $this->objXmlWriter->writeRaw($arrayInput['data'][$value]['value']);
-                    $this->objXmlWriter->endElement();
-                } elseif (substr($value, -8) === 'Quantity') {
-                    $this->objXmlWriter->startElement('cbc:' . $value);
-                    $this->objXmlWriter->writeAttribute('unitCode', $arrayInput['data'][$value]['unitCode']);
-                    $this->objXmlWriter->writeRaw($arrayInput['data'][$value]['value']);
-                    $this->objXmlWriter->endElement();
+                if (str_ends_with($value, 'Amount')) {
+                    $this->setElementWithAttribute([
+                        'attrib' => 'currencyID',
+                        'data'   => $arrayInput['data'][$value],
+                        'tag'    => '',
+                    ]);
+                } elseif (str_ends_with($value,  'Quantity')) {
+                    $this->setElementWithAttribute([
+                        'attrib' => 'unitCode',
+                        'data'   => $arrayInput['data'][$value],
+                        'tag'    => '',
+                    ]);
                 } elseif (is_array($arrayInput['data'][$value])) {
                     $this->objXmlWriter->startElement('cac:' . $value);
                     foreach ($arrayInput['data'][$value] as $key2 => $value2) {
@@ -87,7 +89,9 @@ class ElectornicInvoiceWrite
     }
 
     private function setElementWithAttribute(array $arrayInput): void {
-        $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $arrayInput['tag']]));
+        if (array_key_exists('commentParentKey', $arrayInput)) {
+            $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $arrayInput['tag']]));
+        }
         $this->objXmlWriter->startElement('cbc:' . $arrayInput['tag']);
         $this->objXmlWriter->writeAttribute($arrayInput['attrib'], $arrayInput['data'][$arrayInput['attrib']]);
         $this->objXmlWriter->writeRaw($arrayInput['data']['value']);
@@ -185,7 +189,7 @@ class ElectornicInvoiceWrite
             }
         }
         $this->setDocumentTag($arrayData);
-        $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2'],);
+        $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
         $arrayAggegateComponents = $arrayData['Header']['CommonAggregateComponents-2'];
         foreach (['AccountingSupplierParty', 'AccountingCustomerParty'] as $strCompanyType) {
             $this->setHeaderCommonAggregateComponentsCompanies([
