@@ -67,7 +67,7 @@
         "SemanticDataType": "Cod"
     },
     "BT-7": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxPointDate",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm":"Data de exigibilitate a taxei pe valoarea adăugată",
@@ -117,7 +117,7 @@
         "SemanticDataType": "Text"
     },
     "BT-11": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "ProjectReference",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": "Referinţa proiectului",
@@ -1238,7 +1238,7 @@
         "SemanticDataType": "Text"
     },
     "BT-86": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_PayeeFinancialAccount_FinancialInstitutionBranch_ID",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": "Identificatorul furnizorului de servicii de plată",
