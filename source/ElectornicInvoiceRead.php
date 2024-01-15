@@ -34,7 +34,8 @@ class ElectornicInvoiceRead
     use TraitHeader,
         TraitLines;
 
-    private function getDocumentRoot($objFile) {
+    private function getDocumentRoot(object $objFile): array
+    {
         $arrayDocument = [
             'DocumentTagName'    => $objFile->getName(),
             'DocumentNameSpaces' => $objFile->getDocNamespaces(true),
@@ -47,7 +48,8 @@ class ElectornicInvoiceRead
         return $arrayDocument;
     }
 
-    public function readElectronicInvoice($strFile) {
+    public function readElectronicInvoice(string $strFile): array
+    {
         $objFile                 = new \SimpleXMLElement($strFile, NULL, TRUE);
         $arrayDocument           = $this->getDocumentRoot($objFile);
         $arrayCAC                = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
