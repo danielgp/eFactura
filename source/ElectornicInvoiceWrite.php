@@ -35,6 +35,21 @@ class ElectornicInvoiceWrite
 
     protected \XMLWriter $objXmlWriter;
 
+    private function loadSettingsAndManageDefaults(array $arrayData, bool $bolComments): array
+    {
+        // if no DocumentNameSpaces seen take Default ones from local configuration
+        $this->getSettingsFromFileIntoMemory($bolComments);
+        $arrayDefaults      = $this->getDefaultsIntoDataSet($arrayData);
+        if ($arrayDefaults !== []) {
+            $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
+            if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
+                $arrayData['Header']['CommonBasicComponents-2']['CustomizationID'] = $arrayDefaults['CIUS-RO'];
+                $arrayData['Header']['CommonBasicComponents-2']['UBLVersionID']    = $arrayDefaults['UBL'];
+            }
+        }
+        return $arrayData;
+    }
+
     private function setDocumentTag(array $arrayDocumentData): void
     {
         $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
@@ -126,6 +141,20 @@ class ElectornicInvoiceWrite
         }
     }
 
+    private function setPaymentMeans(array $arrayData, string $strDocumentTagName): void
+    {
+        // multiple accounts can be specified within PaymentMeans
+        if ($strDocumentTagName === 'Invoice') {
+            foreach ($arrayData as $value) {
+                $this->setElementsOrdered([
+                    'commentParentKey' => 'PaymentMeans',
+                    'data'             => $value,
+                    'tag'              => 'PaymentMeans',
+                ]);
+            }
+        }
+    }
+
     private function setSingleComment(array $arrayInput): void
     {
         if (array_key_exists('commentParentKey', $arrayInput)) {
@@ -154,47 +183,29 @@ class ElectornicInvoiceWrite
         }
     }
 
-    public function writeElectronicInvoice(string $strFile, array $arrayData, bool $bolComments): void
+    public function writeElectronicInvoice(string $strFile, array $arrayDataIn, bool $bolComments): void
     {
         $this->objXmlWriter = new \XMLWriter();
         $this->objXmlWriter->openURI($strFile);
         $this->objXmlWriter->setIndent(true);
         $this->objXmlWriter->setIndentString(str_repeat(' ', 4));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
-        // if no DocumentNameSpaces seen take Default ones from local configuration
-        $this->getSettingsFromFileIntoMemory($bolComments);
-        $arrayDefaults      = $this->getDefaultsIntoDataSet($arrayData);
-        if ($arrayDefaults !== []) {
-            $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
-            if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
-                $arrayData['Header']['CommonBasicComponents-2']['CustomizationID'] = $arrayDefaults['CIUS-RO'];
-                $arrayData['Header']['CommonBasicComponents-2']['UBLVersionID']    = $arrayDefaults['UBL'];
-            }
-        }
-        $this->setDocumentTag($arrayData);
+        $arrayData = $this->loadSettingsAndManageDefaults($arrayDataIn, $bolComments);
+        $this->setDocumentTag($arrayDataFinal);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
-        $arrayAggegateComponents = $arrayData['Header']['CommonAggregateComponents-2'];
+        $arrayAggregates = $arrayData['Header']['CommonAggregateComponents-2'];
         foreach (['AccountingSupplierParty', 'AccountingCustomerParty'] as $strCompanyType) {
             $this->setElementsOrdered([
                 'commentParentKey' => $strCompanyType,
-                'data'             => $arrayAggegateComponents[$strCompanyType]['Party'],
+                'data'             => $arrayAggregates[$strCompanyType]['Party'],
                 'tag'              => $strCompanyType,
             ]);
         }
-        // multiple accounts can be specified within PaymentMeans
-        if ($arrayData['DocumentTagName'] === 'Invoice') {
-            foreach ($arrayAggegateComponents['PaymentMeans'] as $value) {
-                $this->setElementsOrdered([
-                    'commentParentKey' => 'PaymentMeans',
-                    'data'             => $value,
-                    'tag'              => 'PaymentMeans',
-                ]);
-            }
-        }
+        $this->setPaymentMeans($arrayAggregates['PaymentMeans'], $arrayData['DocumentTagName']);
         foreach (['TaxTotal', 'LegalMonetaryTotal'] as $strTotal) {
             $this->setElementsOrdered([
                 'commentParentKey' => $strTotal,
-                'data'             => $arrayAggegateComponents[$strTotal],
+                'data'             => $arrayAggregates[$strTotal],
                 'tag'              => $strTotal,
             ]);
         }
