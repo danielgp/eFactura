@@ -25,11 +25,17 @@
             "CompanyID",
             "TaxScheme"
         ],
+        "AccountingCustomerParty_PartyTaxScheme_TaxScheme": [
+            "ID"
+        ],
         "AccountingCustomerParty_PostalAddress": [
             "StreetName",
             "CityName",
             "CountrySubentity",
             "Country"
+        ],
+        "AccountingCustomerParty_PostalAddress_Country": [
+            "IdentificationCode"
         ],
         "AccountingSupplierParty": [
             "EndpointID",
@@ -56,11 +62,17 @@
             "CompanyID",
             "TaxScheme"
         ],
+        "AccountingSupplierParty_PartyTaxScheme_TaxScheme": [
+            "ID"
+        ],
         "AccountingSupplierParty_PostalAddress": [
             "StreetName",
             "CityName",
             "CountrySubentity",
             "Country"
+        ],
+        "AccountingSupplierParty_PostalAddress_Country": [
+            "IdentificationCode"
         ],
         "Header_CBC": [
             "UBLVersionID",
@@ -101,6 +113,9 @@
             "Percent",
             "TaxScheme"
         ],
+        "Lines_Item_ClassifiedTaxCategory_TaxScheme": [
+            "ID"
+        ],
         "Lines_Price": [
             "PriceAmount",
             "BaseQuantity"
@@ -125,6 +140,9 @@
             "Name",
             "FinancialInstitutionBranch"
         ],
+        "PaymentMeans_PayeeFinancialAccount_FinancialInstitutionBranch": [
+            "ID"
+        ],
         "TaxTotal": [
             "TaxAmount",
             "TaxSubtotal"
@@ -138,6 +156,9 @@
             "ID",
             "Percent",
             "TaxScheme"
+        ],
+        "TaxTotal_TaxSubtotal_TaxCategory_TaxScheme": [
+            "ID"
         ]
     },
     "Defaults": {

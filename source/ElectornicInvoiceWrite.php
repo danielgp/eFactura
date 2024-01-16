@@ -89,15 +89,11 @@ class ElectornicInvoiceWrite
                         foreach ($arrayCustomOrder2 as $valueOrd2) {
                             if (array_key_exists($valueOrd2, $arrayInput['data'][$value])) { // 4 optional values
                                 if (is_array($arrayInput['data'][$value][$valueOrd2])) {
-                                    $this->objXmlWriter->startElement('cac:' . $valueOrd2);
-                                    foreach ($arrayInput['data'][$value][$valueOrd2] as $key2 => $value2) {
-                                        $this->setSingleElementWithAttribute([
-                                            'commentParentKey' => implode('_', [$key, $valueOrd2]),
-                                            'data'             => $value2,
-                                            'tag'              => $key2,
-                                        ]);
-                                    }
-                                    $this->objXmlWriter->endElement();
+                                    $this->setElementsOrdered([
+                                        'commentParentKey' => implode('_', [$key, $valueOrd2]),
+                                        'data'             => $arrayInput['data'][$value][$valueOrd2],
+                                        'tag'              => $valueOrd2,
+                                    ]);
                                 } else {
                                     $this->setSingleElementWithAttribute([
                                         'commentParentKey' => $key,
@@ -145,15 +141,20 @@ class ElectornicInvoiceWrite
         }
     }
 
-    private function setSingleElementWithAttribute(array $arrayInput): void
+    private function setSingleComment(array $arrayInput): void
     {
         if (array_key_exists('commentParentKey', $arrayInput)) {
             $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $arrayInput['tag']]));
             if (str_ends_with($arrayInput['tag'], 'Quantity')) {
                 $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $arrayInput['tag']
-                    . 'UnitOfMeasure']));
+                        . 'UnitOfMeasure']));
             }
         }
+    }
+
+    private function setSingleElementWithAttribute(array $arrayInput): void
+    {
+        $this->setSingleComment($arrayInput);
         if (is_array($arrayInput['data']) && array_key_exists('value', $arrayInput['data'])) {
             $this->objXmlWriter->startElement('cbc:' . $arrayInput['tag']);
             foreach ($arrayInput['data'] as $key => $value) {
