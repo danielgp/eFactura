@@ -1,6 +1,7 @@
 {
     "CustomOrder": {
         "AccountingCustomerParty": [
+            "EndpointID",
             "PartyName",
             "PostalAddress",
             "PartyTaxScheme",
@@ -31,6 +32,7 @@
             "Country"
         ],
         "AccountingSupplierParty": [
+            "EndpointID",
             "PartyName",
             "PostalAddress",
             "PartyTaxScheme",
@@ -67,6 +69,8 @@
             "IssueDate",
             "DueDate",
             "InvoiceTypeCode",
+            "Note",
+            "TaxPointDate",
             "DocumentCurrencyCode"
         ],
         "Lines": [
@@ -75,16 +79,38 @@
             "CreditNoteQuantity",
             "InvoicedQuantity",
             "LineExtensionAmount",
+            "AllowanceCharge",
+            "AdditionalCharge",
             "Item",
             "Price"
         ],
+        "Lines_AllowanceCharge": [
+            "ChargeIndicator",
+            "Amount",
+            "BaseAmount",
+            "MultiplierFactorNumeric",
+            "AllowanceChargeReason",
+            "AllowanceChargeReasonCode"
+        ],
+        "Lines_Item": [
+            "Name",
+            "ClassifiedTaxCategory"
+        ],
+        "Lines_Item_ClassifiedTaxCategory": [
+            "ID",
+            "Percent",
+            "TaxScheme"
+        ],
+        "Lines_Price": [
+            "PriceAmount",
+            "BaseQuantity"
+        ],
         "LegalMonetaryTotal": [
             "LineExtensionAmount",
+            "TaxExclusiveAmount",
+            "TaxInclusiveAmount",
             "AllowanceTotalAmount",
             "ChargeTotalAmount",
-            "TaxExclusiveAmount",
-            "TaxAmount",
-            "TaxInclusiveAmount",
             "PrepaidAmount",
             "PayableRoundingAmount",
             "PayableAmount"
@@ -96,7 +122,22 @@
         ],
         "PaymentMeans_PayeeFinancialAccount": [
             "ID",
-            "Name"
+            "Name",
+            "FinancialInstitutionBranch"
+        ],
+        "TaxTotal": [
+            "TaxAmount",
+            "TaxSubtotal"
+        ],
+        "TaxTotal_TaxSubtotal": [
+            "TaxableAmount",
+            "TaxAmount",
+            "TaxCategory"
+        ],
+        "TaxTotal_TaxSubtotal_TaxCategory": [
+            "ID",
+            "Percent",
+            "TaxScheme"
         ]
     },
     "Defaults": {

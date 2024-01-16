@@ -1565,21 +1565,6 @@
         "RequirementID": "R40",
         "SemanticDataType": "Sumă"
     },
-    "BT-110": {
-        "HierarchycalTagName": [
-            "LegalMonetaryTotal_TaxAmount",
-            "TaxTotal_TaxAmount"
-        ],
-        "Level": "++",
-        "Cardinality": "0..1",
-        "OperationalTerm": "Valoarea totală a TVA a facturii",
-        "Description": {
-            "ro_RO": "Valoarea totală a TVA aferentă facturii."
-        },
-        "UsageNote": "Valoarea TVA totală a facturii este suma tuturor valorilor TVA pentru diferitele categorii de TVA.",
-        "RequirementID": "R40,R49",
-        "SemanticDataType": "Sumă"
-    },
     "BT-111": {
         "HierarchycalTagName": "LegalMonetaryTotal_TaxAmount?",
         "Level": "++",
@@ -1648,6 +1633,21 @@
             "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre repartizarea TVA pe diferite categorii, cote şi motive de exceptare."
         },
         "RequirementID": "R38,R45,R47,R48,R49"
+    },
+    "BT-110": {
+        "HierarchycalTagName": [
+            "LegalMonetaryTotal_TaxAmount",
+            "TaxTotal_TaxAmount"
+        ],
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoarea totală a TVA a facturii",
+        "Description": {
+            "ro_RO": "Valoarea totală a TVA aferentă facturii."
+        },
+        "UsageNote": "Valoarea TVA totală a facturii este suma tuturor valorilor TVA pentru diferitele categorii de TVA.",
+        "RequirementID": "R40,R49",
+        "SemanticDataType": "Sumă"
     },
     "BT-116": {
         "HierarchycalTagName": "TaxTotal_TaxSubtotal_TaxableAmount",
@@ -1871,5 +1871,207 @@
         "UsageNote": "Valoarea este “netă” fără TVA, adică include deducerile şi taxele suplimentare la nivelul liniei, precum şi alte taxe relevante.",
         "RequirementID": "R39,R40,R56",
         "SemanticDataType": "Sumă"
+    },
+    "BT-132": {
+        "HierarchycalTagName": "Lines_ReferenceOrderLine?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Referinţa liniei comenzii la care se face referire",
+        "Description": {
+            "ro_RO": "Un identificator pentru o linie la care se face referire în cadrul unei comenzi, emis de Cumpărător."
+        },
+        "UsageNote": "Identificatorul comenzii este referit la nivelul documentului.",
+        "RequirementID": "R6",
+        "SemanticDataType": "Document de referinţă"
+    },
+    "BT-133": {
+        "HierarchycalTagName": "Lines_AccountingReference?",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Referinţa contabilă a Cumpărătorului din linia facturii",
+        "Description": {
+            "ro_RO": "O valoare textuală care specifică unde trebuie înregistrate datele relevante în conturile financiare ale Cumpărătorului."
+        },
+        "UsageNote": "Dacă este necesar, această referinţă trebuie furnizată Vânzătorului de către Cumpărător înaintea emiterii facturii.",
+        "RequirementID": "R3",
+        "SemanticDataType": "Text"
+    },
+    "BG-26": {
+        "HierarchycalTagName": "Lines_InvoicePeriod?",
+        "Level": "+",
+        "Cardinality": "0..1",
+        "OperationalTerm": "PERIOADA DE FACTURARE A LINIEI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre perioada relevantă pentru linia facturii."
+        },
+        "UsageNote": "Este numită, de asemenea, perioada de livrare aferentă liniei facturii.",
+        "RequirementID": "R30"
+    },
+    "BT-134": {
+        "HierarchycalTagName": "Lines_InvoicePeriod_StartDate?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Data de începere a perioadei de facturare a liniei facturii",
+        "Description": {
+            "ro_RO": "Data la care începe perioada de facturare pentru această linie a facturii."
+        },
+        "UsageNote": "Data este prima zi a perioadei.",
+        "RequirementID": "R30",
+        "SemanticDataType": "Dată"
+    },
+    "BT-135": {
+        "HierarchycalTagName": "Lines_InvoicePeriod_EndDate?",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Data de sfârşit a perioadei de facturare a liniei facturii",
+        "Description": {
+            "ro_RO": "Data la care se sfârşeşte perioada de facturare pentru această linie a facturii."
+        },
+        "UsageNote": "Data este ultima zi a perioadei.",
+        "RequirementID": "R30",
+        "SemanticDataType": "Dată"
+    },
+    "BG-27": {
+        "HierarchycalTagName": "Lines_AllowanceCharge",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "DEDUCERI LA LINIA FACTURII",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre deducerile aplicabile unei linii a facturii."
+        },
+        "RequirementID": "R15"
+    },
+    "BT-136": {
+        "HierarchycalTagName": "Lines_AllowanceCharge_Amount",
+        "Level": "+++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea deducerii la linia facturii",
+        "Description": {
+            "ro_RO": "Valoare a unei deduceri, fără TVA."
+        },
+        "RequirementID": "R15,R19",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-137": {
+        "HierarchycalTagName": "Lines_AllowanceCharge_BaseAmount",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoarea de bază a deducerii la linia facturii",
+        "Description": {
+            "ro_RO": "Valoarea de bază care poate fi utilizată, împreună cu procentajul deducerii la linia facturii, pentru a calcula valoarea deducerii la linia facturii."
+        },
+        "RequirementID": "R15,R42",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-138": {
+        "HierarchycalTagName": "Lines_AllowanceCharge_MultiplierFactorNumeric",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Procentajul deducerii la linia facturii",
+        "Description": {
+            "ro_RO": "Procentajul care poate fi utilizat, împreună cu valoarea de bază pentru deducerea la linia facturii, pentru a calcula valoarea deducerii la linia facturii."
+        },
+        "RequirementID": "R15,R42",
+        "SemanticDataType": "Procentaj"
+    },
+    "BT-139": {
+        "HierarchycalTagName": "Lines_AllowanceCharge_AllowanceChargeReason",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Motivul deducerii la linia facturii",
+        "Description": {
+            "ro_RO": "Motivul deducerii pentru linia facturii, exprimat ca text."
+        },
+        "RequirementID": "R15",
+        "SemanticDataType": "Text"
+    },
+    "BT-140": {
+        "HierarchycalTagName": "Lines_AllowanceCharge_AllowanceChargeReasonCode",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul motivului deducerii la linia facturii",
+        "Description": {
+            "ro_RO": "Motivul deducerii pentru linia facturii, exprimat ca un cod."
+        },
+        "UsageNote": "Se utilizează codurile UNTDID 5189 [6]. Codul motivului deducerii la linia facturii şi motivul deducerii la linia facturii trebuie să indice acelaşi motiv al deducerii.",
+        "RequirementID": "R15",
+        "SemanticDataType": "Cod"
+    },
+    "BG-28": {
+        "HierarchycalTagName": "Lines_AdditionalCharge",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "TAXE SUPLIMENTARE LA LINIA FACTURII",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre taxe, altele decât TVA, aplicabile unei linii din factură."
+        },
+        "UsageNote": "Toate taxele sunt presupuse a fi impozitate cu aceeaşi cotă TVA ca şi linia facturii.",
+        "RequirementID": "R18"
+    },
+    "BT-141": {
+        "HierarchycalTagName": "Lines_AdditionalCharge_Amount",
+        "Level": "+++",
+        "Cardinality": "1..1",
+        "OperationalTerm": "Valoarea taxei suplimentare la linia facturii",
+        "Description": {
+            "ro_RO": "Valoarea taxei suplimentare, fără TVA."
+        },
+        "RequirementID": "R19",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-142": {
+        "HierarchycalTagName": "Lines_AdditionalCharge_BaseAmount",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Valoarea de bază a taxei suplimentare la linia facturii",
+        "Description": {
+            "ro_RO": "Valoarea de bază care poate fi utilizată, împreună cu procentajul taxei suplimentare la linia facturii, pentru a calcula valoarea taxei suplimentare la linia facturii."
+        },
+        "RequirementID": "R42",
+        "SemanticDataType": "Sumă"
+    },
+    "BT-143": {
+        "HierarchycalTagName": "Lines_AdditionalCharge_MultiplierFactorNumeric",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Procentajul taxei suplimentare la linia facturii",
+        "Description": {
+            "ro_RO": "Procentajul care poate fi utilizat, împreună cu valoarea de bază pentru taxei suplimentare la linia facturii, pentru a calcula valoarea taxei suplimentare la linia facturii."
+        },
+        "RequirementID": "R42",
+        "SemanticDataType": "Procentaj"
+    },
+    "BT-144": {
+        "HierarchycalTagName": "Lines_AdditionalCharge_AdditionalChargeReason",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Motivul taxei suplimentare la linia facturii",
+        "Description": {
+            "ro_RO": "Motivul taxei suplimentare la linia facturii, exprimat ca text."
+        },
+        "RequirementID": "R18",
+        "SemanticDataType": "Text"
+    },
+    "BT-145": {
+        "HierarchycalTagName": "Lines_AdditionalCharge_AdditionalChargeReasonCode",
+        "Level": "+++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "Codul motivului taxei suplimentare la linia facturii",
+        "Description": {
+            "ro_RO": "Motivul taxei suplimentare la linia facturii, exprimat ca un cod."
+        },
+        "UsageNote": "Se utilizează codurile UNTDID 5189 [6]. Codul motivului deducerii la linia facturii şi motivul taxei suplimentare la linia facturii trebuie să indice acelaşi motiv al taxei suplimentare.",
+        "RequirementID": "R18",
+        "SemanticDataType": "Cod"
+    },
+    "BG-29": {
+        "HierarchycalTagName": "Lines_Price",
+        "Level": "++",
+        "Cardinality": "0..1",
+        "OperationalTerm": "DETALII ALE PREŢULUI",
+        "Description": {
+            "ro_RO": "Un grup de termeni operaţionali care furnizează informaţii despre preţul aplicat bunurilor şi serviciilor facturate în linia facturii."
+        },
+        "RequirementID": "R14"
     }
 }
