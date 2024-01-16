@@ -84,26 +84,11 @@ class ElectornicInvoiceWrite
                             'tag'              => $value,
                         ]);
                     } elseif (is_array($arrayInput['data'][$value])) {
-                        $this->objXmlWriter->startElement('cac:' . $value);
-                        $arrayCustomOrder2 = $this->arraySettings['CustomOrder'][$key];
-                        foreach ($arrayCustomOrder2 as $valueOrd2) {
-                            if (array_key_exists($valueOrd2, $arrayInput['data'][$value])) { // 4 optional values
-                                if (is_array($arrayInput['data'][$value][$valueOrd2])) {
-                                    $this->setElementsOrdered([
-                                        'commentParentKey' => implode('_', [$key, $valueOrd2]),
-                                        'data'             => $arrayInput['data'][$value][$valueOrd2],
-                                        'tag'              => $valueOrd2,
-                                    ]);
-                                } else {
-                                    $this->setSingleElementWithAttribute([
-                                        'commentParentKey' => $key,
-                                        'data'             => $arrayInput['data'][$value][$valueOrd2],
-                                        'tag'              => $valueOrd2,
-                                    ]);
-                                }
-                            }
-                        }
-                        $this->objXmlWriter->endElement();
+                        $this->setElementsOrdered([
+                            'commentParentKey' => $key,
+                            'data'             => $arrayInput['data'][$value],
+                            'tag'              => $value,
+                        ]);
                     } else {
                         $this->setSingleElementWithAttribute([
                             'commentParentKey' => $arrayInput['commentParentKey'],
