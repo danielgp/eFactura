@@ -191,7 +191,7 @@ class ElectornicInvoiceWrite
         $this->objXmlWriter->setIndentString(str_repeat(' ', 4));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
         $arrayData = $this->loadSettingsAndManageDefaults($arrayDataIn, $bolComments);
-        $this->setDocumentTag($arrayDataFinal);
+        $this->setDocumentTag($arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
         $arrayAggregates = $arrayData['Header']['CommonAggregateComponents-2'];
         foreach (['AccountingSupplierParty', 'AccountingCustomerParty'] as $strCompanyType) {
