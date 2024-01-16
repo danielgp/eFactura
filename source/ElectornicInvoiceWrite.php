@@ -60,7 +60,6 @@ class ElectornicInvoiceWrite
         foreach ($arrayCustomOrder as $value) { // get the values in expected order
             if (array_key_exists($value, $arrayInput['data'])) { // because certain value are optional
                 $key = implode('_', [$arrayInput['commentParentKey'], $value]);
-                $this->setMultipleComments($arrayInput, $value);
                 if ($value === 'TaxSubtotal') {
                     foreach ($arrayInput['data'][$value] as $value2) { // multiple subt-totals
                         $this->setElementsOrdered([
@@ -69,7 +68,7 @@ class ElectornicInvoiceWrite
                             'tag'              => $value,
                         ]);
                     }
-                } elseif (in_array($value, ['Item', 'Price'])) { // single Item, single Price
+                } elseif (in_array($value, ['AdditionalCharge', 'AllowanceCharge', 'Item', 'Price'])) {
                     $this->setElementsOrdered([
                         'commentParentKey' => $key,
                         'data'             => $arrayInput['data'][$value],
@@ -80,8 +79,9 @@ class ElectornicInvoiceWrite
                     preg_match('/^(EndpointID|.*(Amount|Quantity))$/', $value, $matches, PREG_OFFSET_CAPTURE);
                     if ($matches !== []) {
                         $this->setSingleElementWithAttribute([
-                            'data' => $arrayInput['data'][$value],
-                            'tag'  => $value,
+                            'commentParentKey' => $arrayInput['commentParentKey'],
+                            'data'             => $arrayInput['data'][$value],
+                            'tag'              => $value,
                         ]);
                     } elseif (is_array($arrayInput['data'][$value])) {
                         $this->objXmlWriter->startElement('cac:' . $value);
@@ -92,7 +92,7 @@ class ElectornicInvoiceWrite
                                     $this->objXmlWriter->startElement('cac:' . $valueOrd2);
                                     foreach ($arrayInput['data'][$value][$valueOrd2] as $key2 => $value2) {
                                         $this->setSingleElementWithAttribute([
-                                            'commentParentKey' => implode('_', [$key, $valueOrd2, $valueOrd2]),
+                                            'commentParentKey' => implode('_', [$key, $valueOrd2]),
                                             'data'             => $value2,
                                             'tag'              => $key2,
                                         ]);
@@ -100,7 +100,7 @@ class ElectornicInvoiceWrite
                                     $this->objXmlWriter->endElement();
                                 } else {
                                     $this->setSingleElementWithAttribute([
-                                        'commentParentKey' => implode('_', [$key, $valueOrd2]),
+                                        'commentParentKey' => $key,
                                         'data'             => $arrayInput['data'][$value][$valueOrd2],
                                         'tag'              => $valueOrd2,
                                     ]);
@@ -109,31 +109,17 @@ class ElectornicInvoiceWrite
                         }
                         $this->objXmlWriter->endElement();
                     } else {
-                        $this->objXmlWriter->writeElement('cbc:' . $value, $arrayInput['data'][$value]);
+                        $this->setSingleElementWithAttribute([
+                            'commentParentKey' => $arrayInput['commentParentKey'],
+                            'data'             => $arrayInput['data'][$value],
+                            'tag'              => $value,
+                        ]);
                     }
                 }
             }
         }
         $this->setExtraElement($arrayInput, 'End');
         $this->objXmlWriter->endElement(); // $key
-    }
-
-    private function setHeaderCommonBasicComponents(array $arrayElementWithData): void
-    {
-        $arrayCustomOrdered = $this->arraySettings['CustomOrder']['Header_CBC'];
-        foreach ($arrayCustomOrdered as $value) {
-            $this->setElementComment($value);
-            $this->objXmlWriter->writeElement('cbc:' . $value, $arrayElementWithData[$value]);
-        }
-    }
-
-    private function setMultipleComments(array $arrayInput, string $strTag): void
-    {
-        $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $strTag]));
-        if (in_array($strTag, ['CreditNoteQuantity', 'InvoicedQuantity'])) {
-            $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $strTag
-                . 'UnitOfMeasure']));
-        }
     }
 
     private function setExtraElement(array $arrayInput, string $strType): void
@@ -150,10 +136,23 @@ class ElectornicInvoiceWrite
         }
     }
 
+    private function setHeaderCommonBasicComponents(array $arrayElementWithData): void
+    {
+        $arrayCustomOrdered = $this->arraySettings['CustomOrder']['Header_CBC'];
+        foreach ($arrayCustomOrdered as $value) {
+            $this->setElementComment($value);
+            $this->objXmlWriter->writeElement('cbc:' . $value, $arrayElementWithData[$value]);
+        }
+    }
+
     private function setSingleElementWithAttribute(array $arrayInput): void
     {
         if (array_key_exists('commentParentKey', $arrayInput)) {
             $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $arrayInput['tag']]));
+            if (str_ends_with($arrayInput['tag'], 'Quantity')) {
+                $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $arrayInput['tag']
+                    . 'UnitOfMeasure']));
+            }
         }
         if (is_array($arrayInput['data']) && array_key_exists('value', $arrayInput['data'])) {
             $this->objXmlWriter->startElement('cbc:' . $arrayInput['tag']);
