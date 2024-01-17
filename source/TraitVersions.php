@@ -33,7 +33,8 @@ trait TraitVersions
 
     use TraitBasic;
 
-    private function establishCurrentVersion(array $arrayKnownVersions): array {
+    private function establishCurrentVersion(array $arrayKnownVersions): array
+    {
         $arrayVersionToReturn = [];
         foreach ($arrayKnownVersions as $value) {
             $dtValidityStart = new \DateTime($value['Validity']['Start']);
@@ -49,7 +50,8 @@ trait TraitVersions
         return $arrayVersionToReturn;
     }
 
-    private function getDefaultsIntoDataSet(array $arrayDocumentData): array {
+    private function getDefaultsIntoDataSet(array $arrayDocumentData): array
+    {
         $arrayOutput = [];
         if (!array_key_exists('DocumentNameSpaces', $arrayDocumentData)) {
             $arrayVersions = $this->establishCurrentVersion($this->arraySettings['Versions']);
@@ -70,7 +72,8 @@ trait TraitVersions
         return $arrayOutput;
     }
 
-    private function getSettingsFromFileIntoMemory(bool $bolComments): void {
+    private function getSettingsFromFileIntoMemory(bool $bolComments): void
+    {
         $this->arraySettings             = $this->getJsonFromFile('ElectronicInvoiceSettings.json');
         $this->arraySettings['Comments'] = [
             'CAC' => [],
@@ -81,16 +84,22 @@ trait TraitVersions
         }
     }
 
-    private function getCommentsFromFileIntoSetting(): void {
+    private function getCommentsFromFileAsArray(): array
+    {
+        return $this->getJsonFromFile('ElectronicInvoiceComments.json');
+    }
+
+    private function getCommentsFromFileIntoSetting(): void
+    {
         $strGlue                = ' | ';
         $arrayFlattenedComments = [];
-        $arrayComments          = $this->getJsonFromFile('ElectronicInvoiceComments.json');
+        $arrayComments          = $this->getCommentsFromFileAsArray();
         foreach ($arrayComments as $key => $value) {
             $strComment = implode($strGlue, [
-                    $key,
-                    $value['OperationalTerm'],
-                    $value['RequirementID'],
-                ]) . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
+                        $key,
+                        $value['OperationalTerm'],
+                        $value['RequirementID'],
+                    ]) . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
             if (is_array($value['HierarchycalTagName'])) {
                 foreach ($value['HierarchycalTagName'] as $value2) {
                     $arrayFlattenedComments[$value2] = $strComment;
@@ -102,7 +111,8 @@ trait TraitVersions
         $this->arraySettings['Comments'] = $arrayFlattenedComments;
     }
 
-    private function setElementComment(string $strKey): void {
+    private function setElementComment(string $strKey): void
+    {
         if (array_key_exists($strKey, $this->arraySettings['Comments'])) {
             $elementComment = $this->arraySettings['Comments'][$strKey];
             if (is_array($elementComment)) {

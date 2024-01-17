@@ -34,8 +34,9 @@
             "source/TraitLines.php",
             "source/TraitCompanies.php",
             "source/TraitHeader.php",
-            "source/ElectornicInvoiceRead.php",
-            "source/ElectornicInvoiceWrite.php"
+            "source/ElectronicInvoiceRead.php",
+            "source/ElectronicInvoiceWrite.php",
+            "source/ElectronicInvoiceComments.php"
         ]
     },
     "require-dev": {
