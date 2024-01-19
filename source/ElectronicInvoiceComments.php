@@ -53,8 +53,8 @@ class ElectronicInvoiceComments
                 'OperationalTerm_RO' => $this->getKeyFromArrayOrAlternative('ro_RO', $value['OperationalTerm'], '-'),
                 'Description_EN'     => $this->getKeyFromArrayOrAlternative('en_US', $value['Description'], '-'),
                 'Description_RO'     => $this->getKeyFromArrayOrAlternative('ro_RO', $value['Description'], '-'),
-                'UsageNote_EN'       => $this->getKeyFromArrayOrAlternative('en_US', $value['UsageNote'], $value, '-'),
-                'UsageNote_RO'       => $this->getKeyFromArrayOrAlternative('ro_RO', $value['UsageNote'], $value, '-'),
+                'UsageNote_EN'       => $this->getKeyFromArrayOrAlternative('en_US', $value['UsageNote'], '-'),
+                'UsageNote_RO'       => $this->getKeyFromArrayOrAlternative('ro_RO', $value['UsageNote'], '-'),
                 'RequirementID'      => $value['RequirementID'],
                 'SemanticDataType'   => $this->getKeyFromArrayOrAlternative('SemanticDataType', $value, '-'),
             ];
