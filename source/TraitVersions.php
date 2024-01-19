@@ -97,9 +97,10 @@ trait TraitVersions
         foreach ($arrayComments as $key => $value) {
             $strComment = implode($strGlue, [
                         $key,
-                        $value['OperationalTerm'],
+                        $value['OperationalTerm']['ro_RO'],
                         $value['RequirementID'],
-                    ]) . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
+                    ])
+                    . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
             if (is_array($value['HierarchycalTagName'])) {
                 foreach ($value['HierarchycalTagName'] as $value2) {
                     $arrayFlattenedComments[$value2] = $strComment;
