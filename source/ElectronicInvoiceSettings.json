@@ -31,6 +31,7 @@
         "AccountingCustomerParty_PostalAddress": [
             "StreetName",
             "CityName",
+            "PostalZone",
             "CountrySubentity",
             "Country"
         ],
@@ -68,6 +69,7 @@
         "AccountingSupplierParty_PostalAddress": [
             "StreetName",
             "CityName",
+            "PostalZone",
             "CountrySubentity",
             "Country"
         ],
@@ -106,6 +108,7 @@
         ],
         "Lines_Item": [
             "Name",
+            "SellersItemIdentification",
             "ClassifiedTaxCategory"
         ],
         "Lines_Item_ClassifiedTaxCategory": [
@@ -114,6 +117,9 @@
             "TaxScheme"
         ],
         "Lines_Item_ClassifiedTaxCategory_TaxScheme": [
+            "ID"
+        ],
+        "Lines_Item_SellersItemIdentification": [
             "ID"
         ],
         "Lines_Price": [

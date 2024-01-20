@@ -24,7 +24,7 @@
         },
         "Description": {
             "en_US": "Identifies a user-defined customization of UBL for a specific use.",
-            "ro_RO": "..."
+            "ro_RO": "Identifică o personalizare definită a standardului UBL pentru uz specific"
         },
         "RequirementID": "-",
         "SemanticDataType": "Numeric"
@@ -1031,7 +1031,7 @@
         "SemanticDataType": "Text"
     },
     "BT-53": {
-        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_PostalCode",
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_PostalZone",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2938,7 +2938,7 @@
         "SemanticDataType": "Text"
     },
     "BT-155": {
-        "HierarchycalTagName": "Lines_Item_SellersItemIdentification",
+        "HierarchycalTagName": "Lines_Item_SellersItemIdentification_ID",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
