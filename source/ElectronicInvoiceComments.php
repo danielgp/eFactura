@@ -84,7 +84,7 @@ class ElectronicInvoiceComments
         return $strToReturn;
     }
 
-    private function getOneOrMultipleTags(array|string $inElement, array $arrayIn): array
+    private function getOneOrMultipleTags(string|array $inElement, array $arrayIn): array
     {
         $arrayToReturn = [];
         if (is_array($inElement)) {
