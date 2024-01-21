@@ -31,40 +31,32 @@ namespace danielgp\efactura;
 class ElectronicInvoiceComments
 {
 
-    use TraitVersions;
+    use TraitComments;
 
     public function getCommentsIntoArrayForTable()
     {
         $arrayCommentsRaw      = $this->getCommentsFromFileAsArray();
         $arrayCommentsForTable = [];
-        $arrayMapping          = [
-            'BG-' => 'Group',
-            'BT-' => 'Field',
-        ];
         foreach ($arrayCommentsRaw as $key => $value) {
-            $strKeyPrefix = substr($key, 0, 3);
-            $strIdType    = (in_array($strKeyPrefix, array_keys($arrayMapping)) ? $arrayMapping[$strKeyPrefix] : '?');
-            $arrayTemp    = [
+            $arrayTemp = [
                 'ID'                 => $key,
-                'IT_Type'            => $strIdType,
+                'ID_Type'            => $this->getTypeOfIdentifier(substr($key, 0, 3)),
                 'Level'              => $value['Level'],
                 'Cardinality'        => $value['Cardinality'],
                 'OperationalTerm_EN' => $this->getKeyFromArrayOrAlternative('en_US', $value['OperationalTerm'], '-'),
                 'OperationalTerm_RO' => $this->getKeyFromArrayOrAlternative('ro_RO', $value['OperationalTerm'], '-'),
                 'Description_EN'     => $this->getKeyFromArrayOrAlternative('en_US', $value['Description'], '-'),
                 'Description_RO'     => $this->getKeyFromArrayOrAlternative('ro_RO', $value['Description'], '-'),
-                'UsageNote_EN'       => $this->getKeyFromArrayOrAlternative('en_US', $value['UsageNote'], '-'),
-                'UsageNote_RO'       => $this->getKeyFromArrayOrAlternative('ro_RO', $value['UsageNote'], '-'),
+                'UsageNote_EN'       => '-',
+                'UsageNote_RO'       => '-',
                 'RequirementID'      => $value['RequirementID'],
                 'SemanticDataType'   => $this->getKeyFromArrayOrAlternative('SemanticDataType', $value, '-'),
             ];
-            if (is_array($value['HierarchycalTagName'])) {
-                foreach ($value['HierarchycalTagName'] as $value2) {
-                    $arrayCommentsForTable[] = array_merge(['Tag' => $value2], $arrayTemp);
-                }
-            } else {
-                $arrayCommentsForTable[] = array_merge(['Tag' => $value['HierarchycalTagName']], $arrayTemp);
+            if (array_key_exists('UsageNote', $value)) {
+                $arrayTemp['UsageNote_EN'] = $this->getKeyFromArrayOrAlternative('en_US', $value['UsageNote'], '-');
+                $arrayTemp['UsageNote_RO'] = $this->getKeyFromArrayOrAlternative('ro_RO', $value['UsageNote'], '-');
             }
+            $arrayCommentsForTable[] = $this->getOneOrMultipleTags($value['HierarchycalTagName'], $arrayTemp);
         }
         return $arrayCommentsForTable;
     }
@@ -90,5 +82,31 @@ class ElectronicInvoiceComments
             $strToReturn = $arrayIn[$strKey];
         }
         return $strToReturn;
+    }
+
+    private function getOneOrMultipleTags(array|string $inElement, array $arrayIn): array
+    {
+        $arrayToReturn = [];
+        if (is_array($inElement)) {
+            foreach ($inElement as $value2) {
+                $arrayToReturn = array_merge(['Tag' => $value2], $arrayIn);
+            }
+        } else {
+            $arrayToReturn = array_merge(['Tag' => $inElement], $arrayIn);
+        }
+        return $arrayToReturn;
+    }
+
+    private function getTypeOfIdentifier(string $strKeyPrefix): string
+    {
+        $arrayMapping = [
+            'BG-' => 'Group',
+            'BT-' => 'Field',
+        ];
+        $strIdType    = 'unknown';
+        if (in_array($strKeyPrefix, array_keys($arrayMapping))) {
+            $strIdType = $arrayMapping[$strKeyPrefix];
+        }
+        return $strIdType;
     }
 }

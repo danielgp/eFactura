@@ -31,7 +31,7 @@ namespace danielgp\efactura;
 trait TraitVersions
 {
 
-    use TraitBasic;
+    use TraitComments;
 
     private function establishCurrentVersion(array $arrayKnownVersions): array
     {
@@ -84,11 +84,6 @@ trait TraitVersions
         if ($bolComments) {
             $this->getCommentsFromFileIntoSetting();
         }
-    }
-
-    private function getCommentsFromFileAsArray(): array
-    {
-        return $this->getJsonFromFile('ElectronicInvoiceComments.json');
     }
 
     private function getCommentsFromFileIntoSetting(): void
