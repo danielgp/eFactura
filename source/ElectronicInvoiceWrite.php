@@ -60,9 +60,9 @@ class ElectornicInvoiceWrite
                 $this->objXmlWriter->writeAttributeNS('xmlns', $key, NULL, $value);
             }
         }
-        /* if (array_key_exists('SchemaLocation', $arrayDocumentData)) {
-          $this->objXmlWriter->writeAttribute('xsi:schemaLocation', $arrayDocumentData['SchemaLocation']);
-          } */
+        if (array_key_exists('SchemaLocation', $arrayDocumentData)) {
+            $this->objXmlWriter->writeAttribute('xsi:schemaLocation', $arrayDocumentData['SchemaLocation']);
+        }
     }
 
     private function setElementsOrdered(array $arrayInput): void {
@@ -72,43 +72,27 @@ class ElectornicInvoiceWrite
         $arrayCustomOrder = $this->arraySettings['CustomOrder'][$arrayInput['commentParentKey']];
         foreach ($arrayCustomOrder as $value) { // get the values in expected order
             if (array_key_exists($value, $arrayInput['data'])) { // because certain value are optional
-                $key = implode('_', [$arrayInput['commentParentKey'], $value]);
+                $key     = implode('_', [$arrayInput['commentParentKey'], $value]);
+                $matches = [];
+                preg_match('/^(EndpointID|.*(Amount|Quantity))$/', $value, $matches, PREG_OFFSET_CAPTURE);
                 if ($value === 'TaxSubtotal') {
-                    foreach ($arrayInput['data'][$value] as $value2) { // multiple subt-totals
-                        $this->setElementsOrdered([
-                            'commentParentKey' => $key,
-                            'data'             => $value2,
-                            'tag'              => $value,
-                        ]);
-                    }
-                } elseif (in_array($value, ['AdditionalCharge', 'AllowanceCharge', 'Item', 'Price'])) {
+                    $this->setMultipleElementsOrdered([
+                        'commentParentKey' => $key,
+                        'data'             => $arrayInput['data'][$value],
+                        'tag'              => $value,
+                    ]);
+                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value])) {
+                    $this->setSingleElementWithAttribute([
+                        'commentParentKey' => $arrayInput['commentParentKey'],
+                        'data'             => $arrayInput['data'][$value],
+                        'tag'              => $value,
+                    ]);
+                } elseif (is_array($arrayInput['data'][$value])) {
                     $this->setElementsOrdered([
                         'commentParentKey' => $key,
                         'data'             => $arrayInput['data'][$value],
                         'tag'              => $value,
                     ]);
-                } else {
-                    $matches = []; // scan for special values
-                    preg_match('/^(EndpointID|.*(Amount|Quantity))$/', $value, $matches, PREG_OFFSET_CAPTURE);
-                    if ($matches !== []) {
-                        $this->setSingleElementWithAttribute([
-                            'commentParentKey' => $arrayInput['commentParentKey'],
-                            'data'             => $arrayInput['data'][$value],
-                            'tag'              => $value,
-                        ]);
-                    } elseif (is_array($arrayInput['data'][$value])) {
-                        $this->setElementsOrdered([
-                            'commentParentKey' => $key,
-                            'data'             => $arrayInput['data'][$value],
-                            'tag'              => $value,
-                        ]);
-                    } else {
-                        $this->setSingleElementWithAttribute([
-                            'commentParentKey' => $arrayInput['commentParentKey'],
-                            'data'             => $arrayInput['data'][$value],
-                            'tag'              => $value,
-                        ]);
-                    }
                 }
             }
         }
@@ -139,16 +123,13 @@ class ElectornicInvoiceWrite
         }
     }
 
-    private function setPaymentMeans(array $arrayData, string $strDocumentTagName): void {
-        // multiple accounts can be specified within PaymentMeans
-        if ($strDocumentTagName === 'Invoice') {
-            foreach ($arrayData as $value) {
-                $this->setElementsOrdered([
-                    'commentParentKey' => 'PaymentMeans',
-                    'data'             => $value,
-                    'tag'              => 'PaymentMeans',
-                ]);
-            }
+    private function setMultipleElementsOrdered(array $arrayData): void {
+        foreach ($arrayData['data'] as $value) {
+            $this->setElementsOrdered([
+                'commentParentKey' => $arrayData['commentParentKey'],
+                'data'             => $value,
+                'tag'              => $arrayData['tag'],
+            ]);
         }
     }
 
@@ -195,7 +176,12 @@ class ElectornicInvoiceWrite
                 'tag'              => $strCompanyType,
             ]);
         }
-        $this->setPaymentMeans($arrayAggregates['PaymentMeans'], $arrayData['DocumentTagName']);
+        // multiple accounts
+        $this->setMultipleElementsOrdered([
+            'commentParentKey' => 'PaymentMeans',
+            'data'             => $arrayAggregates['PaymentMeans'],
+            'tag'              => 'PaymentMeans',
+        ]);
         foreach (['TaxTotal', 'LegalMonetaryTotal'] as $strTotal) {
             $this->setElementsOrdered([
                 'commentParentKey' => $strTotal,
@@ -204,13 +190,11 @@ class ElectornicInvoiceWrite
             ]);
         }
         // multiple Lines
-        foreach ($arrayData['Lines'] as $value) {
-            $this->setElementsOrdered([
-                'commentParentKey' => 'Lines',
-                'data'             => $value,
-                'tag'              => $arrayData['DocumentTagName'] . 'Line',
-            ]);
-        }
+        $this->setMultipleElementsOrdered([
+            'commentParentKey' => 'Lines',
+            'data'             => $arrayData['Lines'],
+            'tag'              => $arrayData['DocumentTagName'] . 'Line',
+        ]);
         $this->objXmlWriter->endElement(); // Invoice or CreditNote
         $this->objXmlWriter->flush();
     }
