@@ -14,21 +14,6 @@
         "RequirementID": "-",
         "SemanticDataType": "Numeric"
     },
-    "UBL21-3": {
-        "HierarchycalTagName": "CustomizationID",
-        "Level": "+",
-        "Cardinality": "1..1",
-        "OperationalTerm": {
-            "en_US": "Customization ID",
-            "ro_RO": "ID-ul personalizării"
-        },
-        "Description": {
-            "en_US": "Identifies a user-defined customization of UBL for a specific use.",
-            "ro_RO": "Identifică o personalizare definită a standardului UBL pentru uz specific"
-        },
-        "RequirementID": "-",
-        "SemanticDataType": "Numeric"
-    },
     "BT-1": {
         "HierarchycalTagName": "ID",
         "Level": "+",
@@ -138,7 +123,7 @@
         "SemanticDataType": "Date"
     },
     "BT-8": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "InvoicePeriod_DescriptionCode",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -202,7 +187,7 @@
         "SemanticDataType": "Document Reference"
     },
     "BT-12": {
-        "HierarchycalTagName": "ContractDocumentReference",
+        "HierarchycalTagName": "ContractDocumentReference_ID",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -275,7 +260,7 @@
         "SemanticDataType": "Document Reference"
     },
     "BT-17": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "OriginatorDocumentReference_ID",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -316,7 +301,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-19": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AccountingCost",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -329,7 +314,7 @@
         "SemanticDataType": "Text"
     },
     "BT-20": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentTerms_Note",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -370,7 +355,7 @@
         "SemanticDataType": "Text"
     },
     "BT-22": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "Note",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -414,13 +399,15 @@
         "SemanticDataType": "Text"
     },
     "BT-24": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "CustomizationID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
+            "en_US": "Customization ID",
             "ro_RO": "Identificatorul specificaţiei"
         },
         "Description": {
+            "en_US": "Identifies a user-defined customization of UBL for a specific use.",
             "ro_RO": "O identificare a specificaţiei care conţine totalitatea regulilor privind conţinutul semantic, cardinalităţile şi regulile operaţionale cu care datele conţinute în instanţa de factură sunt conforme."
         },
         "UsageNote": {
@@ -430,7 +417,7 @@
         "SemanticDataType": "Identifier"
     },
     "BG-3": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "InvoiceDocumentReference",
         "Level": "+",
         "Cardinality": "0..n",
         "OperationalTerm": {
@@ -445,7 +432,7 @@
         "RequirementID": "R11,R12"
     },
     "BT-25": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "InvoiceDocumentReference_ID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -458,7 +445,7 @@
         "SemanticDataType": "Referencing Document"
     },
     "BT-26": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "InvoiceDocumentReference_IssueDate",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -487,7 +474,7 @@
         "RequirementID": "R48"
     },
     "BT-27": {
-        "HierarchycalTagName": "AccountingSupplierParty_PartyName_Name",
+        "HierarchycalTagName": "AccountingSupplierParty_PartyLegalEntity_RegistrationName",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -500,7 +487,7 @@
         "SemanticDataType": "Text"
     },
     "BT-28": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AccountingSupplierParty_PartyName_Name",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -544,7 +531,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-30": {
-        "HierarchycalTagName": "AccountingSupplierParty_PartyLegalEntity_RegistrationName",
+        "HierarchycalTagName": "?",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -572,10 +559,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-31": {
-        "HierarchycalTagName": [
-            "AccountingSupplierParty_PartyLegalEntity_CompanyID",
-            "AccountingSupplierParty_PartyTaxScheme_CompanyID"
-        ],
+        "HierarchycalTagName": "AccountingSupplierParty_PartyLegalEntity_CompanyID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -591,7 +575,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-32": {
-        "HierarchycalTagName": "AccountingSupplierParty_PartyLegalEntity_CompanyLegalForm",
+        "HierarchycalTagName": "AccountingSupplierParty_PartyTaxScheme_CompanyID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -607,7 +591,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-33": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AccountingSupplierParty_PartyLegalEntity_CompanyLegalForm",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -623,7 +607,7 @@
         "SemanticDataType": "Text"
     },
     "BT-34": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AccountingSupplierParty_EndpointID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -679,7 +663,7 @@
         "SemanticDataType": "Text"
     },
     "BT-36": {
-        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_StreetName2",
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_AdditionalStreetName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -692,11 +676,11 @@
         "SemanticDataType": "Text"
     },
     "BT-162": {
-        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_StreetName3",
+        "HierarchycalTagName": "AccountingSupplierParty_PostalAddress_AddressLine_Line",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
-            "ro_RO": "Adresa Vânzătorului - Linia 2"
+            "ro_RO": "Adresa Vânzătorului - Linia 3"
         },
         "Description": {
             "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
@@ -832,7 +816,7 @@
         "RequirementID": "R57"
     },
     "BT-44": {
-        "HierarchycalTagName": "AccountingCustomerParty_PartyName_Name",
+        "HierarchycalTagName": "AccountingCustomerParty_PartyLegalEntity_RegistrationName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -845,7 +829,7 @@
         "SemanticDataType": "Text"
     },
     "BT-45": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AccountingCustomerParty_PartyName_Name",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -889,7 +873,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-47": {
-        "HierarchycalTagName": "AccountingCustomerParty_PartyLegalEntity_RegistrationName",
+        "HierarchycalTagName": "AccountingCustomerParty_PartyLegalEntity_CompanyID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -917,10 +901,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-48": {
-        "HierarchycalTagName": [
-            "AccountingCustomerParty_PartyTaxScheme_CompanyID",
-            "AccountingCustomerParty_PartyLegalEntity_CompanyID"
-        ],
+        "HierarchycalTagName": "AccountingCustomerParty_PartyTaxScheme_CompanyID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -936,7 +917,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-49": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AccountingCustomerParty_PartyLegalEntity_EndpointID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -992,7 +973,7 @@
         "SemanticDataType": "Text"
     },
     "BT-51": {
-        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_StreetName2",
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_AdditionalStreetName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1005,11 +986,11 @@
         "SemanticDataType": "Text"
     },
     "BT-163": {
-        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_StreetName3",
+        "HierarchycalTagName": "AccountingCustomerParty_PostalAddress_AddressLine_Line",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
-            "ro_RO": "Adresa Cumpărătorului - Linia 2"
+            "ro_RO": "Adresa Cumpărătorului - Linia 3"
         },
         "Description": {
             "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
@@ -1136,7 +1117,7 @@
         "SemanticDataType": "Text"
     },
     "BG-10": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PayeeParty",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1151,7 +1132,7 @@
         "RequirementID": "R1,R57"
     },
     "BT-59": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PayeeParty_PartyName_Name",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1167,7 +1148,7 @@
         "SemanticDataType": "Text"
     },
     "BT-60": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PayeeParty_PartyIdentification_ID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1195,7 +1176,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-61": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PayeeParty_PartyLegalEntity_CompanyID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1223,7 +1204,7 @@
         "SemanticDataType": "Identifier"
     },
     "BG-11": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty",
         "Level": "+",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1235,7 +1216,7 @@
         "RequirementID": "R57"
     },
     "BT-62": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_Name",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1248,7 +1229,7 @@
         "SemanticDataType": "Text"
     },
     "BT-63": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PartyTaxScheme_CompanyID",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1264,7 +1245,7 @@
         "SemanticDataType": "Text"
     },
     "BG-12": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1279,7 +1260,7 @@
         "RequirementID": "R53"
     },
     "BT-64": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress_StreetName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1295,7 +1276,7 @@
         "SemanticDataType": "Text"
     },
     "BT-65": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress_AdditionalStreetName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1308,11 +1289,11 @@
         "SemanticDataType": "Text"
     },
     "BT-164": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress_AddressLine_Line",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
-            "ro_RO": "Adresa reprezentantului fiscal - Linia 2"
+            "ro_RO": "Adresa reprezentantului fiscal - Linia 3"
         },
         "Description": {
             "ro_RO": "O linie suplimentară într-o adresă care poate fi utilizată pentru informaţii suplimentare şi completări la linia principală."
@@ -1321,7 +1302,7 @@
         "SemanticDataType": "Text"
     },
     "BT-66": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress_CityName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1334,7 +1315,7 @@
         "SemanticDataType": "Text"
     },
     "BT-67": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress_PostalZone",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1350,7 +1331,7 @@
         "SemanticDataType": "Text"
     },
     "BT-68": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress_CountrySubentity",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1366,7 +1347,7 @@
         "SemanticDataType": "Text"
     },
     "BT-69": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "TaxRepresentativeParty_PostalAddress_Country_IdentificationCode",
         "Level": "+++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1382,7 +1363,7 @@
         "SemanticDataType": "Code"
     },
     "BG-13": {
-        "HierarchycalTagName": "DeliveryTerms",
+        "HierarchycalTagName": "Delivery",
         "Level": "+",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1394,7 +1375,7 @@
         "RequirementID": "R31,R32,R57"
     },
     "BT-70": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "Delivery_DeliveryParty_PartyName_Name",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1410,7 +1391,7 @@
         "SemanticDataType": "Text"
     },
     "BT-71": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "Delivery_Delivery_ID",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1438,7 +1419,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-72": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "Delivery_ActualDeliveryDate",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1498,7 +1479,7 @@
         "SemanticDataType": "Date"
     },
     "BG-15": {
-        "HierarchycalTagName": "Delivery",
+        "HierarchycalTagName": "Delivery_DeliveryAddress",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1513,7 +1494,7 @@
         "RequirementID": "R32"
     },
     "BT-75": {
-        "HierarchycalTagName": "Delivery_StreetName",
+        "HierarchycalTagName": "Delivery_DeliveryAddress_StreetName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1529,7 +1510,7 @@
         "SemanticDataType": "Text"
     },
     "BT-76": {
-        "HierarchycalTagName": "Delivery_StreetName2",
+        "HierarchycalTagName": "Delivery_DeliveryAddress_AdditionalStreetName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1542,7 +1523,7 @@
         "SemanticDataType": "Text"
     },
     "BT-165": {
-        "HierarchycalTagName": "Delivery_StreetName3",
+        "HierarchycalTagName": "Delivery_DeliveryAddress_AddressLine_Line",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1555,7 +1536,7 @@
         "SemanticDataType": "Text"
     },
     "BT-77": {
-        "HierarchycalTagName": "Delivery_CityName",
+        "HierarchycalTagName": "Delivery_DeliveryAddress_CityName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1568,7 +1549,7 @@
         "SemanticDataType": "Text"
     },
     "BT-78": {
-        "HierarchycalTagName": "Delivery_PostalCode",
+        "HierarchycalTagName": "Delivery_DeliveryAddress_PostalCode",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1584,7 +1565,7 @@
         "SemanticDataType": "Text"
     },
     "BT-79": {
-        "HierarchycalTagName": "Delivery_CountrySubentity",
+        "HierarchycalTagName": "Delivery_DeliveryAddress_CountrySubentity",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1600,7 +1581,7 @@
         "SemanticDataType": "Text"
     },
     "BT-80": {
-        "HierarchycalTagName": "Delivery_Country_IdentificationCode",
+        "HierarchycalTagName": "Delivery_DeliveryAddress_Country_IdentificationCode",
         "Level": "+++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1733,7 +1714,7 @@
         "SemanticDataType": "Identifier"
     },
     "BG-18": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_CardAccount",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1748,7 +1729,7 @@
         "RequirementID": "R64"
     },
     "BT-87": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_CardAccount_PrimaryAccountNumberID",
         "Level": "+++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1764,7 +1745,7 @@
         "SemanticDataType": "Text"
     },
     "BT-88": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_CardAccount_HolderName",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1777,7 +1758,7 @@
         "SemanticDataType": "Text"
     },
     "BG-19": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_PaymentMandate",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1792,7 +1773,7 @@
         "RequirementID": "R69"
     },
     "BT-89": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_PaymentMandate_ID",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1808,7 +1789,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-90": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_PaymentMandate_CardAccount_IssuerID",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1824,7 +1805,7 @@
         "SemanticDataType": "Identifier"
     },
     "BT-91": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "PaymentMeans_PaymentMandate_CardAccount_PrimaryAccountNumberID",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1837,7 +1818,7 @@
         "SemanticDataType": "Identifier"
     },
     "BG-20": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse",
         "Level": "+",
         "Cardinality": "0..n",
         "OperationalTerm": {
@@ -1852,7 +1833,7 @@
         "RequirementID": "R15"
     },
     "BT-92": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse_Amount",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1865,7 +1846,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-93": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse_BaseAmount",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1878,7 +1859,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-94": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse_Percent",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1891,7 +1872,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-95": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse_TaxCategory_TaxScheme_ID",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1907,7 +1888,7 @@
         "SemanticDataType": "Code"
     },
     "BT-96": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse_TaxCategory_Percent",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1920,7 +1901,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-97": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse_AllowanceChargeReason",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1933,7 +1914,7 @@
         "SemanticDataType": "Text"
     },
     "BT-98": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorFalse_AllowanceChargeReasonCode",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1949,7 +1930,7 @@
         "SemanticDataType": "Text"
     },
     "BG-21": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue",
         "Level": "+",
         "Cardinality": "0..n",
         "OperationalTerm": {
@@ -1961,7 +1942,7 @@
         "RequirementID": "R15"
     },
     "BT-99": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_Amount",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -1974,7 +1955,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-100": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_BaseAmount",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -1987,7 +1968,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-101": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_Percent",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2000,7 +1981,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-102": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_TaxCategory_TaxScheme_ID",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -2016,7 +1997,7 @@
         "SemanticDataType": "Code"
     },
     "BT-103": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_TaxCategory_Percent",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2029,7 +2010,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-104": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_AllowanceChargeReason",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2042,7 +2023,7 @@
         "SemanticDataType": "Text"
     },
     "BT-105": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_AllowanceChargeReasonCode",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2303,7 +2284,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-120": {
-        "HierarchycalTagName": "TaxTotal_TaxSubtotal_?",
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_TaxCategory_TaxExemptionReason",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2319,7 +2300,7 @@
         "SemanticDataType": "Text"
     },
     "BT-121": {
-        "HierarchycalTagName": "TaxTotal_TaxSubtotal_?",
+        "HierarchycalTagName": "TaxTotal_TaxSubtotal_TaxCategory_TaxExemptionReasonCode",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2335,7 +2316,7 @@
         "SemanticDataType": "Code"
     },
     "BG-24": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AdditionalDocumentReference",
         "Level": "+",
         "Cardinality": "0..n",
         "OperationalTerm": {
@@ -2350,7 +2331,7 @@
         "RequirementID": "R36"
     },
     "BT-122": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AdditionalDocumentReference_ID",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -2363,7 +2344,7 @@
         "SemanticDataType": "Referencing Document"
     },
     "BT-123": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AdditionalDocumentReference_DocumentDescription",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2379,7 +2360,7 @@
         "SemanticDataType": "Text"
     },
     "BT-124": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AdditionalDocumentReference_Attachment_ExternalReference_URI",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2395,7 +2376,7 @@
         "SemanticDataType": "Text"
     },
     "BT-125": {
-        "HierarchycalTagName": "?",
+        "HierarchycalTagName": "AdditionalDocumentReference_Attachment_EmbeddedDocumentBinaryObject",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {

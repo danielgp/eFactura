@@ -41,8 +41,8 @@ class ElectronicInvoiceComments
             $arrayTemp = [
                 'ID'                 => $key,
                 'ID_Type'            => $this->getTypeOfIdentifier(explode('-', $key)[0]),
-                'Level'              => $value['Level'],
                 'Level_No'           => strlen($value['Level']),
+                'Level'              => $value['Level'],
                 'Cardinality'        => $value['Cardinality'],
                 'OperationalTerm_EN' => $this->getKeyFromArrayOrAlternative('en_US', $value['OperationalTerm'], '-'),
                 'OperationalTerm_RO' => $this->getKeyFromArrayOrAlternative('ro_RO', $value['OperationalTerm'], '-'),

@@ -30,10 +30,15 @@
         ],
         "AccountingCustomerParty_PostalAddress": [
             "StreetName",
+            "AdditionalStreetName",
+            "AddressLine",
             "CityName",
             "PostalZone",
             "CountrySubentity",
             "Country"
+        ],
+        "AccountingCustomerParty_PostalAddress_AddressLine": [
+            "Line"
         ],
         "AccountingCustomerParty_PostalAddress_Country": [
             "IdentificationCode"
@@ -68,13 +73,45 @@
         ],
         "AccountingSupplierParty_PostalAddress": [
             "StreetName",
+            "AdditionalStreetName",
+            "AddressLine",
             "CityName",
             "PostalZone",
             "CountrySubentity",
             "Country"
         ],
+        "AccountingSupplierParty_PostalAddress_AddressLine": [
+            "Line"
+        ],
         "AccountingSupplierParty_PostalAddress_Country": [
             "IdentificationCode"
+        ],
+        "AdditionalDocumentReference": [
+            "ID"
+        ],
+        "AllowanceCharge": [
+            "Amount",
+            "BaseAmount",
+            "Percent",
+            "TaxCategory",
+            "AllowanceChargeReason",
+            "AllowanceChargeReasonCode"
+        ],
+        "AllowanceCharge_TaxCategory": [
+            "TaxScheme",
+            "Percent"
+        ],
+        "AllowanceCharge_TaxCategory_TaxScheme": [
+            "ID"
+        ],
+        "BillingReference": [
+            "ID"
+        ],
+        "ContractDocumentReference": [
+            "ID"
+        ],
+        "DespatchDocumentReference": [
+            "ID"
         ],
         "Header_CBC": [
             "UBLVersionID",
@@ -85,7 +122,14 @@
             "InvoiceTypeCode",
             "Note",
             "TaxPointDate",
-            "DocumentCurrencyCode"
+            "DocumentCurrencyCode",
+            "TaxCurrencyCode",
+            "BuyerReference"
+        ],
+        "InvoicePeriod": [
+            "StartDate",
+            "EndDate",
+            "DescriptionCode"
         ],
         "Lines": [
             "ID",
@@ -136,10 +180,21 @@
             "PayableRoundingAmount",
             "PayableAmount"
         ],
+        "OrderReference": [
+            "ID"
+        ],
+        "OriginatorDocumentReference": [
+            "ID"
+        ],
         "PaymentMeans": [
             "PaymentMeansCode",
             "PaymentID",
-            "PayeeFinancialAccount"
+            "PayeeFinancialAccount",
+            "CardAccount"
+        ],
+        "PaymentMeans_CardAccount": [
+            "PrimaryAccountNumberID",
+            "HolderName"
         ],
         "PaymentMeans_PayeeFinancialAccount": [
             "ID",
@@ -148,6 +203,35 @@
         ],
         "PaymentMeans_PayeeFinancialAccount_FinancialInstitutionBranch": [
             "ID"
+        ],
+        "ProjectReference": [
+            "ID"
+        ],
+        "ReceiptDocumentReference": [
+            "ID"
+        ],
+        "TaxRepresentativeParty": [
+            "Name",
+            "PartyTaxScheme",
+            "PostalAddress"
+        ],
+        "TaxRepresentativeParty_PartyTaxScheme": [
+            "CompanyID"
+        ],
+        "TaxRepresentativeParty_PostalAddress": [
+            "StreetName",
+            "AdditionalStreetName",
+            "AddressLine",
+            "CityName",
+            "PostalZone",
+            "CountrySubentity",
+            "Country"
+        ],
+        "TaxRepresentativeParty_PostalAddress_AddressLine": [
+            "Line"
+        ],
+        "TaxRepresentativeParty_PostalAddress_Country": [
+            "IdentificationCode"
         ],
         "TaxTotal": [
             "TaxAmount",

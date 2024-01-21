@@ -35,7 +35,8 @@ class ElectornicInvoiceWrite
 
     protected \XMLWriter $objXmlWriter;
 
-    private function loadSettingsAndManageDefaults(array $arrayData, bool $bolComments, bool $bolSchemaLocation): array {
+    private function loadSettingsAndManageDefaults(array $arrayData, bool $bolComments, bool $bolSchemaLocation): array
+    {
         // if no DocumentNameSpaces seen take Default ones from local configuration
         $this->getSettingsFromFileIntoMemory($bolComments);
         $arrayDefaults = $this->getDefaultsIntoDataSet($arrayData, $bolSchemaLocation);
@@ -43,14 +44,15 @@ class ElectornicInvoiceWrite
             $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
             if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
                 $arrayData['Header']['CommonBasicComponents-2']['CustomizationID'] = 'urn:cen.eu:en16931:2017'
-                    . '#compliant#urn:efactura.mfinante.ro:CIUS-RO:' . $arrayDefaults['CIUS-RO'];
+                        . '#compliant#urn:efactura.mfinante.ro:CIUS-RO:' . $arrayDefaults['CIUS-RO'];
                 $arrayData['Header']['CommonBasicComponents-2']['UBLVersionID']    = $arrayDefaults['UBL'];
             }
         }
         return $arrayData;
     }
 
-    private function setDocumentTag(array $arrayDocumentData): void {
+    private function setDocumentTag(array $arrayDocumentData): void
+    {
         $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
         foreach ($arrayDocumentData['DocumentNameSpaces'] as $key => $value) {
             if ($key === '') {
@@ -65,7 +67,8 @@ class ElectornicInvoiceWrite
         }
     }
 
-    private function setElementsOrdered(array $arrayInput): void {
+    private function setElementsOrdered(array $arrayInput): void
+    {
         $this->setElementComment($arrayInput['commentParentKey']);
         $this->objXmlWriter->startElement('cac:' . $arrayInput['tag']);
         $this->setExtraElement($arrayInput, 'Start');
@@ -100,7 +103,8 @@ class ElectornicInvoiceWrite
         $this->objXmlWriter->endElement(); // $key
     }
 
-    private function setExtraElement(array $arrayInput, string $strType): void {
+    private function setExtraElement(array $arrayInput, string $strType): void
+    {
         if (in_array($arrayInput['tag'], ['AccountingCustomerParty', 'AccountingSupplierParty'])) {
             switch ($strType) {
                 case 'End':
@@ -113,7 +117,8 @@ class ElectornicInvoiceWrite
         }
     }
 
-    private function setHeaderCommonBasicComponents(array $arrayElementWithData): void {
+    private function setHeaderCommonBasicComponents(array $arrayElementWithData): void
+    {
         $arrayCustomOrdered = $this->arraySettings['CustomOrder']['Header_CBC'];
         foreach ($arrayCustomOrdered as $value) {
             if (array_key_exists($value, $arrayElementWithData)) {
@@ -123,17 +128,31 @@ class ElectornicInvoiceWrite
         }
     }
 
-    private function setMultipleElementsOrdered(array $arrayData): void {
+    private function setManageComment(string $strCommentParentKey, array $arrayIn): string
+    {
+        if (str_starts_with($strCommentParentKey, 'AllowanceCharge')) {
+            $arrayCommentPieces  = explode('_', $strCommentParentKey);
+            array_splice($arrayCommentPieces, 0, 1, 'AllowanceCharge~ChargeIndicator'
+                    . ucfirst($arrayIn['ChargeIndicator'])); // carefully manage a child to decide on comment tag
+            $strCommentParentKey = implode('_', $arrayCommentPieces);
+        }
+        return $strCommentParentKey;
+    }
+
+    private function setMultipleElementsOrdered(array $arrayData): void
+    {
         foreach ($arrayData['data'] as $value) {
+            $strCommentParentKey = $this->setManageComment($arrayData['commentParentKey'], $value);
             $this->setElementsOrdered([
-                'commentParentKey' => $arrayData['commentParentKey'],
+                'commentParentKey' => $strCommentParentKey,
                 'data'             => $value,
                 'tag'              => $arrayData['tag'],
             ]);
         }
     }
 
-    private function setSingleComment(array $arrayInput): void {
+    private function setSingleComment(array $arrayInput): void
+    {
         if (array_key_exists('commentParentKey', $arrayInput)) {
             $this->setElementComment(implode('_', [$arrayInput['commentParentKey'], $arrayInput['tag']]));
             if (str_ends_with($arrayInput['tag'], 'Quantity')) {
@@ -143,7 +162,8 @@ class ElectornicInvoiceWrite
         }
     }
 
-    private function setSingleElementWithAttribute(array $arrayInput): void {
+    private function setSingleElementWithAttribute(array $arrayInput): void
+    {
         $this->setSingleComment($arrayInput);
         if (is_array($arrayInput['data']) && array_key_exists('value', $arrayInput['data'])) {
             $this->objXmlWriter->startElement('cbc:' . $arrayInput['tag']);
@@ -159,7 +179,8 @@ class ElectornicInvoiceWrite
         }
     }
 
-    public function writeElectronicInvoice(string $strFile, array $arrayDataIn, bool $bolComments, bool $bolSchemaLocation = false): void {
+    public function writeElectronicInvoice(string $strFile, array $arrayDataIn, bool $bolComments, bool $bolSchemaLocation = false): void
+    {
         $this->objXmlWriter = new \XMLWriter();
         $this->objXmlWriter->openURI($strFile);
         $this->objXmlWriter->setIndent(true);
@@ -168,7 +189,19 @@ class ElectornicInvoiceWrite
         $arrayData          = $this->loadSettingsAndManageDefaults($arrayDataIn, $bolComments, $bolSchemaLocation);
         $this->setDocumentTag($arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
-        $arrayAggregates    = $arrayData['Header']['CommonAggregateComponents-2'];
+        foreach (['InvoicePeriod', 'OrderReference', 'BillingReference', 'DespatchDocumentReference', 'ReceiptDocumentReference', 'OriginatorDocumentReference', 'ContractDocumentReference', 'ProjectReference'] as $strElement) {
+            $this->setElementsOrdered([
+                'commentParentKey' => $strElement,
+                'data'             => $arrayDataIn[$strElement],
+                'tag'              => $strElement,
+            ]);
+        }
+        $this->setMultipleElementsOrdered([
+            'commentParentKey' => 'AdditionalDocumentReference',
+            'data'             => $arrayDataIn['AdditionalDocumentReference'],
+            'tag'              => 'AdditionalDocumentReference',
+        ]);
+        $arrayAggregates = $arrayData['Header']['CommonAggregateComponents-2'];
         foreach (['AccountingSupplierParty', 'AccountingCustomerParty'] as $strCompanyType) {
             $this->setElementsOrdered([
                 'commentParentKey' => $strCompanyType,
@@ -176,11 +209,23 @@ class ElectornicInvoiceWrite
                 'tag'              => $strCompanyType,
             ]);
         }
+        foreach (['PayeeParty', 'TaxRepresentativeParty', 'Delivery', 'PaymentTerms'] as $strElement) {
+            $this->setElementsOrdered([
+                'commentParentKey' => $strElement,
+                'data'             => $arrayDataIn[$strElement],
+                'tag'              => $strElement,
+            ]);
+        }
         // multiple accounts
         $this->setMultipleElementsOrdered([
             'commentParentKey' => 'PaymentMeans',
             'data'             => $arrayAggregates['PaymentMeans'],
             'tag'              => 'PaymentMeans',
+        ]);
+        $this->setMultipleElementsOrdered([
+            'commentParentKey' => 'AllowanceCharge',
+            'data'             => $arrayAggregates['AllowanceCharge'],
+            'tag'              => 'AllowanceCharge',
         ]);
         foreach (['TaxTotal', 'LegalMonetaryTotal'] as $strTotal) {
             $this->setElementsOrdered([
