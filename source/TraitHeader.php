@@ -34,7 +34,8 @@ trait TraitHeader
     use TraitCompanies,
         TraitTax;
 
-    private function getHeader(array $arrayParams): array {
+    private function getHeader(array $arrayParams): array
+    {
         $arrayCBC      = explode(':', $arrayParams['DocumentNameSpaces']['cbc']);
         $strCBC        = $arrayCBC[count($arrayCBC) - 1]; // CommonBasicComponents
         $strCAC        = $arrayParams['cacName']; // CommonAggregateComponents
@@ -42,31 +43,25 @@ trait TraitHeader
             $strCBC => $this->getHeaderCommonBasicComponents($arrayParams['DocumentTagName'], $arrayParams['CBC']),
             $strCAC => [
                 'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParams['CAC']
-                    ->AccountingCustomerParty->children('cac', true)->Party),
+                        ->AccountingCustomerParty->children('cac', true)->Party),
                 'AccountingSupplierParty' => $this->getAccountingSupplierParty($arrayParams['CAC']
-                    ->AccountingSupplierParty->children('cac', true)->Party),
+                        ->AccountingSupplierParty->children('cac', true)->Party),
                 'LegalMonetaryTotal'      => $this->getLegalMonetaryTotal($arrayParams['CAC']->LegalMonetaryTotal),
                 'TaxTotal'                => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
             ],
         ];
-        $intLineNo     = 0;
-        if (isset($arrayParams['CAC']->PaymentMeans)) {
-            foreach ($arrayParams['CAC']->PaymentMeans as $child) {
-                $intLineNo++;
-                $intLineStr                                          = ($intLineNo < 10 ? '0' : '')
-                    . $intLineNo;
-                $arrayDocument[$strCAC]['PaymentMeans'][$intLineStr] = $this->getPaymentMeans($child);
-            }
-        }
         // optional components =========================================================================================
+        if (isset($arrayParams['CAC']->PaymentMeans)) {
+            $arrayDocument[$strCAC]['PaymentMeans'] = $this->getMultipleElements($arrayParams['CAC']->PaymentMeans);
+        }
         if (isset($arrayParams['CAC']->InvoicePeriod)) {
-            $arrayDocument[$strCAC]['InvoicePeriod'] = $this->getLegalInvoicePeriod($arrayParams['CAC']
-                ->InvoicePeriod);
+            $arrayDocument[$strCAC]['InvoicePeriod'] = $this->getLegalInvoicePeriod($arrayParams['CAC']->InvoicePeriod);
         }
         return $arrayDocument;
     }
 
-    private function getHeaderCommonBasicComponents(string $strType, $objCommonBasicComponents): array {
+    private function getHeaderCommonBasicComponents(string $strType, $objCommonBasicComponents): array
+    {
         $arrayOutput = [
             'CustomizationID'      => $objCommonBasicComponents->CustomizationID->__toString(),
             'DocumentCurrencyCode' => $objCommonBasicComponents->DocumentCurrencyCode->__toString(),
@@ -88,22 +83,24 @@ trait TraitHeader
         return array_merge($arrayOutput, $this->getHeaderTypeCode($strType, $objCommonBasicComponents));
     }
 
-    private function getHeaderTypeCode(string $strType, $objCommonBasicComponents): array {
+    private function getHeaderTypeCode(string $strType, $objCommonBasicComponents): array
+    {
         $arrayOutput = [];
         switch ($strType) {
             case 'CreditNote':
                 $arrayOutput['CreditNoteTypeCode'] = (integer) $objCommonBasicComponents
-                    ->CreditNoteTypeCode->__toString();
+                        ->CreditNoteTypeCode->__toString();
                 break;
             case 'Invoice':
                 $arrayOutput['InvoiceTypeCode']    = (integer) $objCommonBasicComponents
-                    ->InvoiceTypeCode->__toString();
+                        ->InvoiceTypeCode->__toString();
                 break;
         }
         return $arrayOutput;
     }
 
-    private function getLegalInvoicePeriod($child2): array {
+    private function getLegalInvoicePeriod($child2): array
+    {
         $arrayOutput = [];
         if (isset($child2->children('cbc', true)->StartDate)) {
             $arrayOutput['StartDate'] = $child2->children('cbc', true)->StartDate->__toString();
@@ -114,7 +111,8 @@ trait TraitHeader
         return $arrayOutput;
     }
 
-    private function getLegalMonetaryTotal($child2): array {
+    private function getLegalMonetaryTotal($child2): array
+    {
         $objCBC      = $child2->children('cbc', true);
         $arrayOutput = [
             'LineExtensionAmount' => $this->getTagWithCurrencyParameter($objCBC->LineExtensionAmount),
@@ -136,5 +134,17 @@ trait TraitHeader
             $arrayOutput['PrepaidAmount'] = $this->getTagWithCurrencyParameter($objCBC->PrepaidAmount);
         }
         return $arrayOutput;
+    }
+
+    private function getMultipleElements(array $arrayIn): array
+    {
+        $arrayToReturn = [];
+        $intLineNo     = 0;
+        foreach ($arrayIn as $child) {
+            $intLineNo++;
+            $intLineStr                 = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $arrayToReturn[$intLineStr] = $this->getPaymentMeans($child);
+        }
+        return $arrayToReturn;
     }
 }

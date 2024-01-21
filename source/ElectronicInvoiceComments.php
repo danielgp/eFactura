@@ -40,8 +40,9 @@ class ElectronicInvoiceComments
         foreach ($arrayCommentsRaw as $key => $value) {
             $arrayTemp = [
                 'ID'                 => $key,
-                'ID_Type'            => $this->getTypeOfIdentifier(substr($key, 0, 3)),
+                'ID_Type'            => $this->getTypeOfIdentifier(explode('-', $key)[0]),
                 'Level'              => $value['Level'],
+                'Level_No'           => strlen($value['Level']),
                 'Cardinality'        => $value['Cardinality'],
                 'OperationalTerm_EN' => $this->getKeyFromArrayOrAlternative('en_US', $value['OperationalTerm'], '-'),
                 'OperationalTerm_RO' => $this->getKeyFromArrayOrAlternative('ro_RO', $value['OperationalTerm'], '-'),
@@ -100,8 +101,9 @@ class ElectronicInvoiceComments
     private function getTypeOfIdentifier(string $strKeyPrefix): string
     {
         $arrayMapping = [
-            'BG-' => 'Group',
-            'BT-' => 'Field',
+            'BG'    => 'Group',
+            'BT'    => 'Field',
+            'UBL21' => 'Spec',
         ];
         $strIdType    = 'unknown';
         if (in_array($strKeyPrefix, array_keys($arrayMapping))) {
