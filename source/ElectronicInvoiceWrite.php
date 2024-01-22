@@ -44,7 +44,7 @@ class ElectornicInvoiceWrite
             $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
             if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
                 $arrayData['Header']['CommonBasicComponents-2']['CustomizationID'] = 'urn:cen.eu:en16931:2017'
-                        . '#compliant#urn:efactura.mfinante.ro:CIUS-RO:' . $arrayDefaults['CIUS-RO'];
+                    . '#compliant#urn:efactura.mfinante.ro:CIUS-RO:' . $arrayDefaults['CIUS-RO'];
                 $arrayData['Header']['CommonBasicComponents-2']['UBLVersionID']    = $arrayDefaults['UBL'];
             }
         }
@@ -133,7 +133,7 @@ class ElectornicInvoiceWrite
         if (str_starts_with($strCommentParentKey, 'AllowanceCharge')) {
             $arrayCommentPieces  = explode('_', $strCommentParentKey);
             array_splice($arrayCommentPieces, 0, 1, 'AllowanceCharge~ChargeIndicator'
-                    . ucfirst($arrayIn['ChargeIndicator'])); // carefully manage a child to decide on comment tag
+                . ucfirst($arrayIn['ChargeIndicator'])); // carefully manage a child to decide on comment tag
             $strCommentParentKey = implode('_', $arrayCommentPieces);
         }
         return $strCommentParentKey;
@@ -181,58 +181,62 @@ class ElectornicInvoiceWrite
 
     public function writeElectronicInvoice(string $strFile, array $arrayDataIn, bool $bolComments, bool $bolSchemaLocation = false): void
     {
-        $this->objXmlWriter = new \XMLWriter();
+        $this->objXmlWriter          = new \XMLWriter();
         $this->objXmlWriter->openURI($strFile);
         $this->objXmlWriter->setIndent(true);
         $this->objXmlWriter->setIndentString(str_repeat(' ', 4));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
-        $arrayData          = $this->loadSettingsAndManageDefaults($arrayDataIn, $bolComments, $bolSchemaLocation);
+        $arrayData                   = $this->loadSettingsAndManageDefaults($arrayDataIn, $bolComments, $bolSchemaLocation);
         $this->setDocumentTag($arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
-        foreach (['InvoicePeriod', 'OrderReference', 'BillingReference', 'DespatchDocumentReference', 'ReceiptDocumentReference', 'OriginatorDocumentReference', 'ContractDocumentReference', 'ProjectReference'] as $strElement) {
-            $this->setElementsOrdered([
-                'commentParentKey' => $strElement,
-                'data'             => $arrayDataIn[$strElement],
-                'tag'              => $strElement,
-            ]);
-        }
-        $this->setMultipleElementsOrdered([
-            'commentParentKey' => 'AdditionalDocumentReference',
-            'data'             => $arrayDataIn['AdditionalDocumentReference'],
-            'tag'              => 'AdditionalDocumentReference',
-        ]);
-        $arrayAggregates = $arrayData['Header']['CommonAggregateComponents-2'];
-        foreach (['AccountingSupplierParty', 'AccountingCustomerParty'] as $strCompanyType) {
-            $this->setElementsOrdered([
-                'commentParentKey' => $strCompanyType,
-                'data'             => $arrayAggregates[$strCompanyType]['Party'],
-                'tag'              => $strCompanyType,
-            ]);
-        }
-        foreach (['PayeeParty', 'TaxRepresentativeParty', 'Delivery', 'PaymentTerms'] as $strElement) {
-            $this->setElementsOrdered([
-                'commentParentKey' => $strElement,
-                'data'             => $arrayDataIn[$strElement],
-                'tag'              => $strElement,
-            ]);
-        }
-        // multiple accounts
-        $this->setMultipleElementsOrdered([
-            'commentParentKey' => 'PaymentMeans',
-            'data'             => $arrayAggregates['PaymentMeans'],
-            'tag'              => 'PaymentMeans',
-        ]);
-        $this->setMultipleElementsOrdered([
-            'commentParentKey' => 'AllowanceCharge',
-            'data'             => $arrayAggregates['AllowanceCharge'],
-            'tag'              => 'AllowanceCharge',
-        ]);
-        foreach (['TaxTotal', 'LegalMonetaryTotal'] as $strTotal) {
-            $this->setElementsOrdered([
-                'commentParentKey' => $strTotal,
-                'data'             => $arrayAggregates[$strTotal],
-                'tag'              => $strTotal,
-            ]);
+        $arrayOptionalElementsHeader = [
+            'InvoicePeriod'               => 'Single',
+            'OrderReference'              => 'Single',
+            'BillingReference'            => 'Single',
+            'DespatchDocumentReference'   => 'Single',
+            'ReceiptDocumentReference'    => 'Single',
+            'OriginatorDocumentReference' => 'Single',
+            'ContractDocumentReference'   => 'Single',
+            'ProjectReference'            => 'Single',
+            'AdditionalDocumentReference' => 'Multiple',
+            'AccountingSupplierParty'     => 'SingleCompany',
+            'AccountingCustomerParty'     => 'SingleCompany',
+            'PayeeParty'                  => 'Single',
+            'TaxRepresentativeParty'      => 'Single',
+            'Delivery'                    => 'Single',
+            'PaymentTerms'                => 'Single',
+            'PaymentMeans'                => 'Multiple',
+            'AllowanceCharge'             => 'Multiple',
+            'TaxTotal'                    => 'Single',
+            'LegalMonetaryTotal'          => 'Single',
+        ];
+        $arrayAggregates             = $arrayData['Header']['CommonAggregateComponents-2'];
+        foreach ($arrayOptionalElementsHeader as $key => $strLogicType) {
+            if (array_key_exists($key, $arrayDataIn) || array_key_exists($key, $arrayAggregates)) {
+                switch ($strLogicType) {
+                    case 'Multiple':
+                        $this->setMultipleElementsOrdered([
+                            'commentParentKey' => $key,
+                            'data'             => $arrayAggregates[$key],
+                            'tag'              => $key,
+                        ]);
+                        break;
+                    case 'Single':
+                        $this->setElementsOrdered([
+                            'commentParentKey' => $key,
+                            'data'             => $arrayAggregates[$key],
+                            'tag'              => $key,
+                        ]);
+                        break;
+                    case 'SingleCompany':
+                        $this->setElementsOrdered([
+                            'commentParentKey' => $key,
+                            'data'             => $arrayAggregates[$key]['Party'],
+                            'tag'              => $key,
+                        ]);
+                        break;
+                }
+            }
         }
         // multiple Lines
         $this->setMultipleElementsOrdered([
