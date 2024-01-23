@@ -43,9 +43,9 @@ trait TraitHeader
             $strCBC => $this->getHeaderCommonBasicComponents($arrayParams['DocumentTagName'], $arrayParams['CBC']),
             $strCAC => [
                 'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParams['CAC']
-                        ->AccountingCustomerParty->children('cac', true)->Party),
+                    ->AccountingCustomerParty->children('cac', true)->Party),
                 'AccountingSupplierParty' => $this->getAccountingSupplierParty($arrayParams['CAC']
-                        ->AccountingSupplierParty->children('cac', true)->Party),
+                    ->AccountingSupplierParty->children('cac', true)->Party),
                 'LegalMonetaryTotal'      => $this->getLegalMonetaryTotal($arrayParams['CAC']->LegalMonetaryTotal),
                 'TaxTotal'                => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
             ],
@@ -54,8 +54,41 @@ trait TraitHeader
         if (isset($arrayParams['CAC']->PaymentMeans)) {
             $arrayDocument[$strCAC]['PaymentMeans'] = $this->getMultipleElements($arrayParams['CAC']->PaymentMeans);
         }
+        if (isset($arrayParams['CAC']->PaymentTerms)) {
+            $arrayDocument[$strCAC]['PaymentTerms']['Note'] = $arrayParams['CAC']
+                ->PaymentTerms->children('cbc', true)->Note->__toString();
+        }
         if (isset($arrayParams['CAC']->InvoicePeriod)) {
             $arrayDocument[$strCAC]['InvoicePeriod'] = $this->getLegalInvoicePeriod($arrayParams['CAC']->InvoicePeriod);
+        }
+        if (isset($arrayParams['CAC']->ContractDocumentReference)) {
+            $arrayDocument[$strCAC]['ContractDocumentReference']['ID'] = $arrayParams['CAC']
+                ->ContractDocumentReference->children('cbc', true)->ID->__toString();
+        }
+        if (isset($arrayParams['CAC']->OrderReference)) {
+            $arrayDocument[$strCAC]['OrderReference']['ID'] = $arrayParams['CAC']
+                ->OrderReference->children('cbc', true)->ID->__toString();
+        }
+        if (isset($arrayParams['CAC']->AdditionalDocumentReference)) {
+            $arrayDocument[$strCAC]['AdditionalDocumentReference'] = $this->getMultipleElementsStandard($arrayParams['CAC']
+                ->AdditionalDocumentReference);
+        }
+        if (isset($arrayParams['CAC']->Delivery)) {
+            $strEl                                                             = $arrayParams['CAC']->Delivery;
+            $strElement                                                        = $strEl->children('cac', true)
+                ->DeliveryLocation->children('cac', true)->Address;
+            $arrayDocument[$strCAC]['Delivery']['DeliveryLocation']['Address'] = [
+                'StreetName' => $strElement->children('cbc', true)->StreetName->__toString(),
+                'CityName'   => $strElement->children('cbc', true)->CityName->__toString(),
+                'PostalZone' => $strElement->children('cbc', true)->PostalZone->__toString(),
+                'Country'    => [
+                    'IdentificationCode' => $strElement->children('cac', true)->Country->children('cbc', true)->IdentificationCode->__toString(),
+                ],
+            ];
+            if (isset($strEl->children('cbc', true)->ActualDeliveryDate)) {
+                $arrayDocument[$strCAC]['Delivery']['ActualDeliveryDate'] = $strEl
+                        ->children('cbc', true)->ActualDeliveryDate->__toString();
+            }
         }
         return $arrayDocument;
     }
@@ -89,11 +122,11 @@ trait TraitHeader
         switch ($strType) {
             case 'CreditNote':
                 $arrayOutput['CreditNoteTypeCode'] = (integer) $objCommonBasicComponents
-                        ->CreditNoteTypeCode->__toString();
+                    ->CreditNoteTypeCode->__toString();
                 break;
             case 'Invoice':
                 $arrayOutput['InvoiceTypeCode']    = (integer) $objCommonBasicComponents
-                        ->InvoiceTypeCode->__toString();
+                    ->InvoiceTypeCode->__toString();
                 break;
         }
         return $arrayOutput;
@@ -136,7 +169,7 @@ trait TraitHeader
         return $arrayOutput;
     }
 
-    private function getMultipleElements(array $arrayIn): array
+    private function getMultipleElements(array|\SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];
         $intLineNo     = 0;
@@ -144,6 +177,20 @@ trait TraitHeader
             $intLineNo++;
             $intLineStr                 = ($intLineNo < 10 ? '0' : '') . $intLineNo;
             $arrayToReturn[$intLineStr] = $this->getPaymentMeans($child);
+        }
+        return $arrayToReturn;
+    }
+
+    private function getMultipleElementsStandard(array|\SimpleXMLElement $arrayIn): array
+    {
+        $arrayToReturn = [];
+        $intLineNo     = 0;
+        foreach ($arrayIn as $child) {
+            $intLineNo++;
+            $intLineStr = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            foreach ($child->children('cbc', true) as $key2 => $value2) {
+                $arrayToReturn[$intLineStr][$key2] = $value2;
+            }
         }
         return $arrayToReturn;
     }

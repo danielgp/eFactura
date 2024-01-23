@@ -1,6 +1,7 @@
 {
     "CustomOrder": {
         "AccountingCustomerParty": [
+            "PartyIdentification",
             "EndpointID",
             "PartyName",
             "PostalAddress",
@@ -12,6 +13,9 @@
             "Name",
             "Telephone",
             "ElectronicMail"
+        ],
+        "AccountingCustomerParty_PartyIdentification": [
+            "ID"
         ],
         "AccountingCustomerParty_PartyLegalEntity": [
             "RegistrationName",
@@ -44,6 +48,7 @@
             "IdentificationCode"
         ],
         "AccountingSupplierParty": [
+            "PartyIdentification",
             "EndpointID",
             "PartyName",
             "PostalAddress",
@@ -55,6 +60,9 @@
             "Name",
             "Telephone",
             "ElectronicMail"
+        ],
+        "AccountingSupplierParty_PartyIdentification": [
+            "ID"
         ],
         "AccountingSupplierParty_PartyLegalEntity": [
             "RegistrationName",
@@ -87,7 +95,8 @@
             "IdentificationCode"
         ],
         "AdditionalDocumentReference": [
-            "ID"
+            "ID",
+            "DocumentDescription"
         ],
         "AllowanceCharge": [
             "Amount",
@@ -109,6 +118,22 @@
         ],
         "ContractDocumentReference": [
             "ID"
+        ],
+        "Delivery": [
+            "ActualDeliveryDate",
+            "DeliveryLocation"
+        ],
+        "Delivery_DeliveryLocation": [
+            "Address"
+        ],
+        "Delivery_DeliveryLocation_Address": [
+            "StreetName",
+            "CityName",
+            "PostalZone",
+            "Country"
+        ],
+        "Delivery_DeliveryLocation_Address_Country": [
+            "IdentificationCode"
         ],
         "DespatchDocumentReference": [
             "ID"
@@ -151,9 +176,15 @@
             "AllowanceChargeReasonCode"
         ],
         "Lines_Item": [
+            "Description",
             "Name",
             "SellersItemIdentification",
-            "ClassifiedTaxCategory"
+            "ClassifiedTaxCategory",
+            "AdditionalItemProperty"
+        ],
+        "Lines_Item_AdditionalItemProperty": [
+            "Name",
+            "Value"
         ],
         "Lines_Item_ClassifiedTaxCategory": [
             "ID",
@@ -203,6 +234,9 @@
         ],
         "PaymentMeans_PayeeFinancialAccount_FinancialInstitutionBranch": [
             "ID"
+        ],
+        "PaymentTerms": [
+            "Note"
         ],
         "ProjectReference": [
             "ID"

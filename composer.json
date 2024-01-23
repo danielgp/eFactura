@@ -16,6 +16,9 @@
         "ext-SimpleXML": "*",
         "ext-XMLWriter": "*"
     },
+    "require_dev": {
+        "phpunit/phpunit": "^10.5"
+    },
     "config": {
         "platform": {
             "php": "8.2.14"

@@ -33,7 +33,8 @@ trait TraitLines
 
     use TraitTax;
 
-    private function getDocumentLines($objFile, string $strTag): array {
+    private function getDocumentLines($objFile, string $strTag): array
+    {
         $arrayLines = [];
         $intLineNo  = 0;
         foreach ($objFile->children('cac', true) as $strNodeName => $child) {
@@ -46,7 +47,8 @@ trait TraitLines
         return $arrayLines;
     }
 
-    private function getLine(string $strType, $child): array {
+    private function getLine(string $strType, $child): array
+    {
         $arrayOutput = [
             'ID'                  => $child->children('cbc', true)->ID->__toString(),
             'LineExtensionAmount' => $this->getTagWithCurrencyParameter($child->children('cbc', true)
@@ -75,20 +77,33 @@ trait TraitLines
         return $arrayOutput;
     }
 
-    private function getLineItem($child3): array {
+    private function getLineItem($child3): array
+    {
         $arrayOutput = [
             'Name'                  => $child3->children('cbc', true)->Name->__toString(),
             'ClassifiedTaxCategory' => $this->getTaxCategory($child3->children('cac', true)->ClassifiedTaxCategory),
         ];
         // optional components =========================================================================================
         if (isset($child3->children('cbc', true)->Description)) {
-            $arrayOutput['Description'] = $child3->children('cac', true)->Description->__toString();
+            $arrayOutput['Description'] = $child3->children('cbc', true)->Description->__toString();
+        }
+        if (isset($child3->children('cac', true)->AdditionalItemProperty)) {
+            $intLineNo = 0;
+            foreach ($child3->children('cac', true)->AdditionalItemProperty as $value) {
+                $intLineNo++;
+                $intLineStr                                         = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                $arrayOutput['AdditionalItemProperty'][$intLineStr] = [
+                    'Name'  => $value->children('cbc', true)->Name->__toString(),
+                    'Value' => $value->children('cbc', true)->Value->__toString(),
+                ];
+            }
         }
         $arrayAggregate = $this->getLineItemAggregate($child3);
         return array_merge($arrayOutput, $arrayAggregate);
     }
 
-    private function getLineItemAllowanceCharge($child3): array {
+    private function getLineItemAllowanceCharge($child3): array
+    {
         $arrayOutput = [];
         $intLineNo   = 0;
         foreach ($child3 as $child4) {
@@ -112,7 +127,8 @@ trait TraitLines
         return $arrayOutput;
     }
 
-    private function getLineItemAggregate($child3): array {
+    private function getLineItemAggregate($child3): array
+    {
         $arrayOutput = [];
         foreach ($child3->children('cac', true) as $strName => $value) {
             switch ($strName) {
@@ -132,9 +148,10 @@ trait TraitLines
         return $arrayOutput;
     }
 
-    private function getLinePrice($child2): array {
+    private function getLinePrice($child2): array
+    {
         $arrayOutput = [
-            'PriceAmount' => $this->getTagWithCurrencyParameter($child2->children('cbc', true)->PriceAmount),
+            'PriceAmount' => $this->getTagWithCurrencyParameterAsString($child2->children('cbc', true)->PriceAmount),
         ];
         // optional components =========================================================================================
         if (isset($child2->children('cbc', true)->BaseQuantity)) {

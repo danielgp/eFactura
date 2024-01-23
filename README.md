@@ -44,13 +44,14 @@ PHP developers that serves various business to accomodate custom applications in
 * XSLT - Extensible Stylesheet Language Transformations (a transformation language) [XSLT 2.0](http://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.html#b_xslt20)
 
 
-## Usefull links
+## Useful links
 
 * [E-invoicing in Europe](https://dddinvoices.com/learn/e-invoicing-europe/)
 * [GitHub - eInvoicing-EN16931](https://github.com/ConnectingEurope/eInvoicing-EN16931)
 * [UBL specifications - multiple versions](https://ubl.xml.org/wiki/ubl-specifications)
 * [UNL 2.1 specification](https://docs.oasis-open.org/ubl/UBL-2.1.html)
 * [UBL 2.1 Invoice Example: 6 Steps to Create Your Own (XML Format)](https://www.storecove.com/blog/en/creating-your-own-ubl-invoice/?unbounce_brid=1705651446_009411_26a4ce94605ccc39070d57d1622f2a4d) by Nikkie Bakker on 2019 April 17
+
 
 ## Repository badges
 
@@ -60,5 +61,7 @@ PHP developers that serves various business to accomodate custom applications in
 [![Monthly Downloads](https://poser.pugx.org/danielgp/efactura/d/monthly)](https://packagist.org/packages/danielgp/efactura)
 [![Daily Downloads](https://poser.pugx.org/danielgp/efactura/d/daily)](https://packagist.org/packages/danielgp/efactura)
 
-Code quality analysis
+
+## Code quality analysis
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/danielgp/efactura/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/danielgp/efactura/?branch=main)

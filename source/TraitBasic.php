@@ -33,21 +33,32 @@ trait TraitBasic
 
     protected array $arraySettings = [];
 
-    private function getTagWithCurrencyParameter($childLineExtensionAmount): array {
+    private function getTagWithCurrencyParameter($childLineExtensionAmount): array
+    {
         return [
             'currencyID' => $childLineExtensionAmount->attributes()->currencyID->__toString(),
             'value'      => (float) $childLineExtensionAmount->__toString(),
         ];
     }
 
-    private function getTagWithUnitCodeParameter($childLineExtensionAmount): array {
+    private function getTagWithCurrencyParameterAsString($childLineExtensionAmount): array
+    {
+        return [
+            'currencyID' => $childLineExtensionAmount->attributes()->currencyID->__toString(),
+            'value'      => $childLineExtensionAmount->__toString(),
+        ];
+    }
+
+    private function getTagWithUnitCodeParameter($childLineExtensionAmount): array
+    {
         return [
             'unitCode' => $childLineExtensionAmount->attributes()->unitCode->__toString(),
             'value'    => (float) $childLineExtensionAmount->__toString(),
         ];
     }
 
-    private function getJsonFromFile(string $strFileName): array {
+    private function getJsonFromFile(string $strFileName): array
+    {
         $strFileName = __DIR__ . DIRECTORY_SEPARATOR . $strFileName;
         if (!file_exists($strFileName)) {
             throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));

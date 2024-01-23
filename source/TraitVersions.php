@@ -63,7 +63,7 @@ trait TraitVersions
                 'CIUS-RO' => $arrayVersions['CIUS-RO'],
             ];
         }
-        if ($bolSchemaLocation) {
+        if ($bolSchemaLocation && !array_key_exists('SchemaLocation', $arrayDocumentData)) {
             $arrayOutput['Root']['SchemaLocation'] = vsprintf($this->arraySettings['Defaults']['SchemaLocation'], [
                 $arrayDocumentData['DocumentTagName'],
                 $arrayVersions['UBL'],
@@ -93,11 +93,11 @@ trait TraitVersions
         $arrayComments          = $this->getCommentsFromFileAsArray();
         foreach ($arrayComments as $key => $value) {
             $strComment = implode($strGlue, [
-                        $key,
-                        $value['OperationalTerm']['ro_RO'],
-                        $value['RequirementID'],
-                    ])
-                    . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
+                    $key,
+                    $value['OperationalTerm']['ro_RO'],
+                    $value['RequirementID'],
+                ])
+                . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
             if (is_array($value['HierarchycalTagName'])) {
                 foreach ($value['HierarchycalTagName'] as $value2) {
                     $arrayFlattenedComments[$value2] = $strComment;

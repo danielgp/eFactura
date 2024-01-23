@@ -35,11 +35,11 @@ class ElectornicInvoiceWrite
 
     protected \XMLWriter $objXmlWriter;
 
-    private function loadSettingsAndManageDefaults(array $arrayData, bool $bolComments, bool $bolSchemaLocation): array
+    private function loadSettingsAndManageDefaults(array $arrayData, bool $bolComments, bool $bolSchemaLctn): array
     {
         // if no DocumentNameSpaces seen take Default ones from local configuration
         $this->getSettingsFromFileIntoMemory($bolComments);
-        $arrayDefaults = $this->getDefaultsIntoDataSet($arrayData, $bolSchemaLocation);
+        $arrayDefaults = $this->getDefaultsIntoDataSet($arrayData, $bolSchemaLctn);
         if ($arrayDefaults !== []) {
             $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
             if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
@@ -78,13 +78,13 @@ class ElectornicInvoiceWrite
                 $key     = implode('_', [$arrayInput['commentParentKey'], $value]);
                 $matches = [];
                 preg_match('/^(EndpointID|.*(Amount|Quantity))$/', $value, $matches, PREG_OFFSET_CAPTURE);
-                if ($value === 'TaxSubtotal') {
+                if (in_array($value, ['AdditionalItemProperty', 'TaxSubtotal'])) {
                     $this->setMultipleElementsOrdered([
                         'commentParentKey' => $key,
                         'data'             => $arrayInput['data'][$value],
                         'tag'              => $value,
                     ]);
-                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value])) {
+                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value]) || in_array($arrayInput['commentParentKey'], ['AccountingCustomerParty_PartyIdentification', 'AccountingSupplierParty_PartyIdentification'])) {
                     $this->setSingleElementWithAttribute([
                         'commentParentKey' => $arrayInput['commentParentKey'],
                         'data'             => $arrayInput['data'][$value],
@@ -178,8 +178,8 @@ class ElectornicInvoiceWrite
             'PayeeParty'                  => 'Single',
             'TaxRepresentativeParty'      => 'Single',
             'Delivery'                    => 'Single',
-            'PaymentTerms'                => 'Single',
             'PaymentMeans'                => 'Multiple',
+            'PaymentTerms'                => 'Single',
             'AllowanceCharge'             => 'Multiple',
             'TaxTotal'                    => 'Single',
             'LegalMonetaryTotal'          => 'Single',
@@ -229,21 +229,32 @@ class ElectornicInvoiceWrite
         $this->setSingleComment($arrayInput);
         if (is_array($arrayInput['data']) && array_key_exists('value', $arrayInput['data'])) {
             $this->objXmlWriter->startElement('cbc:' . $arrayInput['tag']);
+            $fmt = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
+            $fmt->setAttribute(\NumberFormatter::GROUPING_USED, false);
+            $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
+            $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
             foreach ($arrayInput['data'] as $key => $value) {
-                if ($key != 'value') { // if is not value, must be an attribute
+                if ($key !== 'value') { // if is not value, must be an attribute
                     $this->objXmlWriter->writeAttribute($key, $value);
                 }
+                if ($key === 'currencyID') {
+                    $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
+                }
             }
-            $this->objXmlWriter->writeRaw($arrayInput['data']['value']);
+            if ($arrayInput['tag'] === 'PriceAmount') {
+                $this->objXmlWriter->writeRaw($arrayInput['data']['value']);
+            } else {
+                $this->objXmlWriter->writeRaw($fmt->format($arrayInput['data']['value']));
+            }
             $this->objXmlWriter->endElement();
         } else {
             $this->objXmlWriter->writeElement('cbc:' . $arrayInput['tag'], $arrayInput['data']);
         }
     }
 
-    public function writeElectronicInvoice(string $strFile, array $arrayDataIn, bool $bolComments, bool $bolSchemaLocation = false): void
+    public function writeElectronicInvoice(string $strFile, array $inData, bool $bolCmnts, bool $bolScLc = false): void
     {
-        $arrayData = $this->loadSettingsAndManageDefaults($arrayDataIn, $bolComments, $bolSchemaLocation);
+        $arrayData = $this->loadSettingsAndManageDefaults($inData, $bolCmnts, $bolScLc);
         $this->setPrepareXml($strFile);
         $this->setDocumentTag($arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);

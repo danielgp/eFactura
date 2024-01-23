@@ -1365,7 +1365,7 @@
     "BG-13": {
         "HierarchycalTagName": "Delivery",
         "Level": "+",
-        "Cardinality": "1..1",
+        "Cardinality": "0..1",
         "OperationalTerm": {
             "ro_RO": "INFORMAŢII REFERITOARE LA LIVRARE"
         },
