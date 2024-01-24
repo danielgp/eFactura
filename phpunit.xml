@@ -6,4 +6,9 @@
             <directory>testing</directory>
         </testsuite>
     </testsuites>
+    <coverage>
+        <include>
+            <directory suffix=".php">source</directory>
+        </include>
+    </coverage>
 </phpunit>
