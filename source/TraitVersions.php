@@ -31,7 +31,7 @@ namespace danielgp\efactura;
 trait TraitVersions
 {
 
-    use TraitComments;
+    use TraitBasic;
 
     private function establishCurrentVersion(array $arrayKnownVersions): array
     {
@@ -77,6 +77,7 @@ trait TraitVersions
     private function getSettingsFromFileIntoMemory(bool $bolComments): void
     {
         $this->arraySettings             = $this->getJsonFromFile('ElectronicInvoiceSettings.json');
+        $this->getHierarchyTagOrder();
         $this->arraySettings['Comments'] = [
             'CAC' => [],
             'CBC' => [],

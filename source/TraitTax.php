@@ -33,22 +33,26 @@ trait TraitTax
 
     use TraitBasic;
 
-    private function getTaxCategory($child3): array {
+    private function getTaxCategory($child3): array
+    {
         $arrayOutput = [
             'ID'        => $child3->children('cbc', true)->ID->__toString(),
-            'Percent'   => (float) $child3->children('cbc', true)->Percent->__toString(),
             'TaxScheme' => [
                 'ID' => $child3->children('cac', true)->TaxScheme->children('cbc', true)->ID->__toString(),
             ],
         ];
         // optional components =========================================================================================
+        if (isset($child3->children('cbc', true)->Percent)) {
+            $arrayOutput['Percent'] = $child3->children('cbc', true)->Percent->__toString();
+        }
         if (isset($child3->children('cbc', true)->TaxExemptionReason)) {
             $arrayOutput['TaxExemptionReason'] = $child3->children('cbc', true)->TaxExemptionReason->__toString();
         }
         return $arrayOutput;
     }
 
-    private function getTaxSubTotal($child3): array {
+    private function getTaxSubTotal($child3): array
+    {
         return [
             'TaxAmount'     => $this->getTagWithCurrencyParameter($child3->children('cbc', true)->TaxAmount),
             'TaxableAmount' => $this->getTagWithCurrencyParameter($child3->children('cbc', true)->TaxableAmount),
@@ -56,14 +60,16 @@ trait TraitTax
         ];
     }
 
-    private function getTaxTotal($child2): array {
+    private function getTaxTotal($child2): array
+    {
         $arrayOutput = [
             'TaxAmount' => $this->getTagWithCurrencyParameter($child2->children('cbc', true)->TaxAmount)
         ];
         $intLineNo   = 0;
         foreach ($child2->children('cac', true)->TaxSubtotal as $child3) {
             $intLineNo++;
-            $arrayOutput['TaxSubtotal'][($intLineNo < 10 ? '0' : '') . $intLineNo] = $this->getTaxSubTotal($child3);
+            $intLineStr                              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $arrayOutput['TaxSubtotal'][$intLineStr] = $this->getTaxSubTotal($child3);
         }
         return $arrayOutput;
     }

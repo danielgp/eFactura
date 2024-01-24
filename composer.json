@@ -32,12 +32,10 @@
         ],
         "files": [
             "source/TraitBasic.php",
-            "source/TraitComments.php",
             "source/TraitVersions.php",
             "source/TraitTax.php",
             "source/TraitLines.php",
             "source/TraitCompanies.php",
-            "source/TraitHeader.php",
             "source/ElectronicInvoiceRead.php",
             "source/ElectronicInvoiceWrite.php",
             "source/ElectronicInvoiceComments.php"

@@ -31,7 +31,8 @@ namespace danielgp\efactura;
 class ElectornicInvoiceRead
 {
 
-    use TraitHeader,
+    use TraitCompanies,
+        TraitTax,
         TraitLines;
 
     private function getDocumentRoot(object $objFile): array
@@ -48,8 +49,88 @@ class ElectornicInvoiceRead
         return $arrayDocument;
     }
 
+    private function getHeader(array $arrayParams): array
+    {
+        $arrayCBC      = explode(':', $arrayParams['DocumentNameSpaces']['cbc']);
+        $strCBC        = $arrayCBC[count($arrayCBC) - 1]; // CommonBasicComponents
+        $strCAC        = $arrayParams['cacName']; // CommonAggregateComponents
+        $arrayDocument = [
+            $strCBC => $this->getHeaderCommonBasicComponents($arrayParams['DocumentTagName'], $arrayParams['CBC']),
+            $strCAC => [
+                'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParams['CAC']
+                    ->AccountingCustomerParty->children('cac', true)->Party),
+                'AccountingSupplierParty' => $this->getAccountingSupplierParty($arrayParams['CAC']
+                    ->AccountingSupplierParty->children('cac', true)->Party),
+                'TaxTotal'                => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
+            ],
+        ];
+        // optional components =========================================================================================
+        $arrayOutput   = [];
+        foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
+            if (isset($arrayParams['CAC']->$key)) {
+                switch ($value) {
+                    case 'Single':
+                        $arrayDocument[$strCAC][$key] = $this->getElements($arrayParams['CAC']->$key);
+                        break;
+                    case 'Multiple':
+                        $arrayDocument[$strCAC][$key] = $this->getMultipleElements($arrayParams['CAC']->$key);
+                        break;
+                    case 'MultipleStandard':
+                        $arrayDocument[$strCAC][$key] = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
+                        break;
+                }
+            }
+        }
+        if (isset($arrayParams['CAC']->Delivery)) {
+            $strEl                                                             = $arrayParams['CAC']->Delivery;
+            $strElement                                                        = $strEl->children('cac', true)
+                ->DeliveryLocation->children('cac', true)->Address;
+            $arrayDocument[$strCAC]['Delivery']['DeliveryLocation']['Address'] = [
+                'StreetName' => $strElement->children('cbc', true)->StreetName->__toString(),
+                'CityName'   => $strElement->children('cbc', true)->CityName->__toString(),
+                'PostalZone' => $strElement->children('cbc', true)->PostalZone->__toString(),
+                'Country'    => [
+                    'IdentificationCode' => $strElement->children('cac', true)->Country->children('cbc', true)->IdentificationCode->__toString(),
+                ],
+            ];
+            if (isset($strEl->children('cbc', true)->ActualDeliveryDate)) {
+                $arrayDocument[$strCAC]['Delivery']['ActualDeliveryDate'] = $strEl
+                        ->children('cbc', true)->ActualDeliveryDate->__toString();
+            }
+        }
+        return $arrayDocument;
+    }
+
+    private function getHeaderCommonBasicComponents(string $strType, $objCommonBasicComponents): array
+    {
+        $arrayOutput = [];
+        foreach ($this->arraySettings['CustomOrder']['Header_CBC'] as $value) {
+            if (isset($objCommonBasicComponents->$value)) {
+                $arrayOutput[$value] = $objCommonBasicComponents->$value->__toString();
+            }
+        }
+        return array_merge($arrayOutput, $this->getHeaderTypeCode($strType, $objCommonBasicComponents));
+    }
+
+    private function getHeaderTypeCode(string $strType, $objCommonBasicComponents): array
+    {
+        $arrayOutput = [];
+        switch ($strType) {
+            case 'CreditNote':
+                $arrayOutput['CreditNoteTypeCode'] = (integer) $objCommonBasicComponents
+                    ->CreditNoteTypeCode->__toString();
+                break;
+            case 'Invoice':
+                $arrayOutput['InvoiceTypeCode']    = (integer) $objCommonBasicComponents
+                    ->InvoiceTypeCode->__toString();
+                break;
+        }
+        return $arrayOutput;
+    }
+
     public function readElectronicInvoice(string $strFile): array
     {
+        $this->getHierarchyTagOrder();
         $objFile                 = new \SimpleXMLElement($strFile, NULL, TRUE);
         $arrayDocument           = $this->getDocumentRoot($objFile);
         $arrayCAC                = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);

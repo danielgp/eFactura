@@ -55,6 +55,17 @@ trait TraitLines
                 ->LineExtensionAmount),
         ];
         // optional components =========================================================================================
+        if (isset($child->children('cac', true)->OrderLineReference)) {
+            $arrayOutput['OrderLineReference']['LineID'] = $child->children('cac', true)->OrderLineReference
+                    ->children('cbc', true)->LineID->__toString();
+        }
+        if (isset($child->children('cac', true)->DocumentReference)) {
+            $arrayOutput['DocumentReference']['ID'] = $child->children('cac', true)->DocumentReference
+                    ->children('cbc', true)->ID->__toString();
+        }
+        if (isset($child->children('cbc', true)->AccountingCost)) {
+            $arrayOutput['AccountingCost'] = $child->children('cbc', true)->AccountingCost->__toString();
+        }
         if (isset($child->children('cbc', true)->Note)) {
             $arrayOutput['Note'] = $child->children('cbc', true)->Note->__toString();
         }
@@ -73,33 +84,54 @@ trait TraitLines
                     ->children('cac', true)->AllowanceCharge);
         }
         $arrayOutput['Item']  = $this->getLineItem($child->children('cac', true)->Item);
-        $arrayOutput['Price'] = $this->getLinePrice($child->children('cac', true)->Price);
+        $arrayOutput['Price'] = $this->getElements($child->children('cac', true)->Price);
         return $arrayOutput;
     }
 
     private function getLineItem($child3): array
     {
-        $arrayOutput = [
-            'Name'                  => $child3->children('cbc', true)->Name->__toString(),
-            'ClassifiedTaxCategory' => $this->getTaxCategory($child3->children('cac', true)->ClassifiedTaxCategory),
-        ];
-        // optional components =========================================================================================
-        if (isset($child3->children('cbc', true)->Description)) {
-            $arrayOutput['Description'] = $child3->children('cbc', true)->Description->__toString();
-        }
-        if (isset($child3->children('cac', true)->AdditionalItemProperty)) {
-            $intLineNo = 0;
-            foreach ($child3->children('cac', true)->AdditionalItemProperty as $value) {
-                $intLineNo++;
-                $intLineStr                                         = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                $arrayOutput['AdditionalItemProperty'][$intLineStr] = [
-                    'Name'  => $value->children('cbc', true)->Name->__toString(),
-                    'Value' => $value->children('cbc', true)->Value->__toString(),
-                ];
+        $arrayOutput = [];
+        foreach ($this->arraySettings['CustomOrder']['Lines_Item'] as $value) {
+            switch ($value) {
+                case 'AdditionalItemProperty':
+                    $intLineNo = 0;
+                    foreach ($child3->children('cac', true)->$value as $value2) {
+                        $intLineNo++;
+                        $intLineStr                       = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $arrayOutput[$value][$intLineStr] = [
+                            'Name'  => $value2->children('cbc', true)->Name->__toString(),
+                            'Value' => $value2->children('cbc', true)->Value->__toString(),
+                        ];
+                    }
+                    break;
+                case 'ClassifiedTaxCategory':
+                    $arrayOutput[$value] = $this->getTaxCategory($child3->children('cac', true)->$value);
+                    break;
+                case 'CommodityClassification':
+                // intentionally left open
+                case 'StandardItemIdentification':
+                    $intLineNo           = 0;
+                    foreach ($child3->children('cac', true)->$value as $value2) {
+                        $intLineNo++;
+                        $intLineStr                       = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $arrayOutput[$value][$intLineStr] = $this->getElements($value2);
+                    }
+                    break;
+                case 'OriginCountry':
+                // intentionally left open
+                case 'SellersItemIdentification':
+                    if (count($child3->children('cac', true)->$value) !== 0) {
+                        $arrayOutput[$value] = $this->getElements($child3->children('cac', true)->$value);
+                    }
+                    break;
+                default:
+                    if (count($child3->children('cbc', true)->$value) !== 0) {
+                        $arrayOutput[$value] = $child3->children('cbc', true)->$value->__toString();
+                    }
+                    break;
             }
         }
-        $arrayAggregate = $this->getLineItemAggregate($child3);
-        return array_merge($arrayOutput, $arrayAggregate);
+        return $arrayOutput;
     }
 
     private function getLineItemAllowanceCharge($child3): array
@@ -116,47 +148,17 @@ trait TraitLines
                 'ChargeIndicator'           => $child4->children('cbc', true)->ChargeIndicator->__toString(),
             ];
             if (isset($child4->children('cbc', true)->AllowanceChargeReason)) {
-                $arrayOutput[$intLineStr]['AllowanceChargeReason'] = $this->getTagWithCurrencyParameter($child4
-                        ->children('cbc', true)->AllowanceChargeReason);
+                $arrayOutput[$intLineStr]['AllowanceChargeReason'] = $child4
+                        ->children('cbc', true)->AllowanceChargeReason->__toString();
             }
             if (isset($child4->children('cbc', true)->BaseAmount)) {
                 $arrayOutput[$intLineStr]['BaseAmount'] = $this->getTagWithCurrencyParameter($child4
                         ->children('cbc', true)->BaseAmount);
             }
-        }
-        return $arrayOutput;
-    }
-
-    private function getLineItemAggregate($child3): array
-    {
-        $arrayOutput = [];
-        foreach ($child3->children('cac', true) as $strName => $value) {
-            switch ($strName) {
-                case 'CommodityClassification':
-                    $child4                                          = $value->children('cbc', true)
-                        ->ItemClassificationCode;
-                    $arrayOutput[$strName]['ItemClassificationCode'] = [
-                        'listID' => $child4->attributes()->listID->__toString(),
-                        'value'  => $child4->__toString(),
-                    ];
-                    break;
-                case 'SellersItemIdentification':
-                    $arrayOutput[$strName]['ID']                     = $value->children('cbc', true)->ID->__toString();
-                    break;
+            if (isset($child4->children('cbc', true)->MultiplierFactorNumeric)) {
+                $arrayOutput[$intLineStr]['MultiplierFactorNumeric'] = $child4
+                        ->children('cbc', true)->MultiplierFactorNumeric->__toString();
             }
-        }
-        return $arrayOutput;
-    }
-
-    private function getLinePrice($child2): array
-    {
-        $arrayOutput = [
-            'PriceAmount' => $this->getTagWithCurrencyParameterAsString($child2->children('cbc', true)->PriceAmount),
-        ];
-        // optional components =========================================================================================
-        if (isset($child2->children('cbc', true)->BaseQuantity)) {
-            $arrayOutput['BaseQuantity'] = $this->getTagWithUnitCodeParameter($child2->children('cbc', true)
-                ->BaseQuantity);
         }
         return $arrayOutput;
     }

@@ -66,9 +66,11 @@ trait TraitCompanies
     {
         $arrayMainOutput = [
             'PostalAddress'    => $this->getPostalAddress($child2->children('cac', true)->PostalAddress),
-            'PartyTaxScheme'   => $this->getPartyTaxScheme($child2->children('cac', true)->PartyTaxScheme),
             'PartyLegalEntity' => $this->getPartyLegalEntity($child2->children('cac', true)->PartyLegalEntity),
         ];
+        if (isset($child2->children('cac', true)->PartyTaxScheme)) {
+            $arrayMainOutput['PartyTaxScheme'] = $this->getPartyTaxScheme($child2->children('cac', true)->PartyTaxScheme);
+        }
         if (isset($child2->children('cac', true)->PartyName)) {
             $arrayMainOutput['PartyName'] = $this->getPartyName($child2->children('cac', true)->PartyName);
         }
@@ -152,23 +154,25 @@ trait TraitCompanies
 
     private function getPaymentMeans($child2): array
     {
-        $arrayOutput                                = [
+        $arrayOutput = [
             'PaymentMeansCode' => $child2->children('cbc', true)->PaymentMeansCode->__toString(),
         ];
-        $childPayeeFinancialAccount                 = $child2->children('cac', true)->PayeeFinancialAccount;
-        $arrayOutput['PayeeFinancialAccount']['ID'] = $childPayeeFinancialAccount
-                ->children('cbc', true)->ID->__toString();
         // optional components =========================================================================================
-        if (isset($child2->children('cbc', true)->PaymentID)) {
-            $arrayOutput['PaymentID'] = $child2->children('cbc', true)->PaymentID->__toString();
-        }
-        if (isset($childPayeeFinancialAccount->children('cbc', true)->Name)) {
-            $arrayOutput['PayeeFinancialAccount']['Name'] = $childPayeeFinancialAccount
-                    ->children('cbc', true)->Name->__toString();
-        }
-        if (isset($childPayeeFinancialAccount->children('cac', true)->FinancialInstitutionBranch)) {
-            $arrayOutput['PayeeFinancialAccount']['FinancialInstitutionBranch']['ID'] = $childPayeeFinancialAccount
-                    ->children('cac', true)->FinancialInstitutionBranch->children('cbc', true)->ID->__toString();
+        if (isset($child2->children('cac', true)->PayeeFinancialAccount)) {
+            $childPayeeFinancialAccount                 = $child2->children('cac', true)->PayeeFinancialAccount;
+            $arrayOutput['PayeeFinancialAccount']['ID'] = $childPayeeFinancialAccount
+                    ->children('cbc', true)->ID->__toString();
+            if (isset($child2->children('cbc', true)->PaymentID)) {
+                $arrayOutput['PaymentID'] = $child2->children('cbc', true)->PaymentID->__toString();
+            }
+            if (isset($childPayeeFinancialAccount->children('cbc', true)->Name)) {
+                $arrayOutput['PayeeFinancialAccount']['Name'] = $childPayeeFinancialAccount
+                        ->children('cbc', true)->Name->__toString();
+            }
+            if (isset($childPayeeFinancialAccount->children('cac', true)->FinancialInstitutionBranch)) {
+                $arrayOutput['PayeeFinancialAccount']['FinancialInstitutionBranch']['ID'] = $childPayeeFinancialAccount
+                        ->children('cac', true)->FinancialInstitutionBranch->children('cbc', true)->ID->__toString();
+            }
         }
         return $arrayOutput;
     }
@@ -176,14 +180,21 @@ trait TraitCompanies
     private function getPostalAddress($child3): array
     {
         $arrayOutput = [
-            'CityName'   => $child3->children('cbc', true)->CityName->__toString(),
-            'Country'    => [
+            'Country' => [
                 'IdentificationCode' => $child3->children('cac', true)->Country
                     ->children('cbc', true)->IdentificationCode->__toString(),
             ],
-            'StreetName' => $child3->children('cbc', true)->StreetName->__toString(),
         ];
         // optional component ==========================================================================================
+        if (isset($child3->children('cbc', true)->CityName)) {
+            $arrayOutput['CityName'] = $child3->children('cbc', true)->CityName->__toString();
+        }
+        if (isset($child3->children('cbc', true)->StreetName)) {
+            $arrayOutput['StreetName'] = $child3->children('cbc', true)->StreetName->__toString();
+        }
+        if (isset($child3->children('cbc', true)->AdditionalStreetName)) {
+            $arrayOutput['AdditionalStreetName'] = $child3->children('cbc', true)->AdditionalStreetName->__toString();
+        }
         if (isset($child3->children('cbc', true)->CountrySubentity)) {
             $arrayOutput['CountrySubentity'] = $child3->children('cbc', true)->CountrySubentity->__toString();
         }

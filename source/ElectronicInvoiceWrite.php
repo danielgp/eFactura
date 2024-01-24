@@ -77,14 +77,14 @@ class ElectornicInvoiceWrite
             if (array_key_exists($value, $arrayInput['data'])) { // because certain value are optional
                 $key     = implode('_', [$arrayInput['commentParentKey'], $value]);
                 $matches = [];
-                preg_match('/^(EndpointID|.*(Amount|Quantity))$/', $value, $matches, PREG_OFFSET_CAPTURE);
-                if (in_array($value, ['AdditionalItemProperty', 'TaxSubtotal'])) {
+                preg_match('/^.*(Amount|Quantity)$/', $value, $matches, PREG_OFFSET_CAPTURE);
+                if (in_array($value, ['AdditionalItemProperty', 'CommodityClassification', 'StandardItemIdentification', 'TaxSubtotal'])) {
                     $this->setMultipleElementsOrdered([
                         'commentParentKey' => $key,
                         'data'             => $arrayInput['data'][$value],
                         'tag'              => $value,
                     ]);
-                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value]) || in_array($arrayInput['commentParentKey'], ['AccountingCustomerParty_PartyIdentification', 'AccountingSupplierParty_PartyIdentification'])) {
+                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value]) || in_array($arrayInput['commentParentKey'], ['AccountingCustomerParty_PartyIdentification', 'AccountingSupplierParty_PartyIdentification', 'Lines_Item_SellersItemIdentification', 'Lines_Item_StandardItemIdentification', 'Lines_Item_CommodityClassification'])) {
                     $this->setSingleElementWithAttribute([
                         'commentParentKey' => $arrayInput['commentParentKey'],
                         'data'             => $arrayInput['data'][$value],
@@ -230,7 +230,7 @@ class ElectornicInvoiceWrite
         if (is_array($arrayInput['data']) && array_key_exists('value', $arrayInput['data'])) {
             $this->objXmlWriter->startElement('cbc:' . $arrayInput['tag']);
             $fmt = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
-            $fmt->setAttribute(\NumberFormatter::GROUPING_USED, false);
+            $fmt->setAttribute(\NumberFormatter::GROUPING_USED, 0);
             $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
             $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
             foreach ($arrayInput['data'] as $key => $value) {

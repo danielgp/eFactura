@@ -31,7 +31,7 @@ namespace danielgp\efactura;
 class ElectronicInvoiceComments
 {
 
-    use TraitComments;
+    use TraitBasic;
 
     public function getCommentsIntoArrayForTable()
     {

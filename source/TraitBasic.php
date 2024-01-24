@@ -33,6 +33,98 @@ trait TraitBasic
 
     protected array $arraySettings = [];
 
+    private function getCommentsFromFileAsArray(): array
+    {
+        return $this->getJsonFromFile('ElectronicInvoiceComments.json');
+    }
+
+    private function getElements(\SimpleXMLElement $arrayIn): array
+    {
+        $arrayToReturn = [];
+        foreach ($arrayIn->children('cbc', true) as $key => $value) {
+            if (count($value->attributes()) === 0) {
+                $arrayToReturn[$key] = $value->__toString();
+            } else {
+                foreach ($value->attributes() as $keyA => $valueA) {
+                    $arrayToReturn[$key] = [
+                        $keyA   => $valueA->__toString(),
+                        'value' => $value->__toString(),
+                    ];
+                }
+            }
+        }
+        return $arrayToReturn;
+    }
+
+    private function getJsonFromFile(string $strFileName): array
+    {
+        $strFileName = __DIR__ . DIRECTORY_SEPARATOR . $strFileName;
+        if (!file_exists($strFileName)) {
+            throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));
+        }
+        $fileHandle = fopen($strFileName, 'r');
+        if ($fileHandle === false) {
+            throw new \RuntimeException(sprintf('Unable to open file %s for read purpose!', $strFileName));
+        }
+        $fileContent   = fread($fileHandle, ((int) filesize($strFileName)));
+        fclose($fileHandle);
+        $arrayToReturn = json_decode($fileContent, true);
+        if (json_last_error() != JSON_ERROR_NONE) {
+            throw new \RuntimeException(sprintf('Unable to interpret JSON from %s file...', $strFileName));
+        }
+        return $arrayToReturn;
+    }
+
+    private function getHierarchyTagOrder(): void
+    {
+        $this->arraySettings['CustomOrder'] = $this->getJsonFromFile('ElectronicInvoiceHierarchyTagOrder.json');
+    }
+
+    private function getMultipleElements(array|\SimpleXMLElement $arrayIn): array
+    {
+        $arrayToReturn = [];
+        $intLineNo     = 0;
+        foreach ($arrayIn as $child) {
+            $intLineNo++;
+            $intLineStr                 = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $arrayToReturn[$intLineStr] = $this->getPaymentMeans($child);
+        }
+        return $arrayToReturn;
+    }
+
+    private function getMultipleElementsStandard(array|\SimpleXMLElement $arrayIn): array
+    {
+        $arrayToReturn = [];
+        $intLineNo     = 0;
+        foreach ($arrayIn as $child) {
+            $intLineNo++;
+            $intLineStr = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            foreach ($child->children('cbc', true) as $key2 => $value2) {
+                if (count($value2->attributes()) === 0) {
+                    $arrayToReturn[$intLineStr][$key2] = $value2->__toString();
+                } else {
+                    foreach ($value2->attributes() as $keyA => $valueA) {
+                        $arrayToReturn[$intLineStr][$key2] = [
+                            $keyA   => $valueA->__toString(),
+                            'value' => $value2->__toString(),
+                        ];
+                    }
+                }
+            }
+            foreach ($child->children('cac', true) as $key2 => $value2) {
+                foreach ($value2->children('cbc', true) as $key3 => $value3) {
+                    $arrayToReturn[$intLineStr][$key2][$key3] = $value3->__toString();
+                }
+                foreach ($value2->children('cac', true) as $key3 => $value3) {
+                    foreach ($value3->children('cbc', true) as $key4 => $value4) {
+                        $arrayToReturn[$intLineStr][$key2][$key3][$key4] = $value4->__toString();
+                    }
+                }
+            }
+        }
+        return $arrayToReturn;
+    }
+
     private function getTagWithCurrencyParameter($childLineExtensionAmount): array
     {
         return [
@@ -55,24 +147,5 @@ trait TraitBasic
             'unitCode' => $childLineExtensionAmount->attributes()->unitCode->__toString(),
             'value'    => (float) $childLineExtensionAmount->__toString(),
         ];
-    }
-
-    private function getJsonFromFile(string $strFileName): array
-    {
-        $strFileName = __DIR__ . DIRECTORY_SEPARATOR . $strFileName;
-        if (!file_exists($strFileName)) {
-            throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));
-        }
-        $fileHandle = fopen($strFileName, 'r');
-        if ($fileHandle === false) {
-            throw new \RuntimeException(sprintf('Unable to open file %s for read purpose!', $strFileName));
-        }
-        $fileContent   = fread($fileHandle, ((int) filesize($strFileName)));
-        fclose($fileHandle);
-        $arrayToReturn = json_decode($fileContent, true);
-        if (json_last_error() != JSON_ERROR_NONE) {
-            throw new \RuntimeException(sprintf('Unable to interpret JSON from %s file...', $strFileName));
-        }
-        return $arrayToReturn;
     }
 }

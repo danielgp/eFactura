@@ -14,6 +14,7 @@ final class ReadWriteTest extends TestCase
 
     const REMOTE_UBL_EXAMPLES_PATH = 'https://raw.githubusercontent.com/ConnectingEurope/eInvoicing-EN16931/'
         . 'master/ubl/examples/';
+    const LOCAL_RESULT_FILE        = __DIR__ . '/resultWrite.xml';
 
     public function testReadRemoteXml()
     {
@@ -24,51 +25,86 @@ final class ReadWriteTest extends TestCase
 
     public function testGetRemoteInvoiceIntoArrayAsExample1()
     {
-        $url            = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example1.xml';
-        $classRead      = new \danielgp\efactura\ElectornicInvoiceRead();
-        $arrayData      = $classRead->readElectronicInvoice($url);
-        $classWrite     = new \danielgp\efactura\ElectornicInvoiceWrite();
-        $strFileToWrite = __DIR__ . '/restulWrite.xml';
-        $classWrite->writeElectronicInvoice($strFileToWrite, $arrayData, false, true);
-        $this->assertXmlFileEqualsXmlFile($url, $strFileToWrite);
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example1.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
+    }
+
+    public function testGetRemoteInvoiceIntoArrayAsExample2()
+    {
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example2.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
+    }
+
+    public function testGetRemoteInvoiceIntoArrayAsExample3()
+    {
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example3.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
     }
 
     public function testGetRemoteInvoiceIntoArrayAsExample4()
     {
-        $url            = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example4.xml';
-        $classRead      = new \danielgp\efactura\ElectornicInvoiceRead();
-        $arrayData      = $classRead->readElectronicInvoice($url);
-        $classWrite     = new \danielgp\efactura\ElectornicInvoiceWrite();
-        $strFileToWrite = __DIR__ . '/restulWrite.xml';
-        $classWrite->writeElectronicInvoice($strFileToWrite, $arrayData, false, true);
-        $this->assertXmlFileEqualsXmlFile($url, $strFileToWrite);
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example4.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
+    }
+
+    public function testGetRemoteInvoiceIntoArrayAsExample6()
+    {
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example6.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
+    }
+
+    public function testGetRemoteInvoiceIntoArrayAsExample7()
+    {
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example7.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
     }
 
     public function testGetRemoteInvoiceIntoArrayAsExample8()
     {
-        $url            = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example8.xml';
-        $classRead      = new \danielgp\efactura\ElectornicInvoiceRead();
-        $arrayData      = $classRead->readElectronicInvoice($url);
-        $classWrite     = new \danielgp\efactura\ElectornicInvoiceWrite();
-        $strFileToWrite = __DIR__ . '/restulWrite.xml';
-        $classWrite->writeElectronicInvoice($strFileToWrite, $arrayData, false, true);
-        $this->assertXmlFileEqualsXmlFile($url, $strFileToWrite);
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example8.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
     }
 
     public function testGetRemoteInvoiceIntoArrayAsExample9()
     {
-        $url            = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example9.xml';
-        $classRead      = new \danielgp\efactura\ElectornicInvoiceRead();
-        $arrayData      = $classRead->readElectronicInvoice($url);
-        $classWrite     = new \danielgp\efactura\ElectornicInvoiceWrite();
-        $strFileToWrite = __DIR__ . '/restulWrite.xml';
-        $classWrite->writeElectronicInvoice($strFileToWrite, $arrayData, false, true);
-        $this->assertXmlFileEqualsXmlFile($url, $strFileToWrite);
+        $url        = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example9.xml';
+        $classRead  = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData  = $classRead->readElectronicInvoice($url);
+        $classWrite = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $classWrite->writeElectronicInvoice(self::LOCAL_RESULT_FILE, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, self::LOCAL_RESULT_FILE);
     }
 
     public function tearDown(): void
     {
-        $strFileToWrite = __DIR__ . '/restulWrite.xml';
-        unlink($strFileToWrite);
+        unlink(self::LOCAL_RESULT_FILE);
     }
 }

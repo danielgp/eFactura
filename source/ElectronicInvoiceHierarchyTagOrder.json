@@ -1,0 +1,343 @@
+{
+    "AccountingCustomerParty": [
+        "PartyIdentification",
+        "EndpointID",
+        "PartyName",
+        "PostalAddress",
+        "PartyTaxScheme",
+        "PartyLegalEntity",
+        "Contact"
+    ],
+    "AccountingCustomerParty_Contact": [
+        "Name",
+        "Telephone",
+        "ElectronicMail"
+    ],
+    "AccountingCustomerParty_PartyIdentification": [
+        "ID"
+    ],
+    "AccountingCustomerParty_PartyLegalEntity": [
+        "RegistrationName",
+        "CompanyID",
+        "CompanyLegalForm"
+    ],
+    "AccountingCustomerParty_PartyName": [
+        "Name"
+    ],
+    "AccountingCustomerParty_PartyTaxScheme": [
+        "CompanyID",
+        "TaxScheme"
+    ],
+    "AccountingCustomerParty_PartyTaxScheme_TaxScheme": [
+        "ID"
+    ],
+    "AccountingCustomerParty_PostalAddress": [
+        "StreetName",
+        "AdditionalStreetName",
+        "AddressLine",
+        "CityName",
+        "PostalZone",
+        "CountrySubentity",
+        "Country"
+    ],
+    "AccountingCustomerParty_PostalAddress_AddressLine": [
+        "Line"
+    ],
+    "AccountingCustomerParty_PostalAddress_Country": [
+        "IdentificationCode"
+    ],
+    "AccountingSupplierParty": [
+        "PartyIdentification",
+        "EndpointID",
+        "PartyName",
+        "PostalAddress",
+        "PartyTaxScheme",
+        "PartyLegalEntity",
+        "Contact"
+    ],
+    "AccountingSupplierParty_Contact": [
+        "Name",
+        "Telephone",
+        "ElectronicMail"
+    ],
+    "AccountingSupplierParty_PartyIdentification": [
+        "ID"
+    ],
+    "AccountingSupplierParty_PartyLegalEntity": [
+        "RegistrationName",
+        "CompanyID",
+        "CompanyLegalForm"
+    ],
+    "AccountingSupplierParty_PartyName": [
+        "Name"
+    ],
+    "AccountingSupplierParty_PartyTaxScheme": [
+        "CompanyID",
+        "TaxScheme"
+    ],
+    "AccountingSupplierParty_PartyTaxScheme_TaxScheme": [
+        "ID"
+    ],
+    "AccountingSupplierParty_PostalAddress": [
+        "StreetName",
+        "AdditionalStreetName",
+        "AddressLine",
+        "CityName",
+        "PostalZone",
+        "CountrySubentity",
+        "Country"
+    ],
+    "AccountingSupplierParty_PostalAddress_AddressLine": [
+        "Line"
+    ],
+    "AccountingSupplierParty_PostalAddress_Country": [
+        "IdentificationCode"
+    ],
+    "AdditionalDocumentReference": [
+        "ID",
+        "DocumentDescription",
+        "Attachment"
+    ],
+    "AdditionalDocumentReference_Attachment": [
+        "ExternalReference"
+    ],
+    "AdditionalDocumentReference_Attachment_ExternalReference": [
+        "URI"
+    ],
+    "AllowanceCharge~ChargeIndicatorFalse": [
+        "ChargeIndicator",
+        "AllowanceChargeReason",
+        "AllowanceChargeReasonCode",
+        "Amount",
+        "BaseAmount",
+        "Percent",
+        "TaxCategory"
+    ],
+    "AllowanceCharge~ChargeIndicatorFalse_TaxCategory": [
+        "ID",
+        "Percent",
+        "TaxScheme"
+    ],
+    "AllowanceCharge~ChargeIndicatorFalse_TaxCategory_TaxScheme": [
+        "ID"
+    ],
+    "AllowanceCharge~ChargeIndicatorTrue": [
+        "ChargeIndicator",
+        "AllowanceChargeReason",
+        "AllowanceChargeReasonCode",
+        "Amount",
+        "BaseAmount",
+        "Percent",
+        "TaxCategory"
+    ],
+    "AllowanceCharge~ChargeIndicatorTrue_TaxCategory": [
+        "ID",
+        "Percent",
+        "TaxScheme"
+    ],
+    "AllowanceCharge~ChargeIndicatorTrue_TaxCategory_TaxScheme": [
+        "ID"
+    ],
+    "BillingReference": [
+        "ID"
+    ],
+    "ContractDocumentReference": [
+        "ID"
+    ],
+    "Delivery": [
+        "ActualDeliveryDate",
+        "DeliveryLocation"
+    ],
+    "Delivery_DeliveryLocation": [
+        "Address"
+    ],
+    "Delivery_DeliveryLocation_Address": [
+        "StreetName",
+        "CityName",
+        "PostalZone",
+        "Country"
+    ],
+    "Delivery_DeliveryLocation_Address_Country": [
+        "IdentificationCode"
+    ],
+    "DespatchDocumentReference": [
+        "ID"
+    ],
+    "Header_CAC": {
+        "AdditionalDocumentReference": "MultipleStandard",
+        "AllowanceCharge": "MultipleStandard",
+        "ContractDocumentReference": "Single",
+        "InvoicePeriod": "Single",
+        "LegalMonetaryTotal": "Single",
+        "OrderReference": "Single",
+        "PaymentMeans": "Multiple",
+        "PaymentTerms": "Single"
+    },
+    "Header_CBC": [
+        "UBLVersionID",
+        "CustomizationID",
+        "ProfileID",
+        "ID",
+        "IssueDate",
+        "DueDate",
+        "InvoiceTypeCode",
+        "Note",
+        "TaxPointDate",
+        "DocumentCurrencyCode",
+        "TaxCurrencyCode",
+        "AccountingCost",
+        "BuyerReference"
+    ],
+    "InvoicePeriod": [
+        "StartDate",
+        "EndDate",
+        "DescriptionCode"
+    ],
+    "Lines": [
+        "ID",
+        "Note",
+        "CreditNoteQuantity",
+        "InvoicedQuantity",
+        "LineExtensionAmount",
+        "AccountingCost",
+        "OrderLineReference",
+        "AllowanceCharge",
+        "AdditionalCharge",
+        "Item",
+        "Price"
+    ],
+    "Lines_AllowanceCharge": [
+        "ChargeIndicator",
+        "Amount",
+        "BaseAmount",
+        "MultiplierFactorNumeric",
+        "AllowanceChargeReason",
+        "AllowanceChargeReasonCode"
+    ],
+    "Lines_Item": [
+        "Description",
+        "Name",
+        "SellersItemIdentification",
+        "StandardItemIdentification",
+        "OriginCountry",
+        "CommodityClassification",
+        "ClassifiedTaxCategory",
+        "AdditionalItemProperty"
+    ],
+    "Lines_Item_AdditionalItemProperty": [
+        "Name",
+        "Value"
+    ],
+    "Lines_Item_CommodityClassification": [
+        "ItemClassificationCode"
+    ],
+    "Lines_Item_ClassifiedTaxCategory": [
+        "ID",
+        "Percent",
+        "TaxScheme"
+    ],
+    "Lines_Item_ClassifiedTaxCategory_TaxScheme": [
+        "ID"
+    ],
+    "Lines_Item_OriginCountry": [
+        "IdentificationCode"
+    ],
+    "Lines_Item_SellersItemIdentification": [
+        "ID"
+    ],
+    "Lines_Item_StandardItemIdentification": [
+        "ID"
+    ],
+    "Lines_OrderLineReference": [
+        "LineID"
+    ],
+    "Lines_Price": [
+        "PriceAmount",
+        "BaseQuantity"
+    ],
+    "LegalMonetaryTotal": [
+        "LineExtensionAmount",
+        "TaxExclusiveAmount",
+        "TaxInclusiveAmount",
+        "AllowanceTotalAmount",
+        "ChargeTotalAmount",
+        "PrepaidAmount",
+        "PayableRoundingAmount",
+        "PayableAmount"
+    ],
+    "OrderReference": [
+        "ID",
+        "SalesOrderID"
+    ],
+    "OriginatorDocumentReference": [
+        "ID"
+    ],
+    "PaymentMeans": [
+        "PaymentMeansCode",
+        "PaymentID",
+        "PayeeFinancialAccount",
+        "CardAccount"
+    ],
+    "PaymentMeans_CardAccount": [
+        "PrimaryAccountNumberID",
+        "HolderName"
+    ],
+    "PaymentMeans_PayeeFinancialAccount": [
+        "ID",
+        "Name",
+        "FinancialInstitutionBranch"
+    ],
+    "PaymentMeans_PayeeFinancialAccount_FinancialInstitutionBranch": [
+        "ID"
+    ],
+    "PaymentTerms": [
+        "Note"
+    ],
+    "ProjectReference": [
+        "ID"
+    ],
+    "ReceiptDocumentReference": [
+        "ID"
+    ],
+    "TaxRepresentativeParty": [
+        "Name",
+        "PartyTaxScheme",
+        "PostalAddress"
+    ],
+    "TaxRepresentativeParty_PartyTaxScheme": [
+        "CompanyID"
+    ],
+    "TaxRepresentativeParty_PostalAddress": [
+        "StreetName",
+        "AdditionalStreetName",
+        "AddressLine",
+        "CityName",
+        "PostalZone",
+        "CountrySubentity",
+        "Country"
+    ],
+    "TaxRepresentativeParty_PostalAddress_AddressLine": [
+        "Line"
+    ],
+    "TaxRepresentativeParty_PostalAddress_Country": [
+        "IdentificationCode"
+    ],
+    "TaxTotal": [
+        "TaxAmount",
+        "TaxSubtotal"
+    ],
+    "TaxTotal_TaxSubtotal": [
+        "TaxableAmount",
+        "TaxAmount",
+        "TaxCategory"
+    ],
+    "TaxTotal_TaxSubtotal_TaxCategory": [
+        "ID",
+        "TaxExemptionReason",
+        "Percent",
+        "TaxScheme"
+    ],
+    "TaxTotal_TaxSubtotal_TaxCategory_TaxScheme": [
+        "ID"
+    ]
+}
