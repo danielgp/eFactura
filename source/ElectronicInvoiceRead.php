@@ -65,7 +65,6 @@ class ElectornicInvoiceRead
             ],
         ];
         // optional components =========================================================================================
-        $arrayOutput   = [];
         foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
             if (isset($arrayParams['CAC']->$key)) {
                 switch ($value) {
@@ -126,6 +125,18 @@ class ElectornicInvoiceRead
                 break;
         }
         return $arrayOutput;
+    }
+
+    private function getMultipleElements(array|\SimpleXMLElement $arrayIn): array
+    {
+        $arrayToReturn = [];
+        $intLineNo     = 0;
+        foreach ($arrayIn as $child) {
+            $intLineNo++;
+            $intLineStr                 = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $arrayToReturn[$intLineStr] = $this->getPaymentMeans($child);
+        }
+        return $arrayToReturn;
     }
 
     public function readElectronicInvoice(string $strFile): array
