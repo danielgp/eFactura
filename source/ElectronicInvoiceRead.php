@@ -55,7 +55,7 @@ class ElectornicInvoiceRead
         $strCBC        = $arrayCBC[count($arrayCBC) - 1]; // CommonBasicComponents
         $strCAC        = $arrayParams['cacName']; // CommonAggregateComponents
         $arrayDocument = [
-            $strCBC => $this->getHeaderCommonBasicComponents($arrayParams['DocumentTagName'], $arrayParams['CBC']),
+            $strCBC => $this->getHeaderCommonBasicComponents($arrayParams['CBC']),
             $strCAC => [
                 'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParams['CAC']
                     ->AccountingCustomerParty->children('cac', true)->Party),
@@ -100,7 +100,7 @@ class ElectornicInvoiceRead
         return $arrayDocument;
     }
 
-    private function getHeaderCommonBasicComponents(string $strType, $objCommonBasicComponents): array
+    private function getHeaderCommonBasicComponents(\SimpleXMLElement $objCommonBasicComponents): array
     {
         $arrayOutput = [];
         foreach ($this->arraySettings['CustomOrder']['Header_CBC'] as $value) {
