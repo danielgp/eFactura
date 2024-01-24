@@ -76,7 +76,7 @@ trait TraitVersions
 
     private function getSettingsFromFileIntoMemory(bool $bolComments): void
     {
-        $this->arraySettings             = $this->getJsonFromFile('ElectronicInvoiceSettings.json');
+        $this->arraySettings             = $this->getJsonFromFile('json/ElectronicInvoiceSettings.json');
         $this->getHierarchyTagOrder();
         $this->arraySettings['Comments'] = [
             'CAC' => [],
@@ -108,19 +108,5 @@ trait TraitVersions
             }
         }
         $this->arraySettings['Comments'] = $arrayFlattenedComments;
-    }
-
-    private function setElementComment(string $strKey): void
-    {
-        if (array_key_exists($strKey, $this->arraySettings['Comments'])) {
-            $elementComment = $this->arraySettings['Comments'][$strKey];
-            if (is_array($elementComment)) {
-                foreach ($elementComment as $value) {
-                    $this->objXmlWriter->writeComment($value);
-                }
-            } else {
-                $this->objXmlWriter->writeComment($elementComment);
-            }
-        }
     }
 }

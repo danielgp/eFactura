@@ -108,22 +108,6 @@ class ElectornicInvoiceRead
                 $arrayOutput[$value] = $objCommonBasicComponents->$value->__toString();
             }
         }
-        return array_merge($arrayOutput, $this->getHeaderTypeCode($strType, $objCommonBasicComponents));
-    }
-
-    private function getHeaderTypeCode(string $strType, $objCommonBasicComponents): array
-    {
-        $arrayOutput = [];
-        switch ($strType) {
-            case 'CreditNote':
-                $arrayOutput['CreditNoteTypeCode'] = (integer) $objCommonBasicComponents
-                    ->CreditNoteTypeCode->__toString();
-                break;
-            case 'Invoice':
-                $arrayOutput['InvoiceTypeCode']    = (integer) $objCommonBasicComponents
-                    ->InvoiceTypeCode->__toString();
-                break;
-        }
         return $arrayOutput;
     }
 

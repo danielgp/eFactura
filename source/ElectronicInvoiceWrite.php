@@ -67,6 +67,20 @@ class ElectornicInvoiceWrite
         }
     }
 
+    private function setElementComment(string $strKey): void
+    {
+        if (array_key_exists($strKey, $this->arraySettings['Comments'])) {
+            $elementComment = $this->arraySettings['Comments'][$strKey];
+            if (is_array($elementComment)) {
+                foreach ($elementComment as $value) {
+                    $this->objXmlWriter->writeComment($value);
+                }
+            } else {
+                $this->objXmlWriter->writeComment($elementComment);
+            }
+        }
+    }
+
     private function setElementsOrdered(array $arrayInput): void
     {
         $this->setElementComment($arrayInput['commentParentKey']);

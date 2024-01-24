@@ -180,6 +180,7 @@
         "ID",
         "IssueDate",
         "DueDate",
+        "CreditNoteTypeCode",
         "InvoiceTypeCode",
         "Note",
         "TaxPointDate",

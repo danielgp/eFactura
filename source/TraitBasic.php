@@ -35,7 +35,7 @@ trait TraitBasic
 
     private function getCommentsFromFileAsArray(): array
     {
-        return $this->getJsonFromFile('ElectronicInvoiceComments.json');
+        return $this->getJsonFromFile('json/ElectronicInvoiceComments.json');
     }
 
     private function getElements(\SimpleXMLElement $arrayIn): array
@@ -77,7 +77,7 @@ trait TraitBasic
 
     private function getHierarchyTagOrder(): void
     {
-        $this->arraySettings['CustomOrder'] = $this->getJsonFromFile('ElectronicInvoiceHierarchyTagOrder.json');
+        $this->arraySettings['CustomOrder'] = $this->getJsonFromFile('json/ElectronicInvoiceHierarchyTagOrder.json');
     }
 
     private function getMultipleElementsStandard(array|\SimpleXMLElement $arrayIn): array
