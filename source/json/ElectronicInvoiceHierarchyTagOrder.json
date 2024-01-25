@@ -1,7 +1,7 @@
 {
     "AccountingCustomerParty": [
-        "PartyIdentification",
         "EndpointID",
+        "PartyIdentification",
         "PartyName",
         "PostalAddress",
         "PartyTaxScheme",

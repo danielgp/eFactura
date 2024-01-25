@@ -38,7 +38,7 @@ trait TraitBasic
         return $this->getJsonFromFile('json/ElectronicInvoiceComments.json');
     }
 
-    private function getElements(\SimpleXMLElement $arrayIn): array
+    private function getElements(\SimpleXMLElement|null $arrayIn): array
     {
         $arrayToReturn = [];
         if (count($arrayIn->children('cbc', true)) !== 0) { // checking if we have cbc elements
@@ -54,7 +54,7 @@ trait TraitBasic
         return $arrayToReturn;
     }
 
-    private function getElementSingle(\SimpleXMLElement $value)
+    private function getElementSingle(\SimpleXMLElement|null $value)
     {
         $arrayToReturn = [];
         if (count($value->attributes()) === 0) {

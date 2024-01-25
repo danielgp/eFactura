@@ -35,7 +35,6 @@
             "source/TraitVersions.php",
             "source/TraitTax.php",
             "source/TraitLines.php",
-            "source/TraitCompanies.php",
             "source/ElectronicInvoiceRead.php",
             "source/ElectronicInvoiceWrite.php",
             "source/ElectronicInvoiceComments.php"

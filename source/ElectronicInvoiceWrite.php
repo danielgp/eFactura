@@ -92,7 +92,13 @@ class ElectornicInvoiceWrite
                 $key     = implode('_', [$arrayInput['commentParentKey'], $value]);
                 $matches = [];
                 preg_match('/^.*(Amount|Quantity)$/', $value, $matches, PREG_OFFSET_CAPTURE);
-                if (in_array($value, ['AdditionalItemProperty', 'CommodityClassification', 'StandardItemIdentification', 'TaxSubtotal'])) {
+                if ($value === 'EndpointID') {
+                    $this->setSingleElementWithAttribute([
+                        'commentParentKey' => $arrayInput['commentParentKey'],
+                        'data'             => $arrayInput['data'][$value],
+                        'tag'              => $value,
+                    ]);
+                } elseif (in_array($value, ['AdditionalItemProperty', 'CommodityClassification', 'StandardItemIdentification', 'TaxSubtotal'])) {
                     $this->setMultipleElementsOrdered([
                         'commentParentKey' => $key,
                         'data'             => $arrayInput['data'][$value],
@@ -255,7 +261,7 @@ class ElectornicInvoiceWrite
                     $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
                 }
             }
-            if ($arrayInput['tag'] === 'PriceAmount') {
+            if (in_array($arrayInput['tag'], ['EndpointID', 'PriceAmount'])) {
                 $this->objXmlWriter->writeRaw($arrayInput['data']['value']);
             } else {
                 $this->objXmlWriter->writeRaw($fmt->format($arrayInput['data']['value']));
