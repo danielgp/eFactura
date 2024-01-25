@@ -41,14 +41,16 @@ trait TraitBasic
     private function getElements(\SimpleXMLElement|null $arrayIn): array
     {
         $arrayToReturn = [];
-        if (count($arrayIn->children('cbc', true)) !== 0) { // checking if we have cbc elements
-            foreach ($arrayIn->children('cbc', true) as $key => $value) {
-                $arrayToReturn[$key] = $this->getElementSingle($value);
+        if (!is_null($arrayIn)) {
+            if (count($arrayIn->children('cbc', true)) !== 0) { // checking if we have cbc elements
+                foreach ($arrayIn->children('cbc', true) as $key => $value) {
+                    $arrayToReturn[$key] = $this->getElementSingle($value);
+                }
             }
-        }
-        if (count($arrayIn->children('cac', true)) !== 0) { // checking if we have cac elements
-            foreach ($arrayIn->children('cac', true) as $key => $value) {
-                $arrayToReturn[$key] = $this->getElements($value);
+            if (count($arrayIn->children('cac', true)) !== 0) { // checking if we have cac elements
+                foreach ($arrayIn->children('cac', true) as $key => $value) {
+                    $arrayToReturn[$key] = $this->getElements($value);
+                }
             }
         }
         return $arrayToReturn;
@@ -57,14 +59,14 @@ trait TraitBasic
     private function getElementSingle(\SimpleXMLElement|null $value)
     {
         $arrayToReturn = [];
-        if (count($value->attributes()) === 0) {
-            $arrayToReturn = $value->__toString();
-        } else {
-            foreach ($value->attributes() as $keyA => $valueA) {
-                $arrayToReturn = [
-                    $keyA   => $valueA->__toString(),
-                    'value' => $value->__toString(),
-                ];
+        if (!is_null($value)) {
+            if (count($value->attributes()) === 0) {
+                $arrayToReturn = $value->__toString();
+            } else {
+                $arrayToReturn['value'] = $value->__toString();
+                foreach ($value->attributes() as $keyA => $valueA) {
+                    $arrayToReturn[$keyA] = $valueA->__toString();
+                }
             }
         }
         return $arrayToReturn;
@@ -125,21 +127,5 @@ trait TraitBasic
             }
         }
         return $arrayToReturn;
-    }
-
-    private function getTagWithCurrencyParameter($childLineExtensionAmount): array
-    {
-        return [
-            'currencyID' => $childLineExtensionAmount->attributes()->currencyID->__toString(),
-            'value'      => (float) $childLineExtensionAmount->__toString(),
-        ];
-    }
-
-    private function getTagWithUnitCodeParameter($childLineExtensionAmount): array
-    {
-        return [
-            'unitCode' => $childLineExtensionAmount->attributes()->unitCode->__toString(),
-            'value'    => (float) $childLineExtensionAmount->__toString(),
-        ];
     }
 }

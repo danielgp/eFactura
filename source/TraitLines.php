@@ -52,7 +52,7 @@ trait TraitLines
     {
         $arrayOutput = [
             'ID'                  => $child->children('cbc', true)->ID->__toString(),
-            'LineExtensionAmount' => $this->getTagWithCurrencyParameter($child->children('cbc', true)
+            'LineExtensionAmount' => $this->getElementSingle($child->children('cbc', true)
                 ->LineExtensionAmount),
         ];
         // optional components =========================================================================================
@@ -74,17 +74,13 @@ trait TraitLines
         }
         switch ($strType) {
             case 'CreditNote':
-                $arrayOutput['CreditedQuantity'] = $this->getTagWithUnitCodeParameter($child->children('cbc', true)
+                $arrayOutput['CreditedQuantity'] = $this->getElementSingle($child->children('cbc', true)
                     ->CreditedQuantity);
                 break;
             case 'Invoice':
-                $arrayOutput['InvoicedQuantity'] = $this->getTagWithUnitCodeParameter($child->children('cbc', true)
+                $arrayOutput['InvoicedQuantity'] = $this->getElementSingle($child->children('cbc', true)
                     ->InvoicedQuantity);
                 break;
-        }
-        if (isset($child->children('cac', true)->AllowanceCharge)) {
-            $arrayOutput['AllowanceCharge'] = $this->getLineItemAllowanceCharge($child
-                    ->children('cac', true)->AllowanceCharge);
         }
         $arrayOutput['Item']  = $this->getLineItem($child->children('cac', true)->Item);
         $arrayOutput['Price'] = $this->getElements($child->children('cac', true)->Price);
@@ -132,35 +128,6 @@ trait TraitLines
                         $arrayOutput[$value] = $child3->children('cbc', true)->$value->__toString();
                     }
                     break;
-            }
-        }
-        return $arrayOutput;
-    }
-
-    private function getLineItemAllowanceCharge($child3): array
-    {
-        $arrayOutput = [];
-        $intLineNo   = 0;
-        foreach ($child3 as $child4) {
-            $intLineNo++;
-            $intLineStr               = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-            $arrayOutput[$intLineStr] = [
-                'Amount'                    => $this->getTagWithCurrencyParameter($child4
-                        ->children('cbc', true)->Amount),
-                'AllowanceChargeReasonCode' => $child4->children('cbc', true)->AllowanceChargeReasonCode->__toString(),
-                'ChargeIndicator'           => $child4->children('cbc', true)->ChargeIndicator->__toString(),
-            ];
-            if (isset($child4->children('cbc', true)->AllowanceChargeReason)) {
-                $arrayOutput[$intLineStr]['AllowanceChargeReason'] = $child4
-                        ->children('cbc', true)->AllowanceChargeReason->__toString();
-            }
-            if (isset($child4->children('cbc', true)->BaseAmount)) {
-                $arrayOutput[$intLineStr]['BaseAmount'] = $this->getTagWithCurrencyParameter($child4
-                        ->children('cbc', true)->BaseAmount);
-            }
-            if (isset($child4->children('cbc', true)->MultiplierFactorNumeric)) {
-                $arrayOutput[$intLineStr]['MultiplierFactorNumeric'] = $child4
-                        ->children('cbc', true)->MultiplierFactorNumeric->__toString();
             }
         }
         return $arrayOutput;

@@ -54,8 +54,8 @@ trait TraitTax
     private function getTaxSubTotal($child3): array
     {
         return [
-            'TaxAmount'     => $this->getTagWithCurrencyParameter($child3->children('cbc', true)->TaxAmount),
-            'TaxableAmount' => $this->getTagWithCurrencyParameter($child3->children('cbc', true)->TaxableAmount),
+            'TaxAmount'     => $this->getElementSingle($child3->children('cbc', true)->TaxAmount),
+            'TaxableAmount' => $this->getElementSingle($child3->children('cbc', true)->TaxableAmount),
             'TaxCategory'   => $this->getTaxCategory($child3->children('cac', true)->TaxCategory),
         ];
     }
@@ -63,7 +63,7 @@ trait TraitTax
     private function getTaxTotal($child2): array
     {
         $arrayOutput = [
-            'TaxAmount' => $this->getTagWithCurrencyParameter($child2->children('cbc', true)->TaxAmount)
+            'TaxAmount' => $this->getElementSingle($child2->children('cbc', true)->TaxAmount)
         ];
         $intLineNo   = 0;
         foreach ($child2->children('cac', true)->TaxSubtotal as $child3) {
