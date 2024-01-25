@@ -236,7 +236,7 @@
     "Lines": [
         "ID",
         "Note",
-        "CreditNoteQuantity",
+        "CreditedQuantity",
         "InvoicedQuantity",
         "LineExtensionAmount",
         "AccountingCost",
@@ -413,8 +413,8 @@
     ],
     "TaxTotal_TaxSubtotal_TaxCategory": [
         "ID",
-        "TaxExemptionReason",
         "Percent",
+        "TaxExemptionReason",
         "TaxScheme"
     ],
     "TaxTotal_TaxSubtotal_TaxCategory_TaxScheme": [

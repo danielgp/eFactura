@@ -50,12 +50,18 @@ trait TraitLines
 
     private function getLine(string $strType, $child): array
     {
-        $arrayOutput = [
-            'ID'                  => $child->children('cbc', true)->ID->__toString(),
-            'LineExtensionAmount' => $this->getElementSingle($child->children('cbc', true)
-                ->LineExtensionAmount),
-        ];
+        /* $arrayOutput = [
+          'ID'                  => $child->children('cbc', true)->ID->__toString(),
+          'LineExtensionAmount' => $this->getElementSingle($child->children('cbc', true)
+          ->LineExtensionAmount),
+          ]; */
         // optional components =========================================================================================
+        $arrayOutput = [];
+        foreach (['CreditedQuantity', 'ID', 'InvoicedQuantity', 'LineExtensionAmount'] as $strElement) {
+            if (count($child->children('cbc', true)->$strElement) !== 0) {
+                $arrayOutput[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
+            }
+        }
         if (isset($child->children('cac', true)->OrderLineReference)) {
             $arrayOutput['OrderLineReference']['LineID'] = $child->children('cac', true)->OrderLineReference
                     ->children('cbc', true)->LineID->__toString();
@@ -71,16 +77,6 @@ trait TraitLines
             if (count($child->children('cac', true)->$strElement) !== 0) {
                 $arrayOutput[$strElement] = $this->getElements($child->children('cac', true)->$strElement);
             }
-        }
-        switch ($strType) {
-            case 'CreditNote':
-                $arrayOutput['CreditedQuantity'] = $this->getElementSingle($child->children('cbc', true)
-                    ->CreditedQuantity);
-                break;
-            case 'Invoice':
-                $arrayOutput['InvoicedQuantity'] = $this->getElementSingle($child->children('cbc', true)
-                    ->InvoicedQuantity);
-                break;
         }
         $arrayOutput['Item']  = $this->getLineItem($child->children('cac', true)->Item);
         $arrayOutput['Price'] = $this->getElements($child->children('cac', true)->Price);

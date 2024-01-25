@@ -261,7 +261,7 @@ class ElectornicInvoiceWrite
                     $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
                 }
             }
-            if (in_array($arrayInput['tag'], ['EndpointID', 'PriceAmount'])) {
+            if (in_array($arrayInput['tag'], ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'PriceAmount'])) {
                 $this->objXmlWriter->writeRaw($arrayInput['data']['value']);
             } else {
                 $this->objXmlWriter->writeRaw($fmt->format($arrayInput['data']['value']));
