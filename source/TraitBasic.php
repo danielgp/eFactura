@@ -41,16 +41,30 @@ trait TraitBasic
     private function getElements(\SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];
-        foreach ($arrayIn->children('cbc', true) as $key => $value) {
-            if (count($value->attributes()) === 0) {
-                $arrayToReturn[$key] = $value->__toString();
-            } else {
-                foreach ($value->attributes() as $keyA => $valueA) {
-                    $arrayToReturn[$key] = [
-                        $keyA   => $valueA->__toString(),
-                        'value' => $value->__toString(),
-                    ];
-                }
+        if (count($arrayIn->children('cbc', true)) !== 0) { // checking if we have cbc elements
+            foreach ($arrayIn->children('cbc', true) as $key => $value) {
+                $arrayToReturn[$key] = $this->getElementSingle($value);
+            }
+        }
+        if (count($arrayIn->children('cac', true)) !== 0) { // checking if we have cac elements
+            foreach ($arrayIn->children('cac', true) as $key => $value) {
+                $arrayToReturn[$key] = $this->getElements($value);
+            }
+        }
+        return $arrayToReturn;
+    }
+
+    private function getElementSingle(\SimpleXMLElement $value)
+    {
+        $arrayToReturn = [];
+        if (count($value->attributes()) === 0) {
+            $arrayToReturn = $value->__toString();
+        } else {
+            foreach ($value->attributes() as $keyA => $valueA) {
+                $arrayToReturn = [
+                    $keyA   => $valueA->__toString(),
+                    'value' => $value->__toString(),
+                ];
             }
         }
         return $arrayToReturn;
@@ -118,14 +132,6 @@ trait TraitBasic
         return [
             'currencyID' => $childLineExtensionAmount->attributes()->currencyID->__toString(),
             'value'      => (float) $childLineExtensionAmount->__toString(),
-        ];
-    }
-
-    private function getTagWithCurrencyParameterAsString($childLineExtensionAmount): array
-    {
-        return [
-            'currencyID' => $childLineExtensionAmount->attributes()->currencyID->__toString(),
-            'value'      => $childLineExtensionAmount->__toString(),
         ];
     }
 

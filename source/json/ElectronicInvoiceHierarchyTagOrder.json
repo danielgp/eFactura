@@ -31,6 +31,21 @@
     "AccountingCustomerParty_PartyTaxScheme_TaxScheme": [
         "ID"
     ],
+    "AccountingCustomerParty_Address": [
+        "StreetName",
+        "AdditionalStreetName",
+        "AddressLine",
+        "CityName",
+        "PostalZone",
+        "CountrySubentity",
+        "Country"
+    ],
+    "AccountingCustomerParty_Address_AddressLine": [
+        "Line"
+    ],
+    "AccountingCustomerParty_Address_Country": [
+        "IdentificationCode"
+    ],
     "AccountingCustomerParty_PostalAddress": [
         "StreetName",
         "AdditionalStreetName",
@@ -47,8 +62,8 @@
         "IdentificationCode"
     ],
     "AccountingSupplierParty": [
-        "PartyIdentification",
         "EndpointID",
+        "PartyIdentification",
         "PartyName",
         "PostalAddress",
         "PartyTaxScheme",
@@ -139,26 +154,42 @@
         "ID"
     ],
     "BillingReference": [
-        "ID"
+        "ID",
+        "InvoiceDocumentReference"
+    ],
+    "BillingReference_InvoiceDocumentReference": [
+        "ID",
+        "IssueDate"
     ],
     "ContractDocumentReference": [
         "ID"
     ],
     "Delivery": [
         "ActualDeliveryDate",
-        "DeliveryLocation"
+        "DeliveryLocation",
+        "DeliveryParty"
     ],
     "Delivery_DeliveryLocation": [
+        "ID",
         "Address"
     ],
     "Delivery_DeliveryLocation_Address": [
         "StreetName",
+        "AdditionalStreetName",
+        "AddressLine",
         "CityName",
         "PostalZone",
+        "CountrySubentity",
         "Country"
     ],
     "Delivery_DeliveryLocation_Address_Country": [
         "IdentificationCode"
+    ],
+    "Delivery_DeliveryParty": [
+        "PartyName"
+    ],
+    "Delivery_DeliveryParty_PartyName": [
+        "Name"
     ],
     "DespatchDocumentReference": [
         "ID"
@@ -166,12 +197,20 @@
     "Header_CAC": {
         "AdditionalDocumentReference": "MultipleStandard",
         "AllowanceCharge": "MultipleStandard",
+        "BillingReference": "Single",
         "ContractDocumentReference": "Single",
+        "DespatchDocumentReference": "Single",
         "InvoicePeriod": "Single",
         "LegalMonetaryTotal": "Single",
         "OrderReference": "Single",
+        "OriginatorDocumentReference": "Single",
+        "PayeeParty": "Single",
+        "TaxRepresentativeParty": "Single",
+        "Delivery": "Single",
         "PaymentMeans": "Multiple",
-        "PaymentTerms": "Single"
+        "PaymentTerms": "Single",
+        "ProjectReference": "Single",
+        "ReceiptDocumentReference": "Single"
     },
     "Header_CBC": [
         "UBLVersionID",
@@ -201,7 +240,9 @@
         "InvoicedQuantity",
         "LineExtensionAmount",
         "AccountingCost",
+        "InvoicePeriod",
         "OrderLineReference",
+        "DocumentReference",
         "AllowanceCharge",
         "AdditionalCharge",
         "Item",
@@ -214,6 +255,13 @@
         "MultiplierFactorNumeric",
         "AllowanceChargeReason",
         "AllowanceChargeReasonCode"
+    ],
+    "Lines_DocumentReference": [
+        "ID"
+    ],
+    "Lines_InvoicePeriod": [
+        "StartDate",
+        "EndDate"
     ],
     "Lines_Item": [
         "Description",
@@ -273,9 +321,24 @@
     "OriginatorDocumentReference": [
         "ID"
     ],
+    "PayeeParty": [
+        "PartyIdentification",
+        "PartyName",
+        "PartyLegalEntity"
+    ],
+    "PayeeParty_PartyIdentification": [
+        "ID"
+    ],
+    "PayeeParty_PartyName": [
+        "Name"
+    ],
+    "PayeeParty_PartyLegalEntity": [
+        "CompanyID"
+    ],
     "PaymentMeans": [
         "PaymentMeansCode",
         "PaymentID",
+        "PaymentMandate",
         "PayeeFinancialAccount",
         "CardAccount"
     ],
@@ -287,6 +350,13 @@
         "ID",
         "Name",
         "FinancialInstitutionBranch"
+    ],
+    "PaymentMeans_PaymentMandate": [
+        "ID",
+        "PayerFinancialAccount"
+    ],
+    "PaymentMeans_PaymentMandate_PayerFinancialAccount": [
+        "ID"
     ],
     "PaymentMeans_PayeeFinancialAccount_FinancialInstitutionBranch": [
         "ID"
@@ -301,12 +371,21 @@
         "ID"
     ],
     "TaxRepresentativeParty": [
+        "PartyName",
+        "PostalAddress",
+        "PartyTaxScheme"
+    ],
+    "TaxRepresentativeParty_PartyName": [
         "Name",
-        "PartyTaxScheme",
-        "PostalAddress"
+        "CompanyID"
     ],
     "TaxRepresentativeParty_PartyTaxScheme": [
-        "CompanyID"
+        "Name",
+        "CompanyID",
+        "TaxScheme"
+    ],
+    "TaxRepresentativeParty_PartyTaxScheme_TaxScheme": [
+        "ID"
     ],
     "TaxRepresentativeParty_PostalAddress": [
         "StreetName",

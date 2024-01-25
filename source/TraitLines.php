@@ -31,7 +31,8 @@ namespace danielgp\efactura;
 trait TraitLines
 {
 
-    use TraitTax;
+    use TraitBasic,
+        TraitTax;
 
     private function getDocumentLines($objFile, string $strTag): array
     {
@@ -63,11 +64,13 @@ trait TraitLines
             $arrayOutput['DocumentReference']['ID'] = $child->children('cac', true)->DocumentReference
                     ->children('cbc', true)->ID->__toString();
         }
-        if (isset($child->children('cbc', true)->AccountingCost)) {
-            $arrayOutput['AccountingCost'] = $child->children('cbc', true)->AccountingCost->__toString();
-        }
-        if (isset($child->children('cbc', true)->Note)) {
-            $arrayOutput['Note'] = $child->children('cbc', true)->Note->__toString();
+        foreach (['AccountingCost', 'InvoicePeriod', 'Note'] as $strElement) {
+            if (count($child->children('cbc', true)->$strElement) !== 0) {
+                $arrayOutput[$strElement] = $child->children('cbc', true)->$strElement->__toString();
+            }
+            if (count($child->children('cac', true)->$strElement) !== 0) {
+                $arrayOutput[$strElement] = $this->getElements($child->children('cac', true)->$strElement);
+            }
         }
         switch ($strType) {
             case 'CreditNote':

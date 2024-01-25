@@ -31,7 +31,8 @@ namespace danielgp\efactura;
 class ElectornicInvoiceRead
 {
 
-    use TraitCompanies,
+    use TraitBasic,
+        TraitCompanies,
         TraitTax,
         TraitLines;
 
@@ -49,20 +50,29 @@ class ElectornicInvoiceRead
         return $arrayDocument;
     }
 
+    private function getElementsOrdered(string $strKeyOrderedElements, \SimpleXMLElement $arrayDataIn): array
+    {
+        $arrayOutput = [];
+        foreach ($this->arraySettings['CustomOrder'][$strKeyOrderedElements] as $value) {
+            if (isset($arrayDataIn->$value)) {
+                $arrayOutput[$value] = $arrayDataIn->$value->__toString();
+            }
+        }
+        return $arrayOutput;
+    }
+
     private function getHeader(array $arrayParams): array
     {
-        $arrayCBC      = explode(':', $arrayParams['DocumentNameSpaces']['cbc']);
-        $strCBC        = $arrayCBC[count($arrayCBC) - 1]; // CommonBasicComponents
-        $strCAC        = $arrayParams['cacName']; // CommonAggregateComponents
-        $arrayDocument = [
-            $strCBC => $this->getHeaderCommonBasicComponents($arrayParams['CBC']),
-            $strCAC => [
-                'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParams['CAC']
-                    ->AccountingCustomerParty->children('cac', true)->Party),
-                'AccountingSupplierParty' => $this->getAccountingSupplierParty($arrayParams['CAC']
-                    ->AccountingSupplierParty->children('cac', true)->Party),
-                'TaxTotal'                => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
-            ],
+        $arrayCBC               = explode(':', $arrayParams['DocumentNameSpaces']['cbc']);
+        $strCBC                 = $arrayCBC[(count($arrayCBC) - 1)]; // CommonBasicComponents
+        $arrayDocument[$strCBC] = $this->getElementsOrdered('Header_CBC', $arrayParams['CBC']);
+        $strCAC                 = $arrayParams['cacName']; // CommonAggregateComponents
+        $arrayDocument[$strCAC] = [
+            'AccountingCustomerParty' => $this->getAccountingCustomerParty($arrayParams['CAC']
+                ->AccountingCustomerParty->children('cac', true)->Party),
+            'AccountingSupplierParty' => $this->getAccountingSupplierParty($arrayParams['CAC']
+                ->AccountingSupplierParty->children('cac', true)->Party),
+            'TaxTotal'                => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
         ];
         // optional components =========================================================================================
         foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
@@ -72,7 +82,7 @@ class ElectornicInvoiceRead
                         $arrayDocument[$strCAC][$key] = $this->getElements($arrayParams['CAC']->$key);
                         break;
                     case 'Multiple':
-                        $arrayDocument[$strCAC][$key] = $this->getMultipleElements($arrayParams['CAC']->$key);
+                        $arrayDocument[$strCAC][$key] = $this->getMultiplePaymentMeansElements($arrayParams['CAC']->$key);
                         break;
                     case 'MultipleStandard':
                         $arrayDocument[$strCAC][$key] = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
@@ -89,7 +99,8 @@ class ElectornicInvoiceRead
                 'CityName'   => $strElement->children('cbc', true)->CityName->__toString(),
                 'PostalZone' => $strElement->children('cbc', true)->PostalZone->__toString(),
                 'Country'    => [
-                    'IdentificationCode' => $strElement->children('cac', true)->Country->children('cbc', true)->IdentificationCode->__toString(),
+                    'IdentificationCode' => $strElement->children('cac', true)->Country->children('cbc', true)
+                    ->IdentificationCode->__toString(),
                 ],
             ];
             if (isset($strEl->children('cbc', true)->ActualDeliveryDate)) {
@@ -100,25 +111,14 @@ class ElectornicInvoiceRead
         return $arrayDocument;
     }
 
-    private function getHeaderCommonBasicComponents(\SimpleXMLElement $objCommonBasicComponents): array
-    {
-        $arrayOutput = [];
-        foreach ($this->arraySettings['CustomOrder']['Header_CBC'] as $value) {
-            if (isset($objCommonBasicComponents->$value)) {
-                $arrayOutput[$value] = $objCommonBasicComponents->$value->__toString();
-            }
-        }
-        return $arrayOutput;
-    }
-
-    private function getMultipleElements(array|\SimpleXMLElement $arrayIn): array
+    private function getMultiplePaymentMeansElements(array|\SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];
         $intLineNo     = 0;
         foreach ($arrayIn as $child) {
             $intLineNo++;
             $intLineStr                 = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-            $arrayToReturn[$intLineStr] = $this->getPaymentMeans($child);
+            $arrayToReturn[$intLineStr] = $this->getElements($child);
         }
         return $arrayToReturn;
     }
