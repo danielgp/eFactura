@@ -78,6 +78,17 @@ final class ReadWriteTest extends TestCase
         $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
+
+    public function testGetRemoteInvoiceIntoArrayAsExample5()
+    {
+        $this->markTestSkipped('Full logic not yest implemented... WIP');
+        $url           = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example5.xml';
+        $classRead     = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData     = $classRead->readElectronicInvoice($url);
+        $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $strTargetFile = __DIR__ . '/' . basename($url);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
     public function testGetRemoteInvoiceIntoArrayAsExample6()
