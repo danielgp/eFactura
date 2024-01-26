@@ -40,7 +40,16 @@ class ElectornicInvoiceRead
         $arrayOut = [];
         foreach ($this->arraySettings['CustomOrder'][$arrayIn['type']] as $strElement) {
             if (isset($arrayIn['data']->children('cac', true)->$strElement)) {
-                $arrayOut[$strElement] = $this->getElements($arrayIn['data']->children('cac', true)->$strElement);
+                if ($strElement === 'PartyTaxScheme') {
+                    $intLineNo = 0;
+                    foreach ($arrayIn['data']->children('cac', true)->PartyTaxScheme as $child) {
+                        $intLineNo++;
+                        $intLineStr                         = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $arrayOut[$strElement][$intLineStr] = $this->getElements($child);
+                    }
+                } else {
+                    $arrayOut[$strElement] = $this->getElements($arrayIn['data']->children('cac', true)->$strElement);
+                }
             }
             if (isset($arrayIn['data']->children('cbc', true)->$strElement)) {
                 if ($strElement === 'EndpointID') {
@@ -54,7 +63,7 @@ class ElectornicInvoiceRead
                 }
             }
         }
-        return ['Party' => $arrayOut];
+        return $arrayOut;
     }
 
     private function getDocumentRoot(object $objFile): array
@@ -85,30 +94,39 @@ class ElectornicInvoiceRead
 
     private function getHeader(array $arrayParams): array
     {
-        $arrayDocument          = $this->getElementsOrdered([
+        $arrayDocument = $this->getElementsOrdered([
             'data'          => $arrayParams['CBC'],
             'namespace_cbc' => $arrayParams['DocumentNameSpaces']['cbc'],
         ]);
-        $strCAC                 = $arrayParams['cacName']; // CommonAggregateComponents
-        $arrayDocument[$strCAC] = [
-            'TaxTotal' => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
-        ];
+        $strCAC        = $arrayParams['cacName']; // CommonAggregateComponents
+        $intLineNo     = 0;
+        foreach ($arrayParams['CAC']->TaxTotal as $child) {
+            $intLineNo++;
+            $intLineStr                                      = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $arrayDocument[$strCAC]['TaxTotal'][$intLineStr] = $this->getTaxTotal($child);
+        }
         // optional components =========================================================================================
         foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
             if (isset($arrayParams['CAC']->$key)) {
                 switch ($value) {
                     case 'Multiple':
-                        $arrayDocument[$strCAC][$key] = $this->getMultiplePaymentMeansElements($arrayParams['CAC']->$key);
+                        $arrayDocument[$strCAC][$key]          = $this->getMultiplePaymentMeansElements($arrayParams['CAC']->$key);
                         break;
                     case 'MultipleStandard':
-                        $arrayDocument[$strCAC][$key] = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
+                        $arrayDocument[$strCAC][$key]          = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
                         break;
                     case 'Single':
-                        $arrayDocument[$strCAC][$key] = $this->getElements($arrayParams['CAC']->$key);
+                        $arrayDocument[$strCAC][$key]          = $this->getElements($arrayParams['CAC']->$key);
                         break;
                     case 'SingleCompany':
-                        $arrayDocument[$strCAC][$key] = $this->getAccountingCustomerOrSupplierParty([
+                        $arrayDocument[$strCAC][$key]['Party'] = $this->getAccountingCustomerOrSupplierParty([
                             'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
+                            'type' => $key,
+                        ]);
+                        break;
+                    case 'SingleCompanyWithoutParty':
+                        $arrayDocument[$strCAC][$key]          = $this->getAccountingCustomerOrSupplierParty([
+                            'data' => $arrayParams['CAC']->$key,
                             'type' => $key,
                         ]);
                         break;

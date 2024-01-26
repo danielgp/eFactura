@@ -65,11 +65,13 @@ trait TraitTax
         $arrayOutput = [
             'TaxAmount' => $this->getElementSingle($child2->children('cbc', true)->TaxAmount)
         ];
-        $intLineNo   = 0;
-        foreach ($child2->children('cac', true)->TaxSubtotal as $child3) {
-            $intLineNo++;
-            $intLineStr                              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-            $arrayOutput['TaxSubtotal'][$intLineStr] = $this->getTaxSubTotal($child3);
+        if (isset($child2->children('cac', true)->TaxSubtotal)) {
+            $intLineNo = 0;
+            foreach ($child2->children('cac', true)->TaxSubtotal as $child3) {
+                $intLineNo++;
+                $intLineStr                              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                $arrayOutput['TaxSubtotal'][$intLineStr] = $this->getTaxSubTotal($child3);
+            }
         }
         return $arrayOutput;
     }

@@ -92,13 +92,13 @@ class ElectornicInvoiceWrite
                 $key     = implode('_', [$arrayInput['commentParentKey'], $value]);
                 $matches = [];
                 preg_match('/^.*(Amount|Quantity)$/', $value, $matches, PREG_OFFSET_CAPTURE);
-                if ($value === 'EndpointID') {
+                if (in_array($value, ['EmbeddedDocumentBinaryObject', 'EndpointID'])) {
                     $this->setSingleElementWithAttribute([
                         'commentParentKey' => $arrayInput['commentParentKey'],
                         'data'             => $arrayInput['data'][$value],
                         'tag'              => $value,
                     ]);
-                } elseif (in_array($value, ['AdditionalItemProperty', 'CommodityClassification', 'StandardItemIdentification', 'TaxSubtotal'])) {
+                } elseif (in_array($value, ['AdditionalItemProperty', 'CommodityClassification', 'PartyTaxScheme', 'StandardItemIdentification', 'TaxSubtotal'])) {
                     $this->setMultipleElementsOrdered([
                         'commentParentKey' => $key,
                         'data'             => $arrayInput['data'][$value],
@@ -171,6 +171,24 @@ class ElectornicInvoiceWrite
         }
     }
 
+    protected function setNumericValue(string $strTag, array $arrayDataIn): string|float
+    {
+        $sReturn      = $arrayDataIn['value'];
+        $arrayRawTags = ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'PriceAmount'];
+        if (is_numeric($arrayDataIn['value']) && !in_array($strTag, $arrayRawTags)) {
+            $fmt = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
+            $fmt->setAttribute(\NumberFormatter::GROUPING_USED, 0);
+            $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
+            // if contains currencyID consider 2 decimals as minimum
+            if (in_array('currencyID', array_keys($arrayDataIn))) {
+                $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            }
+            $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+            $sReturn = $fmt->format($arrayDataIn['value']);
+        }
+        return $sReturn;
+    }
+
     private function setPrepareXml(string $strFile): void
     {
         $this->objXmlWriter = new \XMLWriter();
@@ -200,8 +218,9 @@ class ElectornicInvoiceWrite
             'Delivery'                    => 'Single',
             'PaymentMeans'                => 'Multiple',
             'PaymentTerms'                => 'Single',
+            'DocumentReference'           => 'Single',
             'AllowanceCharge'             => 'Multiple',
-            'TaxTotal'                    => 'Single',
+            'TaxTotal'                    => 'Multiple',
             'LegalMonetaryTotal'          => 'Single',
         ];
         foreach ($arrayOptionalElementsHeader as $key => $strLogicType) {
@@ -249,23 +268,12 @@ class ElectornicInvoiceWrite
         $this->setSingleComment($arrayInput);
         if (is_array($arrayInput['data']) && array_key_exists('value', $arrayInput['data'])) {
             $this->objXmlWriter->startElement('cbc:' . $arrayInput['tag']);
-            $fmt = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
-            $fmt->setAttribute(\NumberFormatter::GROUPING_USED, 0);
-            $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
-            $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
             foreach ($arrayInput['data'] as $key => $value) {
                 if ($key !== 'value') { // if is not value, must be an attribute
                     $this->objXmlWriter->writeAttribute($key, $value);
                 }
-                if ($key === 'currencyID') {
-                    $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
-                }
             }
-            if (in_array($arrayInput['tag'], ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'PriceAmount'])) {
-                $this->objXmlWriter->writeRaw($arrayInput['data']['value']);
-            } else {
-                $this->objXmlWriter->writeRaw($fmt->format($arrayInput['data']['value']));
-            }
+            $this->objXmlWriter->writeRaw($this->setNumericValue($arrayInput['tag'], $arrayInput['data']));
             $this->objXmlWriter->endElement();
         } else {
             $this->objXmlWriter->writeElement('cbc:' . $arrayInput['tag'], $arrayInput['data']);

@@ -56,15 +56,7 @@ trait TraitLines
                 $arrayOutput[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
             }
         }
-        if (isset($child->children('cac', true)->OrderLineReference)) {
-            $arrayOutput['OrderLineReference']['LineID'] = $child->children('cac', true)->OrderLineReference
-                    ->children('cbc', true)->LineID->__toString();
-        }
-        if (isset($child->children('cac', true)->DocumentReference)) {
-            $arrayOutput['DocumentReference']['ID'] = $child->children('cac', true)->DocumentReference
-                    ->children('cbc', true)->ID->__toString();
-        }
-        foreach (['AccountingCost', 'InvoicePeriod', 'Note'] as $strElement) {
+        foreach (['AccountingCost', 'DocumentReference', 'InvoicePeriod', 'Note', 'OrderLineReference', 'Price'] as $strElement) {
             if (count($child->children('cbc', true)->$strElement) !== 0) {
                 $arrayOutput[$strElement] = $child->children('cbc', true)->$strElement->__toString();
             }
@@ -72,51 +64,35 @@ trait TraitLines
                 $arrayOutput[$strElement] = $this->getElements($child->children('cac', true)->$strElement);
             }
         }
-        $arrayOutput['Item']  = $this->getLineItem($child->children('cac', true)->Item);
-        $arrayOutput['Price'] = $this->getElements($child->children('cac', true)->Price);
+        $arrayOutput['Item'] = $this->getLineItem($child->children('cac', true)->Item);
         return $arrayOutput;
     }
 
     private function getLineItem($child3): array
     {
         $arrayOutput = [];
-        foreach ($this->arraySettings['CustomOrder']['Lines_Item'] as $value) {
+        foreach ($this->arraySettings['CustomOrder']['Lines_Item@Read'] as $key => $value) {
             switch ($value) {
-                case 'AdditionalItemProperty':
+                case 'MultipleAggregate':
                     $intLineNo = 0;
-                    foreach ($child3->children('cac', true)->$value as $value2) {
+                    foreach ($child3->children('cac', true)->$key as $value2) {
                         $intLineNo++;
-                        $intLineStr                       = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                        $arrayOutput[$value][$intLineStr] = [
-                            'Name'  => $value2->children('cbc', true)->Name->__toString(),
-                            'Value' => $value2->children('cbc', true)->Value->__toString(),
-                        ];
+                        $intLineStr                     = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $arrayOutput[$key][$intLineStr] = $this->getElements($value2);
                     }
                     break;
-                case 'ClassifiedTaxCategory':
-                    $arrayOutput[$value] = $this->getTaxCategory($child3->children('cac', true)->$value);
-                    break;
-                case 'CommodityClassification':
-                // intentionally left open
-                case 'StandardItemIdentification':
-                    $intLineNo           = 0;
-                    foreach ($child3->children('cac', true)->$value as $value2) {
-                        $intLineNo++;
-                        $intLineStr                       = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                        $arrayOutput[$value][$intLineStr] = $this->getElements($value2);
+                case 'SingleAggregate':
+                    if (count($child3->children('cac', true)->$key) !== 0) {
+                        $arrayOutput[$key] = $this->getElements($child3->children('cac', true)->$key);
                     }
                     break;
-                case 'OriginCountry':
-                // intentionally left open
-                case 'SellersItemIdentification':
-                    if (count($child3->children('cac', true)->$value) !== 0) {
-                        $arrayOutput[$value] = $this->getElements($child3->children('cac', true)->$value);
+                case 'SingleBasic':
+                    if (count($child3->children('cbc', true)->$key) !== 0) {
+                        $arrayOutput[$key] = $child3->children('cbc', true)->$key->__toString();
                     }
                     break;
-                default:
-                    if (count($child3->children('cbc', true)->$value) !== 0) {
-                        $arrayOutput[$value] = $child3->children('cbc', true)->$value->__toString();
-                    }
+                case 'TaxCategory':
+                    $arrayOutput[$key] = $this->getTaxCategory($child3->children('cac', true)->$key);
                     break;
             }
         }

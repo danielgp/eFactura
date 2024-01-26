@@ -107,23 +107,14 @@ trait TraitBasic
                 if (count($value2->attributes()) === 0) {
                     $arrayToReturn[$intLineStr][$key2] = $value2->__toString();
                 } else {
+                    $arrayToReturn[$intLineStr][$key2]['value'] = $value2->__toString();
                     foreach ($value2->attributes() as $keyA => $valueA) {
-                        $arrayToReturn[$intLineStr][$key2] = [
-                            $keyA   => $valueA->__toString(),
-                            'value' => $value2->__toString(),
-                        ];
+                        $arrayToReturn[$intLineStr][$key2][$keyA] = $valueA->__toString();
                     }
                 }
             }
             foreach ($child->children('cac', true) as $key2 => $value2) {
-                foreach ($value2->children('cbc', true) as $key3 => $value3) {
-                    $arrayToReturn[$intLineStr][$key2][$key3] = $value3->__toString();
-                }
-                foreach ($value2->children('cac', true) as $key3 => $value3) {
-                    foreach ($value3->children('cbc', true) as $key4 => $value4) {
-                        $arrayToReturn[$intLineStr][$key2][$key3][$key4] = $value4->__toString();
-                    }
-                }
+                $arrayToReturn[$intLineStr][$key2] = $this->getElements($value2);
             }
         }
         return $arrayToReturn;

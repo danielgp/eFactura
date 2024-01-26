@@ -114,6 +114,7 @@
         "Attachment"
     ],
     "AdditionalDocumentReference_Attachment": [
+        "EmbeddedDocumentBinaryObject",
         "ExternalReference"
     ],
     "AdditionalDocumentReference_Attachment_ExternalReference": [
@@ -207,7 +208,7 @@
         "OrderReference": "Single",
         "OriginatorDocumentReference": "Single",
         "PayeeParty": "Single",
-        "TaxRepresentativeParty": "Single",
+        "TaxRepresentativeParty": "SingleCompanyWithoutParty",
         "Delivery": "Single",
         "PaymentMeans": "Multiple",
         "PaymentTerms": "Single",
@@ -268,6 +269,7 @@
     "Lines_Item": [
         "Description",
         "Name",
+        "BuyersItemIdentification",
         "SellersItemIdentification",
         "StandardItemIdentification",
         "OriginCountry",
@@ -275,9 +277,23 @@
         "ClassifiedTaxCategory",
         "AdditionalItemProperty"
     ],
+    "Lines_Item@Read": {
+        "Description": "SingleBasic",
+        "Name": "SingleBasic",
+        "BuyersItemIdentification": "SingleAggregate",
+        "SellersItemIdentification": "SingleAggregate",
+        "StandardItemIdentification": "MultipleAggregate",
+        "OriginCountry": "SingleAggregate",
+        "CommodityClassification": "MultipleAggregate",
+        "ClassifiedTaxCategory": "TaxCategory",
+        "AdditionalItemProperty": "MultipleAggregate"
+    },
     "Lines_Item_AdditionalItemProperty": [
         "Name",
         "Value"
+    ],
+    "Lines_Item_BuyersItemIdentification": [
+        "ID"
     ],
     "Lines_Item_CommodityClassification": [
         "ItemClassificationCode"
@@ -304,7 +320,13 @@
     ],
     "Lines_Price": [
         "PriceAmount",
-        "BaseQuantity"
+        "BaseQuantity",
+        "AllowanceCharge"
+    ],
+    "Lines_Price_AllowanceCharge": [
+        "ChargeIndicator",
+        "Amount",
+        "BaseAmount"
     ],
     "LegalMonetaryTotal": [
         "LineExtensionAmount",

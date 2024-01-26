@@ -62,7 +62,7 @@ class ElectronicInvoiceComments
         return $arrayCommentsForTable;
     }
 
-    public function getCommentsIntoArrayForVerifications()
+    public function getCommentsIntoArrayForVerifications(): array
     {
         $arrayCommentsRaw      = $this->getCommentsFromFileAsArray();
         $arrayCommentsForTable = [];
