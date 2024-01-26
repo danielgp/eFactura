@@ -42,20 +42,14 @@ trait TraitLines
             if ($strNodeName === ($strTag . 'Line')) {
                 $intLineNo++;
                 $intLineStr              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                $arrayLines[$intLineStr] = $this->getLine($strTag, $child);
+                $arrayLines[$intLineStr] = $this->getLine($child);
             }
         }
         return $arrayLines;
     }
 
-    private function getLine(string $strType, $child): array
+    private function getLine($child): array
     {
-        /* $arrayOutput = [
-          'ID'                  => $child->children('cbc', true)->ID->__toString(),
-          'LineExtensionAmount' => $this->getElementSingle($child->children('cbc', true)
-          ->LineExtensionAmount),
-          ]; */
-        // optional components =========================================================================================
         $arrayOutput = [];
         foreach (['CreditedQuantity', 'ID', 'InvoicedQuantity', 'LineExtensionAmount'] as $strElement) {
             if (count($child->children('cbc', true)->$strElement) !== 0) {

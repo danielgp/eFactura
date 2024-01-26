@@ -195,6 +195,8 @@
         "ID"
     ],
     "Header_CAC": {
+        "AccountingCustomerParty": "SingleCompany",
+        "AccountingSupplierParty": "SingleCompany",
         "AdditionalDocumentReference": "MultipleStandard",
         "AllowanceCharge": "MultipleStandard",
         "BillingReference": "Single",

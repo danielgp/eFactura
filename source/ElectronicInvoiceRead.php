@@ -91,28 +91,26 @@ class ElectornicInvoiceRead
         ]);
         $strCAC                 = $arrayParams['cacName']; // CommonAggregateComponents
         $arrayDocument[$strCAC] = [
-            'AccountingCustomerParty' => $this->getAccountingCustomerOrSupplierParty([
-                'data' => $arrayParams['CAC']->AccountingCustomerParty->children('cac', true)->Party,
-                'type' => 'AccountingCustomerParty',
-            ]),
-            'AccountingSupplierParty' => $this->getAccountingCustomerOrSupplierParty([
-                'data' => $arrayParams['CAC']->AccountingSupplierParty->children('cac', true)->Party,
-                'type' => 'AccountingSupplierParty',
-            ]),
-            'TaxTotal'                => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
+            'TaxTotal' => $this->getTaxTotal($arrayParams['CAC']->TaxTotal),
         ];
         // optional components =========================================================================================
         foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
             if (isset($arrayParams['CAC']->$key)) {
                 switch ($value) {
-                    case 'Single':
-                        $arrayDocument[$strCAC][$key] = $this->getElements($arrayParams['CAC']->$key);
-                        break;
                     case 'Multiple':
                         $arrayDocument[$strCAC][$key] = $this->getMultiplePaymentMeansElements($arrayParams['CAC']->$key);
                         break;
                     case 'MultipleStandard':
                         $arrayDocument[$strCAC][$key] = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
+                        break;
+                    case 'Single':
+                        $arrayDocument[$strCAC][$key] = $this->getElements($arrayParams['CAC']->$key);
+                        break;
+                    case 'SingleCompany':
+                        $arrayDocument[$strCAC][$key] = $this->getAccountingCustomerOrSupplierParty([
+                            'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
+                            'type' => $key,
+                        ]);
                         break;
                 }
             }
