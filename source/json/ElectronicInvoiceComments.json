@@ -2588,9 +2588,9 @@
         "SemanticDataType": "Date"
     },
     "BG-27": {
-        "HierarchycalTagName": "Lines_AllowanceCharge",
+        "HierarchycalTagName": "Lines_AllowanceCharge~ChargeIndicatorFalse",
         "Level": "++",
-        "Cardinality": "0..1",
+        "Cardinality": "0..n",
         "OperationalTerm": {
             "ro_RO": "DEDUCERI LA LINIA FACTURII"
         },
@@ -2600,7 +2600,7 @@
         "RequirementID": "R15"
     },
     "BT-136": {
-        "HierarchycalTagName": "Lines_AllowanceCharge_Amount",
+        "HierarchycalTagName": "Lines_AllowanceCharge~ChargeIndicatorFalse_Amount",
         "Level": "+++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -2613,7 +2613,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-137": {
-        "HierarchycalTagName": "Lines_AllowanceCharge_BaseAmount",
+        "HierarchycalTagName": "Lines_AllowanceCharge~ChargeIndicatorFalse_BaseAmount",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2626,7 +2626,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-138": {
-        "HierarchycalTagName": "Lines_AllowanceCharge_MultiplierFactorNumeric",
+        "HierarchycalTagName": "Lines_AllowanceCharge~ChargeIndicatorFalse_MultiplierFactorNumeric",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2639,7 +2639,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-139": {
-        "HierarchycalTagName": "Lines_AllowanceCharge_AllowanceChargeReason",
+        "HierarchycalTagName": "Lines_AllowanceCharge~ChargeIndicatorFalse_AllowanceChargeReason",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2652,7 +2652,7 @@
         "SemanticDataType": "Text"
     },
     "BT-140": {
-        "HierarchycalTagName": "Lines_AllowanceCharge_AllowanceChargeReasonCode",
+        "HierarchycalTagName": "Lines_AllowanceCharge~ChargeIndicatorFalse_AllowanceChargeReasonCode",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2668,7 +2668,7 @@
         "SemanticDataType": "Code"
     },
     "BG-28": {
-        "HierarchycalTagName": "Lines_AdditionalCharge",
+        "HierarchycalTagName": "Lines_AdditionalCharge~ChargeIndicatorTrue",
         "Level": "++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2683,7 +2683,7 @@
         "RequirementID": "R18"
     },
     "BT-141": {
-        "HierarchycalTagName": "Lines_AdditionalCharge_Amount",
+        "HierarchycalTagName": "Lines_AdditionalCharge~ChargeIndicatorTrue_Amount",
         "Level": "+++",
         "Cardinality": "1..1",
         "OperationalTerm": {
@@ -2696,7 +2696,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-142": {
-        "HierarchycalTagName": "Lines_AdditionalCharge_BaseAmount",
+        "HierarchycalTagName": "Lines_AdditionalCharge~ChargeIndicatorTrue_BaseAmount",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2709,7 +2709,7 @@
         "SemanticDataType": "Sum"
     },
     "BT-143": {
-        "HierarchycalTagName": "Lines_AdditionalCharge_MultiplierFactorNumeric",
+        "HierarchycalTagName": "Lines_AdditionalCharge~ChargeIndicatorTrue_MultiplierFactorNumeric",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2722,7 +2722,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-144": {
-        "HierarchycalTagName": "Lines_AdditionalCharge_AdditionalChargeReason",
+        "HierarchycalTagName": "Lines_AdditionalCharge~ChargeIndicatorTrue_AdditionalChargeReason",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2735,7 +2735,7 @@
         "SemanticDataType": "Text"
     },
     "BT-145": {
-        "HierarchycalTagName": "Lines_AdditionalCharge_AdditionalChargeReasonCode",
+        "HierarchycalTagName": "Lines_AdditionalCharge~ChargeIndicatorTrue_AdditionalChargeReasonCode",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {
@@ -2779,7 +2779,7 @@
         "SemanticDataType": "Unit Price Value"
     },
     "BT-147": {
-        "HierarchycalTagName": "Lines_Price_AllowanceCharge",
+        "HierarchycalTagName": "Lines_Price_AllowanceCharge~ChargeIndicatorFalse",
         "Level": "+++",
         "Cardinality": "0..1",
         "OperationalTerm": {

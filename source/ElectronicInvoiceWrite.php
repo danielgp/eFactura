@@ -35,11 +35,11 @@ class ElectornicInvoiceWrite
 
     protected \XMLWriter $objXmlWriter;
 
-    private function loadSettingsAndManageDefaults(array $arrayData, bool $bolComments, bool $bolSchemaLctn): array
+    private function loadSettingsAndManageDefaults(array $arrayData, array $arrayFeatures): array
     {
         // if no DocumentNameSpaces seen take Default ones from local configuration
-        $this->getSettingsFromFileIntoMemory($bolComments);
-        $arrayDefaults = $this->getDefaultsIntoDataSet($arrayData, $bolSchemaLctn);
+        $this->getSettingsFromFileIntoMemory($arrayFeatures['Comments']);
+        $arrayDefaults = $this->getDefaultsIntoDataSet($arrayData, $arrayFeatures['SchemaLocation']);
         if ($arrayDefaults !== []) {
             $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
             if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
@@ -83,6 +83,9 @@ class ElectornicInvoiceWrite
 
     private function setElementsOrdered(array $arrayInput): void
     {
+        if ($arrayInput['commentParentKey'] === 'AllowanceCharge~ChargeIndicator0') {
+            error_log(json_encode($arrayInput));
+        }
         $this->setElementComment($arrayInput['commentParentKey']);
         $this->objXmlWriter->startElement('cac:' . $arrayInput['tag']);
         $this->setExtraElement($arrayInput, 'Start');
@@ -92,7 +95,15 @@ class ElectornicInvoiceWrite
                 $key     = implode('_', [$arrayInput['commentParentKey'], $value]);
                 $matches = [];
                 preg_match('/^.*(Amount|Quantity)$/', $value, $matches, PREG_OFFSET_CAPTURE);
-                if (in_array($value, ['EmbeddedDocumentBinaryObject', 'EndpointID'])) {
+                if ($key === 'Lines_AllowanceCharge') {
+                    foreach ($arrayInput['data'][$value] as $value2) {
+                        $this->setElementsOrdered([
+                            'commentParentKey' => $key,
+                            'data'             => $value2,
+                            'tag'              => $value,
+                        ]);
+                    }
+                } elseif (in_array($value, ['EmbeddedDocumentBinaryObject', 'EndpointID']) || in_array($arrayInput['commentParentKey'], ['AccountingCustomerParty_PartyIdentification', 'AccountingSupplierParty_PartyIdentification', 'Lines_Item_SellersItemIdentification', 'Lines_Item_StandardItemIdentification', 'Lines_Item_CommodityClassification', 'PayeeParty_PartyIdentification']) || ($key === 'Delivery_DeliveryLocation_ID')) {
                     $this->setSingleElementWithAttribute([
                         'commentParentKey' => $arrayInput['commentParentKey'],
                         'data'             => $arrayInput['data'][$value],
@@ -104,7 +115,7 @@ class ElectornicInvoiceWrite
                         'data'             => $arrayInput['data'][$value],
                         'tag'              => $value,
                     ]);
-                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value]) || in_array($arrayInput['commentParentKey'], ['AccountingCustomerParty_PartyIdentification', 'AccountingSupplierParty_PartyIdentification', 'Lines_Item_SellersItemIdentification', 'Lines_Item_StandardItemIdentification', 'Lines_Item_CommodityClassification'])) {
+                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value])) {
                     $this->setSingleElementWithAttribute([
                         'commentParentKey' => $arrayInput['commentParentKey'],
                         'data'             => $arrayInput['data'][$value],
@@ -151,9 +162,17 @@ class ElectornicInvoiceWrite
     private function setManageComment(string $strCommentParentKey, array $arrayIn): string
     {
         if (str_starts_with($strCommentParentKey, 'AllowanceCharge')) {
-            $arrayCommentPieces  = explode('_', $strCommentParentKey);
+            $arrayCommentPieces = explode('_', $strCommentParentKey);
+            // carefully manage a child to decide on comment tag
+            $strChargeIndicator = $arrayIn['ChargeIndicator'];
+            if (in_array($strChargeIndicator, ['0', '1'])) {
+                $strChargeIndicator = [
+                    '0' => 'false',
+                    '1' => 'true',
+                    ][$arrayIn['ChargeIndicator']];
+            }
             array_splice($arrayCommentPieces, 0, 1, 'AllowanceCharge~ChargeIndicator'
-                . ucfirst($arrayIn['ChargeIndicator'])); // carefully manage a child to decide on comment tag
+                . ucfirst($strChargeIndicator));
             $strCommentParentKey = implode('_', $arrayCommentPieces);
         }
         return $strCommentParentKey;
@@ -174,7 +193,7 @@ class ElectornicInvoiceWrite
     protected function setNumericValue(string $strTag, array $arrayDataIn): string|float
     {
         $sReturn      = $arrayDataIn['value'];
-        $arrayRawTags = ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'PriceAmount'];
+        $arrayRawTags = ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'ItemClassificationCode', 'PriceAmount'];
         if (is_numeric($arrayDataIn['value']) && !in_array($strTag, $arrayRawTags)) {
             $fmt = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
             $fmt->setAttribute(\NumberFormatter::GROUPING_USED, 0);
@@ -189,12 +208,12 @@ class ElectornicInvoiceWrite
         return $sReturn;
     }
 
-    private function setPrepareXml(string $strFile): void
+    private function setPrepareXml(string $strFile, int $intIdent = 4): void
     {
         $this->objXmlWriter = new \XMLWriter();
         $this->objXmlWriter->openURI($strFile);
         $this->objXmlWriter->setIndent(true);
-        $this->objXmlWriter->setIndentString(str_repeat(' ', 4));
+        $this->objXmlWriter->setIndentString(str_repeat(' ', $intIdent));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
     }
 
@@ -280,10 +299,13 @@ class ElectornicInvoiceWrite
         }
     }
 
-    public function writeElectronicInvoice(string $strFile, array $inData, bool $bolCmnts, bool $bolScLc = false): void
+    public function writeElectronicInvoice(string $strFile, array $inData, array $arrayFeatures): void
     {
-        $arrayData = $this->loadSettingsAndManageDefaults($inData, $bolCmnts, $bolScLc);
-        $this->setPrepareXml($strFile);
+        $arrayData = $this->loadSettingsAndManageDefaults($inData, $arrayFeatures);
+        if (!array_key_exists('Ident', $arrayFeatures)) {
+            $arrayFeatures['Ident'] = 4;
+        }
+        $this->setPrepareXml($strFile, $arrayFeatures['Ident']);
         $this->setDocumentTag($arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
         $this->setProduceMiddleXml($arrayData);

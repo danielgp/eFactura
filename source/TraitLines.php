@@ -34,11 +34,11 @@ trait TraitLines
     use TraitBasic,
         TraitTax;
 
-    private function getDocumentLines($objFile, string $strTag): array
+    private function getDocumentLines(\SimpleXMLElement $arrayDataIn, string $strTag): array
     {
         $arrayLines = [];
         $intLineNo  = 0;
-        foreach ($objFile->children('cac', true) as $strNodeName => $child) {
+        foreach ($arrayDataIn->children('cac', true) as $strNodeName => $child) {
             if ($strNodeName === ($strTag . 'Line')) {
                 $intLineNo++;
                 $intLineStr              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
@@ -48,27 +48,41 @@ trait TraitLines
         return $arrayLines;
     }
 
-    private function getLine($child): array
+    private function getLine(\SimpleXMLElement $child): array
     {
         $arrayOutput = [];
-        foreach (['CreditedQuantity', 'ID', 'InvoicedQuantity', 'LineExtensionAmount'] as $strElement) {
-            if (count($child->children('cbc', true)->$strElement) !== 0) {
-                $arrayOutput[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
+        foreach ($this->arraySettings['CustomOrder']['Lines@Read'] as $strElement => $strType) {
+            switch ($strType) {
+                case 'Item':
+                    $arrayOutput['Item'] = $this->getLineItem($child->children('cac', true)->Item);
+                    break;
+                case 'Multiple':
+                    $intLineNo           = 0;
+                    foreach ($child->children('cac', true)->$strElement as $value2) {
+                        $intLineNo++;
+                        $intLineStr                            = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $arrayOutput[$strElement][$intLineStr] = $this->getElements($value2);
+                    }
+                    break;
+                case 'Single':
+                    if (count($child->children('cbc', true)->$strElement) !== 0) {
+                        $arrayOutput[$strElement] = $child->children('cbc', true)->$strElement->__toString();
+                    }
+                    if (count($child->children('cac', true)->$strElement) !== 0) {
+                        $arrayOutput[$strElement] = $this->getElements($child->children('cac', true)->$strElement);
+                    }
+                    break;
+                case 'SingleTag':
+                    if (count($child->children('cbc', true)->$strElement) !== 0) {
+                        $arrayOutput[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
+                    }
+                    break;
             }
         }
-        foreach (['AccountingCost', 'DocumentReference', 'InvoicePeriod', 'Note', 'OrderLineReference', 'Price'] as $strElement) {
-            if (count($child->children('cbc', true)->$strElement) !== 0) {
-                $arrayOutput[$strElement] = $child->children('cbc', true)->$strElement->__toString();
-            }
-            if (count($child->children('cac', true)->$strElement) !== 0) {
-                $arrayOutput[$strElement] = $this->getElements($child->children('cac', true)->$strElement);
-            }
-        }
-        $arrayOutput['Item'] = $this->getLineItem($child->children('cac', true)->Item);
         return $arrayOutput;
     }
 
-    private function getLineItem($child3): array
+    private function getLineItem(\SimpleXMLElement $child3): array
     {
         $arrayOutput = [];
         foreach ($this->arraySettings['CustomOrder']['Lines_Item@Read'] as $key => $value) {
