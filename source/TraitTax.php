@@ -51,15 +51,6 @@ trait TraitTax
         return $arrayOutput;
     }
 
-    private function getTaxSubTotal($child3): array
-    {
-        return [
-            'TaxAmount'     => $this->getElementSingle($child3->children('cbc', true)->TaxAmount),
-            'TaxableAmount' => $this->getElementSingle($child3->children('cbc', true)->TaxableAmount),
-            'TaxCategory'   => $this->getTaxCategory($child3->children('cac', true)->TaxCategory),
-        ];
-    }
-
     private function getTaxTotal($child2): array
     {
         $arrayOutput = [
@@ -70,7 +61,11 @@ trait TraitTax
             foreach ($child2->children('cac', true)->TaxSubtotal as $child3) {
                 $intLineNo++;
                 $intLineStr                              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
-                $arrayOutput['TaxSubtotal'][$intLineStr] = $this->getTaxSubTotal($child3);
+                $arrayOutput['TaxSubtotal'][$intLineStr] = [
+                    'TaxAmount'     => $this->getElementSingle($child3->children('cbc', true)->TaxAmount),
+                    'TaxableAmount' => $this->getElementSingle($child3->children('cbc', true)->TaxableAmount),
+                    'TaxCategory'   => $this->getTaxCategory($child3->children('cac', true)->TaxCategory),
+                ];
             }
         }
         return $arrayOutput;

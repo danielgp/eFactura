@@ -96,13 +96,18 @@ trait TraitBasic
         $this->arraySettings['CustomOrder'] = $this->getJsonFromFile('json/ElectronicInvoiceHierarchyTagOrder.json');
     }
 
+    private function getLineStringFromNumber(int $intLineNo): string
+    {
+        return ($intLineNo < 10 ? '0' : '') . $intLineNo;
+    }
+
     private function getMultipleElementsStandard(array|\SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];
         $intLineNo     = 0;
         foreach ($arrayIn as $child) {
             $intLineNo++;
-            $intLineStr = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $intLineStr = $this->getLineStringFromNumber($intLineNo);
             foreach ($child->children('cbc', true) as $key2 => $value2) {
                 if (count($value2->attributes()) === 0) {
                     $arrayToReturn[$intLineStr][$key2] = $value2->__toString();

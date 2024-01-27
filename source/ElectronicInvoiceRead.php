@@ -44,7 +44,7 @@ class ElectornicInvoiceRead
                     $intLineNo = 0;
                     foreach ($arrayIn['data']->children('cac', true)->PartyTaxScheme as $child) {
                         $intLineNo++;
-                        $intLineStr                         = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $intLineStr                         = $this->getLineStringFromNumber($intLineNo);
                         $arrayOut[$strElement][$intLineStr] = $this->getElements($child);
                     }
                 } else {
@@ -102,7 +102,7 @@ class ElectornicInvoiceRead
         $intLineNo     = 0;
         foreach ($arrayParams['CAC']->TaxTotal as $child) {
             $intLineNo++;
-            $intLineStr                                      = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $intLineStr                                      = $this->getLineStringFromNumber($intLineNo);
             $arrayDocument[$strCAC]['TaxTotal'][$intLineStr] = $this->getTaxTotal($child);
         }
         // optional components =========================================================================================
@@ -142,7 +142,7 @@ class ElectornicInvoiceRead
         $intLineNo     = 0;
         foreach ($arrayIn as $child) {
             $intLineNo++;
-            $intLineStr                 = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+            $intLineStr                 = $this->getLineStringFromNumber($intLineNo);
             $arrayToReturn[$intLineStr] = $this->getElements($child);
         }
         return $arrayToReturn;

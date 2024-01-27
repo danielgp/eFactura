@@ -41,7 +41,7 @@ trait TraitLines
         foreach ($arrayDataIn->children('cac', true) as $strNodeName => $child) {
             if ($strNodeName === ($strTag . 'Line')) {
                 $intLineNo++;
-                $intLineStr              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                $intLineStr              = $this->getLineStringFromNumber($intLineNo);
                 $arrayLines[$intLineStr] = $this->getLine($child);
             }
         }
@@ -57,10 +57,11 @@ trait TraitLines
                     $arrayOutput['Item'] = $this->getLineItem($child->children('cac', true)->Item);
                     break;
                 case 'Multiple':
+                    //$arrayOutput[$strElement] = $this->getMultipleElements($child->children('cac', true)->$strElement);
                     $intLineNo           = 0;
                     foreach ($child->children('cac', true)->$strElement as $value2) {
                         $intLineNo++;
-                        $intLineStr                            = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $intLineStr                            = $this->getLineStringFromNumber($intLineNo);
                         $arrayOutput[$strElement][$intLineStr] = $this->getElements($value2);
                     }
                     break;
@@ -91,7 +92,7 @@ trait TraitLines
                     $intLineNo = 0;
                     foreach ($child3->children('cac', true)->$key as $value2) {
                         $intLineNo++;
-                        $intLineStr                     = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                        $intLineStr                     = $this->getLineStringFromNumber($intLineNo);
                         $arrayOutput[$key][$intLineStr] = $this->getElements($value2);
                     }
                     break;
