@@ -30,7 +30,10 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, false);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => false,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
@@ -41,19 +44,24 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
     public function testGetRemoteInvoiceIntoArrayAsExample2()
     {
-        $this->markTestSkipped('Full logic not yest implemented... WIP');
         $url           = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example2.xml';
         $classRead     = new \danielgp\efactura\ElectornicInvoiceRead();
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
@@ -64,7 +72,10 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
@@ -75,19 +86,24 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
     public function testGetRemoteInvoiceIntoArrayAsExample5()
     {
-        $this->markTestSkipped('Full logic not yest implemented... WIP');
         $url           = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example5.xml';
         $classRead     = new \danielgp\efactura\ElectornicInvoiceRead();
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
@@ -98,7 +114,10 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
@@ -109,7 +128,10 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
@@ -120,7 +142,10 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
@@ -131,19 +156,55 @@ final class ReadWriteTest extends TestCase
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . basename($url);
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, false, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
     }
 
-    public function testGetRemoteInvoiceIntoArrayAsExample9WithOutComments()
+    public function testGetRemoteInvoiceIntoArrayAsExample9WithComments()
     {
         $url           = self::REMOTE_UBL_EXAMPLES_PATH . 'ubl-tc434-example9.xml';
         $classRead     = new \danielgp\efactura\ElectornicInvoiceRead();
         $arrayData     = $classRead->readElectronicInvoice($url);
         $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . str_replace('.xml', '_withComments.xml', basename($url));
-        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, true, true);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => true,
+            'SchemaLocation' => true,
+        ]);
         $this->assertXmlFileEqualsXmlFile($url, $strTargetFile);
+    }
+
+    public function testGetLocalCreditNoteIntoArray()
+    {
+        $strFile       = __DIR__ . '/Romanian/creditNote_ex.xml';
+        $classRead     = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData     = $classRead->readElectronicInvoice($strFile);
+        $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $strTargetFile = __DIR__ . '/' . basename($strFile);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'Ident'          => 2,
+            'SchemaLocation' => false,
+        ]);
+        $this->assertXmlFileEqualsXmlFile($strFile, $strTargetFile);
+    }
+
+    public function testGetLocalInvoiceIntoArray()
+    {
+        $strFile       = __DIR__ . '/Romanian/eInvoice_ex.xml';
+        $classRead     = new \danielgp\efactura\ElectornicInvoiceRead();
+        $arrayData     = $classRead->readElectronicInvoice($strFile);
+        $classWrite    = new \danielgp\efactura\ElectornicInvoiceWrite();
+        $strTargetFile = __DIR__ . '/' . basename($strFile);
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => false,
+            'Ident'          => 2,
+            'SchemaLocation' => false,
+        ]);
+        $this->assertXmlFileEqualsXmlFile($strFile, $strTargetFile);
     }
 
     public function tearDown(): void
