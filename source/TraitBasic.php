@@ -31,7 +31,8 @@ namespace danielgp\efactura;
 trait TraitBasic
 {
 
-    protected array $arraySettings = [];
+    protected array $arraySettings          = [];
+    protected array $arrayProcessingDetails = [];
 
     private function getCommentsFromFileAsArray(): array
     {
@@ -123,5 +124,10 @@ trait TraitBasic
             }
         }
         return $arrayToReturn;
+    }
+
+    private function getProcessingDetails(): void
+    {
+        $this->arrayProcessingDetails = $this->getJsonFromFile('json/ElectronicInvoiceProcessingDetails.json');
     }
 }

@@ -1,0 +1,47 @@
+{
+    "OptionalElementsHeader": {
+        "InvoicePeriod"               : "Single",
+        "OrderReference"              : "Single",
+        "BillingReference"            : "Single",
+        "DespatchDocumentReference"   : "Single",
+        "ReceiptDocumentReference"    : "Single",
+        "OriginatorDocumentReference" : "Single",
+        "ContractDocumentReference"   : "Single",
+        "AdditionalDocumentReference" : "Multiple",
+        "ProjectReference"            : "Single",
+        "AccountingSupplierParty"     : "SingleCompany",
+        "AccountingCustomerParty"     : "SingleCompany",
+        "PayeeParty"                  : "Single",
+        "TaxRepresentativeParty"      : "Single",
+        "Delivery"                    : "Single",
+        "PaymentMeans"                : "Multiple",
+        "PaymentTerms"                : "Single",
+        "DocumentReference"           : "Single",
+        "AllowanceCharge"             : "Multiple",
+        "TaxTotal"                    : "Multiple",
+        "LegalMonetaryTotal"          : "Single"
+    },
+    "WritingCatgoryization": {
+        "CommentParrentKey": [
+            "AccountingCustomerParty_PartyIdentification",
+            "AccountingSupplierParty_PartyIdentification",
+            "Lines_Item_SellersItemIdentification",
+            "Lines_Item_StandardItemIdentification",
+            "Lines_Item_CommodityClassification",
+            "PayeeParty_PartyIdentification"
+        ],
+        "Key": {
+            "Lines_AllowanceCharge"        : "ArrayElementsOrdered",
+            "Delivery_DeliveryLocation_ID" : "SingleElementWithAttribute"
+        },
+        "Tag": {
+            "EmbeddedDocumentBinaryObject" : "SingleElementWithAttribute",
+            "EndpointID"                   : "SingleElementWithAttribute",
+            "AdditionalItemProperty"       : "MultipleElementsOrdered",
+            "CommodityClassification"      : "MultipleElementsOrdered",
+            "PartyTaxScheme"               : "MultipleElementsOrdered",
+            "StandardItemIdentification"   : "MultipleElementsOrdered",
+            "TaxSubtotal"                  : "MultipleElementsOrdered"
+        }
+    }
+}

@@ -28,69 +28,12 @@
 
 namespace danielgp\efactura;
 
-class ElectornicInvoiceWrite
+class ElectronicInvoiceWrite
 {
 
     use TraitVersions;
 
     protected \XMLWriter $objXmlWriter;
-
-    private function loadSettingsAndManageDefaults(array $arrayData, array $arrayFeatures): array
-    {
-        // if no DocumentNameSpaces seen take Default ones from local configuration
-        $this->getSettingsFromFileIntoMemory($arrayFeatures['Comments']);
-        $arrayDefaults = $this->getDefaultsIntoDataSet($arrayData, $arrayFeatures['SchemaLocation']);
-        if ($arrayDefaults !== []) {
-            $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
-            if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
-                $arrayData['Header']['CommonBasicComponents-2']['CustomizationID'] = 'urn:cen.eu:en16931:2017'
-                    . '#compliant#urn:efactura.mfinante.ro:CIUS-RO:' . $arrayDefaults['CIUS-RO'];
-                $arrayData['Header']['CommonBasicComponents-2']['UBLVersionID']    = $arrayDefaults['UBL'];
-            }
-        }
-        return $arrayData;
-    }
-
-    private function setCategorizedVerifications(array $arrayDataIn)
-    {
-        $strCategoryToReturn    = '';
-        $key                    = implode('_', [$arrayDataIn['commentParentKey'], $arrayDataIn['tag']]);
-        $arrayKeyMapping        = [
-            'Lines_AllowanceCharge'        => 'ArrayElementsOrdered',
-            'Delivery_DeliveryLocation_ID' => 'SingleElementWithAttribute',
-        ];
-        $arrayTagMapping        = [
-            'EmbeddedDocumentBinaryObject' => 'SingleElementWithAttribute',
-            'EndpointID'                   => 'SingleElementWithAttribute',
-            'AdditionalItemProperty'       => 'MultipleElementsOrdered',
-            'CommodityClassification'      => 'MultipleElementsOrdered',
-            'PartyTaxScheme'               => 'MultipleElementsOrdered',
-            'StandardItemIdentification'   => 'MultipleElementsOrdered',
-            'TaxSubtotal'                  => 'MultipleElementsOrdered'
-        ];
-        $arrayCommentParrentKey = [
-            'AccountingCustomerParty_PartyIdentification',
-            'AccountingSupplierParty_PartyIdentification',
-            'Lines_Item_SellersItemIdentification',
-            'Lines_Item_StandardItemIdentification',
-            'Lines_Item_CommodityClassification',
-            'PayeeParty_PartyIdentification'
-        ];
-        if (array_key_exists($key, $arrayKeyMapping)) {
-            $strCategoryToReturn = $arrayKeyMapping[$key];
-        } elseif (array_key_exists($arrayDataIn['tag'], $arrayTagMapping)) {
-            $strCategoryToReturn = $arrayTagMapping[$arrayDataIn['tag']];
-        } elseif (in_array($arrayDataIn['commentParentKey'], $arrayCommentParrentKey)) {
-            $strCategoryToReturn = 'SingleElementWithAttribute';
-        } elseif ($arrayDataIn['matches'] !== []) {
-            $strCategoryToReturn = 'SingleElementWithAttribute';
-        } elseif (is_array($arrayDataIn['data'])) {
-            $strCategoryToReturn = 'ElementsOrdered';
-        } else {
-            $strCategoryToReturn = 'SingleElementWithAttribute';
-        }
-        return $strCategoryToReturn;
-    }
 
     private function setDocumentTag(array $arrayDocumentData): void
     {
@@ -202,25 +145,6 @@ class ElectornicInvoiceWrite
         }
     }
 
-    private function setManageComment(string $strCommentParentKey, array $arrayIn): string
-    {
-        if (str_starts_with($strCommentParentKey, 'AllowanceCharge')) {
-            $arrayCommentPieces = explode('_', $strCommentParentKey);
-            // carefully manage a child to decide on comment tag
-            $strChargeIndicator = $arrayIn['ChargeIndicator'];
-            if (in_array($strChargeIndicator, ['0', '1'])) {
-                $strChargeIndicator = [
-                    '0' => 'false',
-                    '1' => 'true',
-                    ][$arrayIn['ChargeIndicator']];
-            }
-            array_splice($arrayCommentPieces, 0, 1, 'AllowanceCharge~ChargeIndicator'
-                . ucfirst($strChargeIndicator));
-            $strCommentParentKey = implode('_', $arrayCommentPieces);
-        }
-        return $strCommentParentKey;
-    }
-
     private function setMultipleElementsOrdered(array $arrayData): void
     {
         foreach ($arrayData['data'] as $value) {
@@ -231,24 +155,6 @@ class ElectornicInvoiceWrite
                 'tag'              => $arrayData['tag'],
             ]);
         }
-    }
-
-    protected function setNumericValue(string $strTag, array $arrayDataIn): string|float
-    {
-        $sReturn      = $arrayDataIn['value'];
-        $arrayRawTags = ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'ItemClassificationCode', 'PriceAmount'];
-        if (is_numeric($arrayDataIn['value']) && !in_array($strTag, $arrayRawTags)) {
-            $fmt = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
-            $fmt->setAttribute(\NumberFormatter::GROUPING_USED, 0);
-            $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
-            // if contains currencyID consider 2 decimals as minimum
-            if (in_array('currencyID', array_keys($arrayDataIn))) {
-                $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
-            }
-            $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
-            $sReturn = $fmt->format($arrayDataIn['value']);
-        }
-        return $sReturn;
     }
 
     private function setPrepareXml(string $strFile, int $intIdent = 4): void
@@ -263,28 +169,7 @@ class ElectornicInvoiceWrite
     private function setProduceMiddleXml(array $arrayData): void
     {
         $arrayAggregates             = $arrayData['Header']['CommonAggregateComponents-2'];
-        $arrayOptionalElementsHeader = [
-            'InvoicePeriod'               => 'Single',
-            'OrderReference'              => 'Single',
-            'BillingReference'            => 'Single',
-            'DespatchDocumentReference'   => 'Single',
-            'ReceiptDocumentReference'    => 'Single',
-            'OriginatorDocumentReference' => 'Single',
-            'ContractDocumentReference'   => 'Single',
-            'AdditionalDocumentReference' => 'Multiple',
-            'ProjectReference'            => 'Single',
-            'AccountingSupplierParty'     => 'SingleCompany',
-            'AccountingCustomerParty'     => 'SingleCompany',
-            'PayeeParty'                  => 'Single',
-            'TaxRepresentativeParty'      => 'Single',
-            'Delivery'                    => 'Single',
-            'PaymentMeans'                => 'Multiple',
-            'PaymentTerms'                => 'Single',
-            'DocumentReference'           => 'Single',
-            'AllowanceCharge'             => 'Multiple',
-            'TaxTotal'                    => 'Multiple',
-            'LegalMonetaryTotal'          => 'Single',
-        ];
+        $arrayOptionalElementsHeader = $this->arrayProcessingDetails['OptionalElementsHeader'];
         foreach ($arrayOptionalElementsHeader as $key => $strLogicType) {
             if (array_key_exists($key, $arrayAggregates)) {
                 switch ($strLogicType) {
@@ -344,6 +229,7 @@ class ElectornicInvoiceWrite
 
     public function writeElectronicInvoice(string $strFile, array $inData, array $arrayFeatures): void
     {
+        $this->getProcessingDetails();
         $arrayData = $this->loadSettingsAndManageDefaults($inData, $arrayFeatures);
         if (!array_key_exists('Ident', $arrayFeatures)) {
             $arrayFeatures['Ident'] = 4;

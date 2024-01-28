@@ -109,4 +109,78 @@ trait TraitVersions
         }
         $this->arraySettings['Comments'] = $arrayFlattenedComments;
     }
+
+    private function loadSettingsAndManageDefaults(array $arrayData, array $arrayFeatures): array
+    {
+        // if no DocumentNameSpaces seen take Default ones from local configuration
+        $this->getSettingsFromFileIntoMemory($arrayFeatures['Comments']);
+        $arrayDefaults = $this->getDefaultsIntoDataSet($arrayData, $arrayFeatures['SchemaLocation']);
+        if ($arrayDefaults !== []) {
+            $arrayData = array_merge($arrayData, $arrayDefaults['Root']);
+            if (!array_key_exists('CustomizationID', $arrayData['Header']['CommonBasicComponents-2'])) {
+                $arrayData['Header']['CommonBasicComponents-2']['CustomizationID'] = 'urn:cen.eu:en16931:2017'
+                    . '#compliant#urn:efactura.mfinante.ro:CIUS-RO:' . $arrayDefaults['CIUS-RO'];
+                $arrayData['Header']['CommonBasicComponents-2']['UBLVersionID']    = $arrayDefaults['UBL'];
+            }
+        }
+        return $arrayData;
+    }
+
+    private function setCategorizedVerifications(array $arrayDataIn)
+    {
+        $strCategoryToReturn = '';
+        $key                 = implode('_', [$arrayDataIn['commentParentKey'], $arrayDataIn['tag']]);
+        $arrayVarious        = $this->arrayProcessingDetails['WritingCatgoryization'];
+        if (array_key_exists($key, $arrayVarious['Key'])) {
+            $strCategoryToReturn = $arrayVarious['Key'][$key];
+        } elseif (array_key_exists($arrayDataIn['tag'], $arrayVarious['Tag'])) {
+            $strCategoryToReturn = $arrayVarious['Tag'][$arrayDataIn['tag']];
+        } elseif (in_array($arrayDataIn['commentParentKey'], $arrayVarious['CommentParrentKey'])) {
+            $strCategoryToReturn = 'SingleElementWithAttribute';
+        } elseif ($arrayDataIn['matches'] !== []) {
+            $strCategoryToReturn = 'SingleElementWithAttribute';
+        } elseif (is_array($arrayDataIn['data'])) {
+            $strCategoryToReturn = 'ElementsOrdered';
+        } else {
+            $strCategoryToReturn = 'SingleElementWithAttribute';
+        }
+        return $strCategoryToReturn;
+    }
+
+    private function setManageComment(string $strCommentParentKey, array $arrayIn): string
+    {
+        if (str_starts_with($strCommentParentKey, 'AllowanceCharge')) {
+            $arrayCommentPieces = explode('_', $strCommentParentKey);
+            // carefully manage a child to decide on comment tag
+            $strChargeIndicator = $arrayIn['ChargeIndicator'];
+            if (in_array($strChargeIndicator, ['0', '1'])) {
+                $strChargeIndicator = [
+                    '0' => 'false',
+                    '1' => 'true',
+                    ][$arrayIn['ChargeIndicator']];
+            }
+            array_splice($arrayCommentPieces, 0, 1, 'AllowanceCharge~ChargeIndicator'
+                . ucfirst($strChargeIndicator));
+            $strCommentParentKey = implode('_', $arrayCommentPieces);
+        }
+        return $strCommentParentKey;
+    }
+
+    protected function setNumericValue(string $strTag, array $arrayDataIn): string|float
+    {
+        $sReturn      = $arrayDataIn['value'];
+        $arrayRawTags = ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'ItemClassificationCode', 'PriceAmount'];
+        if (is_numeric($arrayDataIn['value']) && !in_array($strTag, $arrayRawTags)) {
+            $fmt = new \NumberFormatter('en_US', \NumberFormatter::DECIMAL);
+            $fmt->setAttribute(\NumberFormatter::GROUPING_USED, 0);
+            $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
+            // if contains currencyID consider 2 decimals as minimum
+            if (in_array('currencyID', array_keys($arrayDataIn))) {
+                $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
+            }
+            $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+            $sReturn = $fmt->format($arrayDataIn['value']);
+        }
+        return $sReturn;
+    }
 }
