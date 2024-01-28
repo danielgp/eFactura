@@ -40,12 +40,8 @@ class ElectronicInvoiceRead
         foreach ($this->arraySettings['CustomOrder'][$arrayIn['type']] as $strElement) {
             if (isset($arrayIn['data']->children('cac', true)->$strElement)) {
                 if ($strElement === 'PartyTaxScheme') {
-                    $intLineNo = 0;
-                    foreach ($arrayIn['data']->children('cac', true)->PartyTaxScheme as $child) {
-                        $intLineNo++;
-                        $intLineStr                         = $this->getLineStringFromNumber($intLineNo);
-                        $arrayOut[$strElement][$intLineStr] = $this->getElements($child);
-                    }
+                    $arrayOut[$strElement] = $this->getMultipleElements($arrayIn['data']
+                            ->children('cac', true)->$strElement);
                 } else {
                     $arrayOut[$strElement] = $this->getElements($arrayIn['data']->children('cac', true)->$strElement);
                 }
@@ -104,7 +100,7 @@ class ElectronicInvoiceRead
             if (isset($arrayParams['CAC']->$key)) {
                 switch ($value) {
                     case 'Multiple':
-                        $arrayDocument[$strCAC][$key] = $this->getMultiplePaymentMeansElements($arrayParams['CAC']
+                        $arrayDocument[$strCAC][$key] = $this->getMultipleElements($arrayParams['CAC']
                             ->$key);
                         break;
                     case 'MultipleStandard':
@@ -133,7 +129,7 @@ class ElectronicInvoiceRead
         return $arrayDocument;
     }
 
-    private function getMultiplePaymentMeansElements(array|\SimpleXMLElement $arrayIn): array
+    private function getMultipleElements(array|\SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];
         $intLineNo     = 0;
