@@ -33,7 +33,19 @@ trait TraitTax
 
     use TraitBasic;
 
-    private function getTaxCategory($child3): array
+    private function getTax(\SimpleXMLElement $child): array
+    {
+        $arrayOutput = [];
+        $intLineNo   = 0;
+        foreach ($child as $child2) {
+            $intLineNo++;
+            $intLineStr               = $this->getLineStringFromNumber($intLineNo);
+            $arrayOutput[$intLineStr] = $this->getTaxTotal($child2);
+        }
+        return $arrayOutput;
+    }
+
+    private function getTaxCategory(\SimpleXMLElement $child3): array
     {
         $arrayOutput = [
             'ID'        => $child3->children('cbc', true)->ID->__toString(),
@@ -51,7 +63,7 @@ trait TraitTax
         return $arrayOutput;
     }
 
-    private function getTaxTotal($child2): array
+    private function getTaxTotal(\SimpleXMLElement $child2): array
     {
         $arrayOutput = [
             'TaxAmount' => $this->getElementSingle($child2->children('cbc', true)->TaxAmount)
@@ -60,7 +72,7 @@ trait TraitTax
             $intLineNo = 0;
             foreach ($child2->children('cac', true)->TaxSubtotal as $child3) {
                 $intLineNo++;
-                $intLineStr                              = ($intLineNo < 10 ? '0' : '') . $intLineNo;
+                $intLineStr                              = $this->getLineStringFromNumber($intLineNo);
                 $arrayOutput['TaxSubtotal'][$intLineStr] = [
                     'TaxAmount'     => $this->getElementSingle($child3->children('cbc', true)->TaxAmount),
                     'TaxableAmount' => $this->getElementSingle($child3->children('cbc', true)->TaxableAmount),

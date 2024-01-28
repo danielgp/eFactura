@@ -51,15 +51,56 @@ class ElectornicInvoiceWrite
         return $arrayData;
     }
 
+    private function setCategorizedVerifications(array $arrayDataIn)
+    {
+        $strCategoryToReturn    = '';
+        $key                    = implode('_', [$arrayDataIn['commentParentKey'], $arrayDataIn['tag']]);
+        $arrayKeyMapping        = [
+            'Lines_AllowanceCharge'        => 'ArrayElementsOrdered',
+            'Delivery_DeliveryLocation_ID' => 'SingleElementWithAttribute',
+        ];
+        $arrayTagMapping        = [
+            'EmbeddedDocumentBinaryObject' => 'SingleElementWithAttribute',
+            'EndpointID'                   => 'SingleElementWithAttribute',
+            'AdditionalItemProperty'       => 'MultipleElementsOrdered',
+            'CommodityClassification'      => 'MultipleElementsOrdered',
+            'PartyTaxScheme'               => 'MultipleElementsOrdered',
+            'StandardItemIdentification'   => 'MultipleElementsOrdered',
+            'TaxSubtotal'                  => 'MultipleElementsOrdered'
+        ];
+        $arrayCommentParrentKey = [
+            'AccountingCustomerParty_PartyIdentification',
+            'AccountingSupplierParty_PartyIdentification',
+            'Lines_Item_SellersItemIdentification',
+            'Lines_Item_StandardItemIdentification',
+            'Lines_Item_CommodityClassification',
+            'PayeeParty_PartyIdentification'
+        ];
+        if (array_key_exists($key, $arrayKeyMapping)) {
+            $strCategoryToReturn = $arrayKeyMapping[$key];
+        } elseif (array_key_exists($arrayDataIn['tag'], $arrayTagMapping)) {
+            $strCategoryToReturn = $arrayTagMapping[$arrayDataIn['tag']];
+        } elseif (in_array($arrayDataIn['commentParentKey'], $arrayCommentParrentKey)) {
+            $strCategoryToReturn = 'SingleElementWithAttribute';
+        } elseif ($arrayDataIn['matches'] !== []) {
+            $strCategoryToReturn = 'SingleElementWithAttribute';
+        } elseif (is_array($arrayDataIn['data'])) {
+            $strCategoryToReturn = 'ElementsOrdered';
+        } else {
+            $strCategoryToReturn = 'SingleElementWithAttribute';
+        }
+        return $strCategoryToReturn;
+    }
+
     private function setDocumentTag(array $arrayDocumentData): void
     {
         $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
         foreach ($arrayDocumentData['DocumentNameSpaces'] as $key => $value) {
             if ($key === '') {
                 $strValue = sprintf($value, $arrayDocumentData['DocumentTagName']);
-                $this->objXmlWriter->writeAttributeNS(NULL, 'xmlns', NULL, $strValue);
+                $this->objXmlWriter->writeAttributeNS(null, 'xmlns', null, $strValue);
             } else {
-                $this->objXmlWriter->writeAttributeNS('xmlns', $key, NULL, $value);
+                $this->objXmlWriter->writeAttributeNS('xmlns', $key, null, $value);
             }
         }
         if (array_key_exists('SchemaLocation', $arrayDocumentData)) {
@@ -83,50 +124,52 @@ class ElectornicInvoiceWrite
 
     private function setElementsOrdered(array $arrayInput): void
     {
-        if ($arrayInput['commentParentKey'] === 'AllowanceCharge~ChargeIndicator0') {
-            error_log(json_encode($arrayInput));
-        }
         $this->setElementComment($arrayInput['commentParentKey']);
         $this->objXmlWriter->startElement('cac:' . $arrayInput['tag']);
         $this->setExtraElement($arrayInput, 'Start');
         $arrayCustomOrder = $this->arraySettings['CustomOrder'][$arrayInput['commentParentKey']];
         foreach ($arrayCustomOrder as $value) { // get the values in expected order
             if (array_key_exists($value, $arrayInput['data'])) { // because certain value are optional
-                $key     = implode('_', [$arrayInput['commentParentKey'], $value]);
-                $matches = [];
+                $key         = implode('_', [$arrayInput['commentParentKey'], $value]);
+                $matches     = [];
                 preg_match('/^.*(Amount|Quantity)$/', $value, $matches, PREG_OFFSET_CAPTURE);
-                if ($key === 'Lines_AllowanceCharge') {
-                    foreach ($arrayInput['data'][$value] as $value2) {
+                $strCategory = $this->setCategorizedVerifications([
+                    'commentParentKey' => $arrayInput['commentParentKey'],
+                    'data'             => $arrayInput['data'][$value],
+                    'matches'          => $matches,
+                    'tag'              => $value,
+                ]);
+                switch ($strCategory) {
+                    case 'ArrayElementsOrdered':
+                        foreach ($arrayInput['data'][$value] as $value2) {
+                            $this->setElementsOrdered([
+                                'commentParentKey' => $key,
+                                'data'             => $value2,
+                                'tag'              => $value,
+                            ]);
+                        }
+                        break;
+                    case 'ElementsOrdered':
                         $this->setElementsOrdered([
                             'commentParentKey' => $key,
-                            'data'             => $value2,
+                            'data'             => $arrayInput['data'][$value],
                             'tag'              => $value,
                         ]);
-                    }
-                } elseif (in_array($value, ['EmbeddedDocumentBinaryObject', 'EndpointID']) || in_array($arrayInput['commentParentKey'], ['AccountingCustomerParty_PartyIdentification', 'AccountingSupplierParty_PartyIdentification', 'Lines_Item_SellersItemIdentification', 'Lines_Item_StandardItemIdentification', 'Lines_Item_CommodityClassification', 'PayeeParty_PartyIdentification']) || ($key === 'Delivery_DeliveryLocation_ID')) {
-                    $this->setSingleElementWithAttribute([
-                        'commentParentKey' => $arrayInput['commentParentKey'],
-                        'data'             => $arrayInput['data'][$value],
-                        'tag'              => $value,
-                    ]);
-                } elseif (in_array($value, ['AdditionalItemProperty', 'CommodityClassification', 'PartyTaxScheme', 'StandardItemIdentification', 'TaxSubtotal'])) {
-                    $this->setMultipleElementsOrdered([
-                        'commentParentKey' => $key,
-                        'data'             => $arrayInput['data'][$value],
-                        'tag'              => $value,
-                    ]);
-                } elseif (($matches !== []) || !is_array($arrayInput['data'][$value])) {
-                    $this->setSingleElementWithAttribute([
-                        'commentParentKey' => $arrayInput['commentParentKey'],
-                        'data'             => $arrayInput['data'][$value],
-                        'tag'              => $value,
-                    ]);
-                } elseif (is_array($arrayInput['data'][$value])) {
-                    $this->setElementsOrdered([
-                        'commentParentKey' => $key,
-                        'data'             => $arrayInput['data'][$value],
-                        'tag'              => $value,
-                    ]);
+                        break;
+                    case 'MultipleElementsOrdered':
+                        $this->setMultipleElementsOrdered([
+                            'commentParentKey' => $key,
+                            'data'             => $arrayInput['data'][$value],
+                            'tag'              => $value,
+                        ]);
+                        break;
+                    case 'SingleElementWithAttribute':
+                        $this->setSingleElementWithAttribute([
+                            'commentParentKey' => $arrayInput['commentParentKey'],
+                            'data'             => $arrayInput['data'][$value],
+                            'tag'              => $value,
+                        ]);
+                        break;
                 }
             }
         }

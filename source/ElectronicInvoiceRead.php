@@ -94,38 +94,36 @@ class ElectornicInvoiceRead
 
     private function getHeader(array $arrayParams): array
     {
-        $arrayDocument = $this->getElementsOrdered([
+        $arrayDocument                      = $this->getElementsOrdered([
             'data'          => $arrayParams['CBC'],
             'namespace_cbc' => $arrayParams['DocumentNameSpaces']['cbc'],
         ]);
-        $strCAC        = $arrayParams['cacName']; // CommonAggregateComponents
-        $intLineNo     = 0;
-        foreach ($arrayParams['CAC']->TaxTotal as $child) {
-            $intLineNo++;
-            $intLineStr                                      = $this->getLineStringFromNumber($intLineNo);
-            $arrayDocument[$strCAC]['TaxTotal'][$intLineStr] = $this->getTaxTotal($child);
-        }
+        $strCAC                             = $arrayParams['cacName']; // CommonAggregateComponents
+        $arrayDocument[$strCAC]['TaxTotal'] = $this->getTax($arrayParams['CAC']->TaxTotal);
         // optional components =========================================================================================
         foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
             if (isset($arrayParams['CAC']->$key)) {
                 switch ($value) {
                     case 'Multiple':
-                        $arrayDocument[$strCAC][$key]          = $this->getMultiplePaymentMeansElements($arrayParams['CAC']->$key);
+                        $arrayDocument[$strCAC][$key] = $this->getMultiplePaymentMeansElements($arrayParams['CAC']
+                            ->$key);
                         break;
                     case 'MultipleStandard':
-                        $arrayDocument[$strCAC][$key]          = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
+                        $arrayDocument[$strCAC][$key] = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
                         break;
                     case 'Single':
-                        $arrayDocument[$strCAC][$key]          = $this->getElements($arrayParams['CAC']->$key);
+                        $arrayDocument[$strCAC][$key] = $this->getElements($arrayParams['CAC']->$key);
                         break;
                     case 'SingleCompany':
-                        $arrayDocument[$strCAC][$key]['Party'] = $this->getAccountingCustomerOrSupplierParty([
-                            'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
-                            'type' => $key,
-                        ]);
+                        $arrayDocument[$strCAC][$key] = [
+                            'Party' => $this->getAccountingCustomerOrSupplierParty([
+                                'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
+                                'type' => $key,
+                            ])
+                        ];
                         break;
                     case 'SingleCompanyWithoutParty':
-                        $arrayDocument[$strCAC][$key]          = $this->getAccountingCustomerOrSupplierParty([
+                        $arrayDocument[$strCAC][$key] = $this->getAccountingCustomerOrSupplierParty([
                             'data' => $arrayParams['CAC']->$key,
                             'type' => $key,
                         ]);
@@ -151,7 +149,7 @@ class ElectornicInvoiceRead
     public function readElectronicInvoice(string $strFile): array
     {
         $this->getHierarchyTagOrder();
-        $objFile                 = new \SimpleXMLElement($strFile, NULL, TRUE);
+        $objFile                 = new \SimpleXMLElement($strFile, null, true);
         $arrayDocument           = $this->getDocumentRoot($objFile);
         $arrayCAC                = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
         $strElementA             = $arrayCAC[count($arrayCAC) - 1]; // CommonAggregateComponents
