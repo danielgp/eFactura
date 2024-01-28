@@ -4,7 +4,18 @@
          backupGlobals="false">
     <testsuites>
         <testsuite name="read_write">
-            <directory>testing</directory>
+            <file>testing/ReadWriteTest.php</file>
+        </testsuite>
+        <testsuite name="write">
+            <file>testing/WriteTest.php</file>
         </testsuite>
     </testsuites>
+    <source>
+        <exclude>
+            <file>source/ElectronicInvoiceComments.php</file>
+        </exclude>
+        <include>
+            <directory>source</directory>
+        </include>
+    </source>
 </phpunit>

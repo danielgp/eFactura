@@ -1,2 +1,5 @@
 /nbproject/private/
 /vendor/
+/testing/coverage/
+/testing/logs/
+/results/
