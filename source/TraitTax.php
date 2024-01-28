@@ -37,9 +37,11 @@ trait TraitTax
         $arrayOut  = [];
         $intLineNo = 0;
         foreach ($child as $child2) {
-            $intLineNo++;
-            $intLineStr            = $this->getLineStringFromNumber($intLineNo);
-            $arrayOut[$intLineStr] = $this->getTaxTotal($child2);
+            if (!is_null($child2)) {
+                $intLineNo++;
+                $intLineStr            = $this->getLineStringFromNumber($intLineNo);
+                $arrayOut[$intLineStr] = $this->getTaxTotal($child2);
+            }
         }
         return $arrayOut;
     }
