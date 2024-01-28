@@ -44,10 +44,10 @@ trait TraitTax
         return $arrayOut;
     }
 
-    private function getTaxCategory(\SimpleXMLElement $child3, string $strElementWithChildrens): array
+    private function getTaxCategory(\SimpleXMLElement $child3, string $strElementName): array
     {
         $arrayOut = [];
-        foreach ($this->arrayProcessing[$strElementWithChildrens] as $strElement => $strType) {
+        foreach ($this->arrayProcessing[$strElementName] as $strElement => $strType) {
             switch ($strType) {
                 case 'Elements':
                     if (isset($child3->children('cac', true)->$strElement)) {
