@@ -18,7 +18,7 @@ final class WriteTest extends TestCase
         fclose($fileHandle);
         $arrayData     = json_decode($jsonData, true);
         $classWrite    = new \danielgp\efactura\ElectronicInvoiceWrite();
-        $strTargetFile = __DIR__ . '/' . pathinfo($url, PATHINFO_FILENAME) . '.xml';
+        $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '.xml';
         $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
             'Comments'       => false,
             'SchemaLocation' => false,
@@ -36,7 +36,7 @@ final class WriteTest extends TestCase
         fclose($fileHandle);
         $arrayData     = json_decode($jsonData, true);
         $classWrite    = new \danielgp\efactura\ElectronicInvoiceWrite();
-        $strTargetFile = __DIR__ . '/' . pathinfo($url, PATHINFO_FILENAME) . '_raw.xml';
+        $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '_raw.xml';
         $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
             'Comments'       => false,
             'SchemaLocation' => false,
