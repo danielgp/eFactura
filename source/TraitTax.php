@@ -54,10 +54,6 @@ trait TraitTax
                         $arrayOut[$strElement] = $this->getElements($child3->children('cac', true)->$strElement);
                     }
                     break;
-                /* case 'Multiple':
-                  $arrayOut[$strElement] = $this->getTaxCategory($child3->children('cac', true)
-                  ->$strElement, $strElement);
-                  break; */
                 case 'Single':
                     if (isset($child3->children('cbc', true)->$strElement)) {
                         $arrayOut[$strElement] = $this->getElementSingle($child3->children('cbc', true)->$strElement);
