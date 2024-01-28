@@ -53,10 +53,10 @@ trait TraitLines
         foreach ($this->arrayProcessing['Lines@Read'] as $strElement => $strType) {
             switch ($strType) {
                 case 'Item':
-                    $arrayOutput['Item'] = $this->getLineItem($child->children('cac', true)->Item);
+                    $arrayOutput[$strElement] = $this->getLineItem($child->children('cac', true)->Item);
                     break;
                 case 'Multiple':
-                    $intLineNo           = 0;
+                    $intLineNo                = 0;
                     foreach ($child->children('cac', true)->$strElement as $value2) {
                         $intLineNo++;
                         $intLineStr                            = $this->getLineStringFromNumber($intLineNo);
