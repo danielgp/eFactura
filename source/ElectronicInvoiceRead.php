@@ -30,10 +30,9 @@ namespace danielgp\efactura;
 
 class ElectronicInvoiceRead
 {
-
-    use TraitBasic,
-        TraitTax,
-        TraitLines;
+    use TraitBasic;
+    use TraitTax;
+    use TraitLines;
 
     private function getAccountingCustomerOrSupplierParty(array $arrayIn): array
     {
@@ -148,6 +147,7 @@ class ElectronicInvoiceRead
 
     public function readElectronicInvoice(string $strFile): array
     {
+        $this->getProcessingDetails();
         $this->getHierarchyTagOrder();
         $objFile                 = new \SimpleXMLElement($strFile, null, true);
         $arrayDocument           = $this->getDocumentRoot($objFile);

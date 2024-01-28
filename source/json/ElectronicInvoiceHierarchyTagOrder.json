@@ -256,21 +256,6 @@
         "Item",
         "Price"
     ],
-    "Lines@Read": {
-        "ID": "SingleTag",
-        "Note": "SingleTag",
-        "CreditedQuantity": "SingleTag",
-        "InvoicedQuantity": "SingleTag",
-        "LineExtensionAmount": "SingleTag",
-        "AccountingCost": "Single",
-        "InvoicePeriod": "Single",
-        "OrderLineReference": "Single",
-        "DocumentReference": "Single",
-        "AllowanceCharge": "Multiple",
-        "AdditionalCharge": "Multiple",
-        "Item": "Item",
-        "Price": "Single"
-    },
     "Lines_AllowanceCharge": [
         "ChargeIndicator",
         "AllowanceChargeReasonCode",
@@ -297,17 +282,6 @@
         "ClassifiedTaxCategory",
         "AdditionalItemProperty"
     ],
-    "Lines_Item@Read": {
-        "Description": "SingleBasic",
-        "Name": "SingleBasic",
-        "BuyersItemIdentification": "SingleAggregate",
-        "SellersItemIdentification": "SingleAggregate",
-        "StandardItemIdentification": "MultipleAggregate",
-        "OriginCountry": "SingleAggregate",
-        "CommodityClassification": "MultipleAggregate",
-        "ClassifiedTaxCategory": "TaxCategory",
-        "AdditionalItemProperty": "MultipleAggregate"
-    },
     "Lines_Item_AdditionalItemProperty": [
         "Name",
         "Value"

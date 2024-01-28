@@ -30,56 +30,84 @@ namespace danielgp\efactura;
 
 trait TraitTax
 {
-
     use TraitBasic;
 
     private function getTax(\SimpleXMLElement $child): array
     {
-        $arrayOutput = [];
-        $intLineNo   = 0;
+        $arrayOut  = [];
+        $intLineNo = 0;
         foreach ($child as $child2) {
             $intLineNo++;
-            $intLineStr               = $this->getLineStringFromNumber($intLineNo);
-            $arrayOutput[$intLineStr] = $this->getTaxTotal($child2);
+            $intLineStr            = $this->getLineStringFromNumber($intLineNo);
+            $arrayOut[$intLineStr] = $this->getTaxTotal($child2);
         }
-        return $arrayOutput;
+        return $arrayOut;
     }
 
-    private function getTaxCategory(\SimpleXMLElement $child3): array
+    private function getTaxCategory(\SimpleXMLElement $child3, string $strElementWithChildrens): array
     {
-        $arrayOutput = [
-            'ID'        => $child3->children('cbc', true)->ID->__toString(),
-            'TaxScheme' => [
-                'ID' => $child3->children('cac', true)->TaxScheme->children('cbc', true)->ID->__toString(),
-            ],
-        ];
-        // optional components =========================================================================================
-        if (isset($child3->children('cbc', true)->Percent)) {
-            $arrayOutput['Percent'] = $child3->children('cbc', true)->Percent->__toString();
-        }
-        if (isset($child3->children('cbc', true)->TaxExemptionReason)) {
-            $arrayOutput['TaxExemptionReason'] = $child3->children('cbc', true)->TaxExemptionReason->__toString();
-        }
-        return $arrayOutput;
-    }
-
-    private function getTaxTotal(\SimpleXMLElement $child2): array
-    {
-        $arrayOutput = [
-            'TaxAmount' => $this->getElementSingle($child2->children('cbc', true)->TaxAmount)
-        ];
-        if (isset($child2->children('cac', true)->TaxSubtotal)) {
-            $intLineNo = 0;
-            foreach ($child2->children('cac', true)->TaxSubtotal as $child3) {
-                $intLineNo++;
-                $intLineStr                              = $this->getLineStringFromNumber($intLineNo);
-                $arrayOutput['TaxSubtotal'][$intLineStr] = [
-                    'TaxAmount'     => $this->getElementSingle($child3->children('cbc', true)->TaxAmount),
-                    'TaxableAmount' => $this->getElementSingle($child3->children('cbc', true)->TaxableAmount),
-                    'TaxCategory'   => $this->getTaxCategory($child3->children('cac', true)->TaxCategory),
-                ];
+        $arrayOut = [];
+        foreach ($this->arrayProcessing[$strElementWithChildrens] as $strElement => $strType) {
+            switch ($strType) {
+                case 'Elements':
+                    if (isset($child3->children('cac', true)->$strElement)) {
+                        $arrayOut[$strElement] = $this->getElements($child3->children('cac', true)->$strElement);
+                    }
+                    break;
+                /* case 'Multiple':
+                  $arrayOut[$strElement] = $this->getTaxCategory($child3->children('cac', true)
+                  ->$strElement, $strElement);
+                  break; */
+                case 'Single':
+                    if (isset($child3->children('cbc', true)->$strElement)) {
+                        $arrayOut[$strElement] = $this->getElementSingle($child3->children('cbc', true)->$strElement);
+                    }
+                    break;
             }
         }
-        return $arrayOutput;
+        return $arrayOut;
+    }
+
+    private function getTaxSubTotal(\SimpleXMLElement $child)
+    {
+        $arrayOut = [];
+        foreach ($this->arrayProcessing['TaxSubtotal'] as $strElementChild => $strTypeChild) {
+            switch ($strTypeChild) {
+                case 'Single':
+                    if (isset($child->children('cbc', true)->$strElementChild)) {
+                        $arrayOut[$strElementChild] = $this
+                            ->getElementSingle($child->children('cbc', true)->$strElementChild);
+                    }
+                    break;
+                case 'Multiple':
+                    $arrayOut[$strElementChild] = $this->getTaxCategory($child->children('cac', true)
+                        ->$strElementChild, $strElementChild);
+                    break;
+            }
+        }
+        return $arrayOut;
+    }
+
+    private function getTaxTotal(\SimpleXMLElement $child): array
+    {
+        $arrayOut = [];
+        foreach ($this->arrayProcessing['TaxTotal'] as $strElement => $strType) {
+            switch ($strType) {
+                case 'Single':
+                    if (isset($child->children('cbc', true)->$strElement)) {
+                        $arrayOut[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
+                    }
+                    break;
+                case 'Multiple':
+                    $intLineNo = 0;
+                    foreach ($child->children('cac', true)->$strElement as $child3) {
+                        $intLineNo++;
+                        $intLineStr                         = $this->getLineStringFromNumber($intLineNo);
+                        $arrayOut[$strElement][$intLineStr] = $this->getTaxSubTotal($child3);
+                    }
+                    break;
+            }
+        }
+        return $arrayOut;
     }
 }

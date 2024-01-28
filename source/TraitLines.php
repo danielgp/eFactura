@@ -30,9 +30,8 @@ namespace danielgp\efactura;
 
 trait TraitLines
 {
-
-    use TraitBasic,
-        TraitTax;
+    use TraitBasic;
+    use TraitTax;
 
     private function getDocumentLines(\SimpleXMLElement $arrayDataIn, string $strTag): array
     {
@@ -51,13 +50,12 @@ trait TraitLines
     private function getLine(\SimpleXMLElement $child): array
     {
         $arrayOutput = [];
-        foreach ($this->arraySettings['CustomOrder']['Lines@Read'] as $strElement => $strType) {
+        foreach ($this->arrayProcessing['Lines@Read'] as $strElement => $strType) {
             switch ($strType) {
                 case 'Item':
                     $arrayOutput['Item'] = $this->getLineItem($child->children('cac', true)->Item);
                     break;
                 case 'Multiple':
-                    //$arrayOutput[$strElement] = $this->getMultipleElements($child->children('cac', true)->$strElement);
                     $intLineNo           = 0;
                     foreach ($child->children('cac', true)->$strElement as $value2) {
                         $intLineNo++;
@@ -67,15 +65,10 @@ trait TraitLines
                     break;
                 case 'Single':
                     if (count($child->children('cbc', true)->$strElement) !== 0) {
-                        $arrayOutput[$strElement] = $child->children('cbc', true)->$strElement->__toString();
+                        $arrayOutput[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
                     }
                     if (count($child->children('cac', true)->$strElement) !== 0) {
                         $arrayOutput[$strElement] = $this->getElements($child->children('cac', true)->$strElement);
-                    }
-                    break;
-                case 'SingleTag':
-                    if (count($child->children('cbc', true)->$strElement) !== 0) {
-                        $arrayOutput[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
                     }
                     break;
             }
@@ -86,9 +79,9 @@ trait TraitLines
     private function getLineItem(\SimpleXMLElement $child3): array
     {
         $arrayOutput = [];
-        foreach ($this->arraySettings['CustomOrder']['Lines_Item@Read'] as $key => $value) {
+        foreach ($this->arrayProcessing['Lines_Item@Read'] as $key => $value) {
             switch ($value) {
-                case 'MultipleAggregate':
+                case 'Multiple':
                     $intLineNo = 0;
                     foreach ($child3->children('cac', true)->$key as $value2) {
                         $intLineNo++;
@@ -96,18 +89,16 @@ trait TraitLines
                         $arrayOutput[$key][$intLineStr] = $this->getElements($value2);
                     }
                     break;
-                case 'SingleAggregate':
+                case 'Single':
                     if (count($child3->children('cac', true)->$key) !== 0) {
                         $arrayOutput[$key] = $this->getElements($child3->children('cac', true)->$key);
                     }
-                    break;
-                case 'SingleBasic':
                     if (count($child3->children('cbc', true)->$key) !== 0) {
                         $arrayOutput[$key] = $child3->children('cbc', true)->$key->__toString();
                     }
                     break;
                 case 'TaxCategory':
-                    $arrayOutput[$key] = $this->getTaxCategory($child3->children('cac', true)->$key);
+                    $arrayOutput[$key] = $this->getTaxCategory($child3->children('cac', true)->$key, $key);
                     break;
             }
         }

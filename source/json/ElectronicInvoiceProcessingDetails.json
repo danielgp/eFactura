@@ -1,4 +1,36 @@
 {
+    "ClassifiedTaxCategory": {
+        "ID"                : "Single",
+        "Percent"           : "Single",
+        "TaxExemptionReason": "Single",
+        "TaxScheme"         : "Elements"
+    },
+    "Lines@Read": {
+        "ID"                    : "Single",
+        "Note"                  : "Single",
+        "CreditedQuantity"      : "Single",
+        "InvoicedQuantity"      : "Single",
+        "LineExtensionAmount"   : "Single",
+        "AccountingCost"        : "Single",
+        "InvoicePeriod"         : "Single",
+        "OrderLineReference"    : "Single",
+        "DocumentReference"     : "Single",
+        "AllowanceCharge"       : "Multiple",
+        "AdditionalCharge"      : "Multiple",
+        "Item"                  : "Item",
+        "Price"                 : "Single"
+    },
+    "Lines_Item@Read": {
+        "Description"               : "Single",
+        "Name"                      : "Single",
+        "BuyersItemIdentification"  : "Single",
+        "SellersItemIdentification" : "Single",
+        "StandardItemIdentification": "Multiple",
+        "OriginCountry"             : "Single",
+        "CommodityClassification"   : "Multiple",
+        "ClassifiedTaxCategory"     : "TaxCategory",
+        "AdditionalItemProperty"    : "Multiple"
+    },
     "OptionalElementsHeader": {
         "InvoicePeriod"               : "Single",
         "OrderReference"              : "Single",
@@ -20,6 +52,21 @@
         "AllowanceCharge"             : "Multiple",
         "TaxTotal"                    : "Multiple",
         "LegalMonetaryTotal"          : "Single"
+    },
+    "TaxCategory": {
+        "ID"                : "Single",
+        "Percent"           : "Single",
+        "TaxExemptionReason": "Single",
+        "TaxScheme"         : "Elements"
+    },
+    "TaxSubtotal": {
+        "TaxAmount"     : "Single",
+        "TaxableAmount" : "Single",
+        "TaxCategory"   : "Multiple"
+    },
+    "TaxTotal": {
+        "TaxAmount"     : "Single",
+        "TaxSubtotal"   : "Multiple"
     },
     "WritingCatgoryization": {
         "CommentParrentKey": [

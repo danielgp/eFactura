@@ -30,7 +30,6 @@ namespace danielgp\efactura;
 
 class ElectronicInvoiceWrite
 {
-
     use TraitVersions;
 
     protected \XMLWriter $objXmlWriter;
@@ -168,9 +167,9 @@ class ElectronicInvoiceWrite
 
     private function setProduceMiddleXml(array $arrayData): void
     {
-        $arrayAggregates             = $arrayData['Header']['CommonAggregateComponents-2'];
-        $arrayOptionalElementsHeader = $this->arrayProcessingDetails['OptionalElementsHeader'];
-        foreach ($arrayOptionalElementsHeader as $key => $strLogicType) {
+        $arrayAggregates = $arrayData['Header']['CommonAggregateComponents-2'];
+        $arrayOptionals  = $this->arrayProcessing['OptionalElementsHeader'];
+        foreach ($arrayOptionals as $key => $strLogicType) {
             if (array_key_exists($key, $arrayAggregates)) {
                 switch ($strLogicType) {
                     case 'Multiple':

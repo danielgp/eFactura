@@ -30,7 +30,6 @@ namespace danielgp\efactura;
 
 trait TraitVersions
 {
-
     use TraitBasic;
 
     private function establishCurrentVersion(array $arrayKnownVersions): array
@@ -89,9 +88,9 @@ trait TraitVersions
 
     private function getCommentsFromFileIntoSetting(): void
     {
-        $strGlue                = ' | ';
-        $arrayFlattenedComments = [];
-        $arrayComments          = $this->getCommentsFromFileAsArray();
+        $strGlue            = ' | ';
+        $arrayFlattComments = [];
+        $arrayComments      = $this->getCommentsFromFileAsArray();
         foreach ($arrayComments as $key => $value) {
             $strComment = implode($strGlue, [
                     $key,
@@ -101,13 +100,13 @@ trait TraitVersions
                 . (array_key_exists('SemanticDataType', $value) ? $strGlue . $value['SemanticDataType'] : '');
             if (is_array($value['HierarchycalTagName'])) {
                 foreach ($value['HierarchycalTagName'] as $value2) {
-                    $arrayFlattenedComments[$value2] = $strComment;
+                    $arrayFlattComments[$value2] = $strComment;
                 }
             } else {
-                $arrayFlattenedComments[$value['HierarchycalTagName']] = $strComment;
+                $arrayFlattComments[$value['HierarchycalTagName']] = $strComment;
             }
         }
-        $this->arraySettings['Comments'] = $arrayFlattenedComments;
+        $this->arraySettings['Comments'] = $arrayFlattComments;
     }
 
     private function loadSettingsAndManageDefaults(array $arrayData, array $arrayFeatures): array
@@ -130,7 +129,7 @@ trait TraitVersions
     {
         $strCategoryToReturn = '';
         $key                 = implode('_', [$arrayDataIn['commentParentKey'], $arrayDataIn['tag']]);
-        $arrayVarious        = $this->arrayProcessingDetails['WritingCatgoryization'];
+        $arrayVarious        = $this->arrayProcessing['WritingCatgoryization'];
         if (array_key_exists($key, $arrayVarious['Key'])) {
             $strCategoryToReturn = $arrayVarious['Key'][$key];
         } elseif (array_key_exists($arrayDataIn['tag'], $arrayVarious['Tag'])) {

@@ -30,13 +30,12 @@ namespace danielgp\efactura;
 
 class ElectronicInvoiceComments
 {
-
     use TraitBasic;
 
     public function getCommentsIntoArrayForTable()
     {
-        $arrayCommentsRaw      = $this->getCommentsFromFileAsArray();
-        $arrayCommentsForTable = [];
+        $arrayCommentsRaw   = $this->getCommentsFromFileAsArray();
+        $arrayCommentsTable = [];
         foreach ($arrayCommentsRaw as $key => $value) {
             $arrayTemp = [
                 'ID'                 => $key,
@@ -57,23 +56,23 @@ class ElectronicInvoiceComments
                 $arrayTemp['UsageNote_EN'] = $this->getKeyFromArrayOrAlternative('en_US', $value['UsageNote'], '-');
                 $arrayTemp['UsageNote_RO'] = $this->getKeyFromArrayOrAlternative('ro_RO', $value['UsageNote'], '-');
             }
-            $arrayCommentsForTable[] = $this->getOneOrMultipleTags($value['HierarchycalTagName'], $arrayTemp);
+            $arrayCommentsTable[] = $this->getOneOrMultipleTags($value['HierarchycalTagName'], $arrayTemp);
         }
-        return $arrayCommentsForTable;
+        return $arrayCommentsTable;
     }
 
     public function getCommentsIntoArrayForVerifications(): array
     {
-        $arrayCommentsRaw      = $this->getCommentsFromFileAsArray();
-        $arrayCommentsForTable = [];
+        $arrayCommentsRaw   = $this->getCommentsFromFileAsArray();
+        $arrayCommentsTable = [];
         foreach ($arrayCommentsRaw as $key => $value) {
             if (array_key_exists('SemanticDataType', $value)) {
-                $arrayCommentsForTable[$value['SemanticDataType']] = [
+                $arrayCommentsTable[$value['SemanticDataType']] = [
                     'ID' => $key,
                 ];
             }
         }
-        return $arrayCommentsForTable;
+        return $arrayCommentsTable;
     }
 
     public function getKeyFromArrayOrAlternative(string $strKey, array $arrayIn, string $strAlternative): string
