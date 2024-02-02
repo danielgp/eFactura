@@ -2969,7 +2969,7 @@
         "RequirementID": "R23,R56",
         "SemanticDataType": "Identifier"
     },
-    "BT-157": {
+    "BT-158": {
         "HierarchycalTagName": "Lines_Item_CommodityClassification",
         "Level": "+++",
         "Cardinality": "0..1",
