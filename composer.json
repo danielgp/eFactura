@@ -16,7 +16,7 @@
         "ext-SimpleXML": "*",
         "ext-XMLWriter": "*"
     },
-    "require_dev": {
+    "require-dev": {
         "phpunit/phpunit": "^10.5"
     },
     "config": {
@@ -39,9 +39,6 @@
             "source/ElectronicInvoiceWrite.php",
             "source/ElectronicInvoiceComments.php"
         ]
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^10"
     },
     "minimum-stability": "beta",
     "prefer-stable": true,
