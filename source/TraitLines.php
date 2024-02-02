@@ -57,7 +57,8 @@ trait TraitLines
                     break;
                 case 'Multiple':
                     if (count($child->children('cac', true)->$strElement) !== 0) {
-                        $arrayOutput[$strElement] = $this->getMultipleElementsByKey($child, $strElement);
+                        $arrayOutput[$strElement] = $this->getMultipleElementsByKey($child
+                                ->children('cac', true)->$strElement);
                     }
                     break;
                 case 'Single':
@@ -78,7 +79,7 @@ trait TraitLines
         foreach ($this->arrayProcessing['Lines_Item@Read'] as $key => $value) {
             switch ($value) {
                 case 'Multiple':
-                    $arrayOutput[$key] = $this->getMultipleElementsByKey($child3, $key);
+                    $arrayOutput[$key] = $this->getMultipleElementsByKey($child3->children('cac', true)->$key);
                     break;
                 case 'Single':
                     if (count($child3->children('cbc', true)->$key) !== 0) {

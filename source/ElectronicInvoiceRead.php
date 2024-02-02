@@ -40,7 +40,8 @@ class ElectronicInvoiceRead
         foreach ($this->arraySettings['CustomOrder'][$arrayIn['type']] as $strElement) {
             if (isset($arrayIn['data']->children('cac', true)->$strElement)) {
                 if ($strElement === 'PartyTaxScheme') {
-                    $arrayOut[$strElement] = $this->getMultipleElementsByKey($arrayIn['data'], $strElement);
+                    $arrayOut[$strElement] = $this->getMultipleElementsByKey($arrayIn['data']
+                            ->children('cac', true)->$strElement);
                 } else {
                     $arrayOut[$strElement] = $this->getElements($arrayIn['data']->children('cac', true)->$strElement);
                 }
@@ -90,7 +91,6 @@ class ElectronicInvoiceRead
         $arrayDocument = [
             'TaxTotal' => $this->getTax($arrayParams['CAC']->TaxTotal),
         ];
-        // optional components =========================================================================================
         foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
             if (isset($arrayParams['CAC']->$key)) {
                 $arrayDocument[$key] = $this->getHeaderComponents($arrayParams, $key, $value);
@@ -102,30 +102,30 @@ class ElectronicInvoiceRead
     private function getHeaderComponents(array $arrayParams, string $key, string $value): array | string
     {
         $arrayDocument = [];
-        switch ($value) {
-            case 'Multiple':
-                $arrayDocument = $this->getMultipleElementsByKey($arrayParams['data'], $key);
-                break;
-            case 'MultipleStandard':
-                $arrayDocument = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
-                break;
-            case 'Single':
-                $arrayDocument = $this->getElements($arrayParams['CAC']->$key);
-                break;
-            case 'SingleCompany':
-                $arrayDocument = [
-                    'Party' => $this->getAccountingCustomerOrSupplierParty([
-                        'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
-                        'type' => $key,
-                    ])
-                ];
-                break;
-            case 'SingleCompanyWithoutParty':
-                $arrayDocument = $this->getAccountingCustomerOrSupplierParty([
-                    'data' => $arrayParams['CAC']->$key,
+        if ($value === 'SingleCompany') {
+            $arrayDocument = [
+                'Party' => $this->getAccountingCustomerOrSupplierParty([
+                    'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
                     'type' => $key,
-                ]);
-                break;
+                ])
+            ];
+        } else {
+            $arrayMapping  = [
+                'Multiple'                  => [
+                    'getMultipleElementsByKey'
+                    , $arrayParams['data']->children('cac', true)->$key
+                ],
+                'MultipleStandard'          => ['getMultipleElementsStandard', $arrayParams['CAC']->$key],
+                'Single'                    => ['getElements', $arrayParams['CAC']->$key],
+                'SingleCompanyWithoutParty' => [
+                    'getAccountingCustomerOrSupplierParty'
+                    , [
+                        'data' => $arrayParams['CAC']->$key,
+                        'type' => $key,
+                    ]
+                ],
+            ];
+            $arrayDocument = $this->getRightMethod($arrayMapping[$value][0], $arrayMapping[$value][1]);
         }
         return $arrayDocument;
     }
@@ -144,10 +144,8 @@ class ElectronicInvoiceRead
         $arrayCAC                       = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
         // CommonAggregateComponents
         $arrayCommonAggregateComponents = $this->getHeader([
-            'CAC'                => $objFile->children('cac', true),
-            'data'               => $objFile,
-            'DocumentNameSpaces' => $arrayDocument['DocumentNameSpaces'],
-            'DocumentTagName'    => $arrayDocument['DocumentTagName'],
+            'CAC'  => $objFile->children('cac', true),
+            'data' => $objFile,
         ]);
         $arrayDocument['Header']        = [
             $arrayCBC[count($arrayCBC) - 1] => $arrayCommonBasicComponents,

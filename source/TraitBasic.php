@@ -101,11 +101,11 @@ trait TraitBasic
         return ($intLineNo < 10 ? '0' : '') . $intLineNo;
     }
 
-    private function getMultipleElementsByKey(\SimpleXMLElement $child3, string $strKey): array
+    private function getMultipleElementsByKey(\SimpleXMLElement $arrayData): array
     {
         $arrayOutput = [];
         $intLineNo   = 0;
-        foreach ($child3->children('cac', true)->$strKey as $value2) {
+        foreach ($arrayData as $value2) {
             $intLineNo++;
             $intLineStr               = $this->getLineStringFromNumber($intLineNo);
             $arrayOutput[$intLineStr] = $this->getElements($value2);
@@ -140,5 +140,23 @@ trait TraitBasic
     private function getProcessingDetails(): void
     {
         $this->arrayProcessing = $this->getJsonFromFile('json/ElectronicInvoiceProcessingDetails.json');
+    }
+
+    public function getRightMethod($existingFunction, $given_parameters = null): array | string
+    {
+        try {
+            if (is_null($given_parameters)) {
+                return call_user_func([$this, $existingFunction]);
+            } else {
+                if (is_array($given_parameters)) {
+                    return call_user_func_array([$this, $existingFunction], [$given_parameters]);
+                } else {
+                    return call_user_func([$this, $existingFunction], $given_parameters);
+                }
+            }
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+            return false;
+        }
     }
 }
