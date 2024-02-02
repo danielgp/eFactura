@@ -77,52 +77,55 @@ class ElectronicInvoiceRead
     private function getElementsOrdered(array $arrayDataIn): array
     {
         $arrayOutput = [];
-        $arrayCBC    = explode(':', $arrayDataIn['namespace_cbc']);
         foreach ($this->arraySettings['CustomOrder']['Header_CBC'] as $value) {
             if (isset($arrayDataIn['data']->$value)) {
                 $arrayOutput[$value] = $arrayDataIn['data']->$value->__toString();
             }
         }
-        return [$arrayCBC[(count($arrayCBC) - 1)] => $arrayOutput];
+        return $arrayOutput;
     }
 
     private function getHeader(array $arrayParams): array
     {
-        $arrayDocument                      = $this->getElementsOrdered([
-            'data'          => $arrayParams['CBC'],
-            'namespace_cbc' => $arrayParams['DocumentNameSpaces']['cbc'],
-        ]);
-        $strCAC                             = $arrayParams['cacName']; // CommonAggregateComponents
-        $arrayDocument[$strCAC]['TaxTotal'] = $this->getTax($arrayParams['CAC']->TaxTotal);
+        $arrayDocument = [
+            'TaxTotal' => $this->getTax($arrayParams['CAC']->TaxTotal),
+        ];
         // optional components =========================================================================================
         foreach ($this->arraySettings['CustomOrder']['Header_CAC'] as $key => $value) {
             if (isset($arrayParams['CAC']->$key)) {
-                switch ($value) {
-                    case 'Multiple':
-                        $arrayDocument[$strCAC][$key] = $this->getMultipleElementsByKey($arrayParams['data'], $key);
-                        break;
-                    case 'MultipleStandard':
-                        $arrayDocument[$strCAC][$key] = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
-                        break;
-                    case 'Single':
-                        $arrayDocument[$strCAC][$key] = $this->getElements($arrayParams['CAC']->$key);
-                        break;
-                    case 'SingleCompany':
-                        $arrayDocument[$strCAC][$key] = [
-                            'Party' => $this->getAccountingCustomerOrSupplierParty([
-                                'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
-                                'type' => $key,
-                            ])
-                        ];
-                        break;
-                    case 'SingleCompanyWithoutParty':
-                        $arrayDocument[$strCAC][$key] = $this->getAccountingCustomerOrSupplierParty([
-                            'data' => $arrayParams['CAC']->$key,
-                            'type' => $key,
-                        ]);
-                        break;
-                }
+                $arrayDocument[$key] = $this->getHeaderComponents($arrayParams, $key, $value);
             }
+        }
+        return $arrayDocument;
+    }
+
+    private function getHeaderComponents(array $arrayParams, string $key, string $value): array | string
+    {
+        $arrayDocument = [];
+        switch ($value) {
+            case 'Multiple':
+                $arrayDocument = $this->getMultipleElementsByKey($arrayParams['data'], $key);
+                break;
+            case 'MultipleStandard':
+                $arrayDocument = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
+                break;
+            case 'Single':
+                $arrayDocument = $this->getElements($arrayParams['CAC']->$key);
+                break;
+            case 'SingleCompany':
+                $arrayDocument = [
+                    'Party' => $this->getAccountingCustomerOrSupplierParty([
+                        'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
+                        'type' => $key,
+                    ])
+                ];
+                break;
+            case 'SingleCompanyWithoutParty':
+                $arrayDocument = $this->getAccountingCustomerOrSupplierParty([
+                    'data' => $arrayParams['CAC']->$key,
+                    'type' => $key,
+                ]);
+                break;
         }
         return $arrayDocument;
     }
@@ -131,19 +134,26 @@ class ElectronicInvoiceRead
     {
         $this->getProcessingDetails();
         $this->getHierarchyTagOrder();
-        $objFile                 = new \SimpleXMLElement($strFile, null, true);
-        $arrayDocument           = $this->getDocumentRoot($objFile);
-        $arrayCAC                = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
-        $strElementA             = $arrayCAC[count($arrayCAC) - 1]; // CommonAggregateComponents
-        $arrayDocument['Header'] = $this->getHeader([
+        $objFile                        = new \SimpleXMLElement($strFile, null, true);
+        $arrayDocument                  = $this->getDocumentRoot($objFile);
+        $arrayCBC                       = explode(':', $arrayDocument['DocumentNameSpaces']['cbc']);
+        $arrayCommonBasicComponents     = $this->getElementsOrdered([
+            'data'          => $objFile->children('cbc', true),
+            'namespace_cbc' => $arrayDocument['DocumentNameSpaces']['cbc'],
+        ]);
+        $arrayCAC                       = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
+        // CommonAggregateComponents
+        $arrayCommonAggregateComponents = $this->getHeader([
             'CAC'                => $objFile->children('cac', true),
-            'cacName'            => $strElementA,
-            'CBC'                => $objFile->children('cbc', true),
             'data'               => $objFile,
             'DocumentNameSpaces' => $arrayDocument['DocumentNameSpaces'],
             'DocumentTagName'    => $arrayDocument['DocumentTagName'],
         ]);
-        $arrayDocument['Lines']  = $this->getDocumentLines($objFile, $arrayDocument['DocumentTagName']);
+        $arrayDocument['Header']        = [
+            $arrayCBC[count($arrayCBC) - 1] => $arrayCommonBasicComponents,
+            $arrayCAC[count($arrayCAC) - 1] => $arrayCommonAggregateComponents,
+        ];
+        $arrayDocument['Lines']         = $this->getDocumentLines($objFile, $arrayDocument['DocumentTagName']);
         return $arrayDocument;
     }
 }
