@@ -76,17 +76,23 @@ trait TraitBasic
     {
         $strFileName = __DIR__ . DIRECTORY_SEPARATOR . $strFileName;
         if (!file_exists($strFileName)) {
+            // @codeCoverageIgnoreStart
             throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));
+            // @codeCoverageIgnoreEnd
         }
         $fileHandle = fopen($strFileName, 'r');
         if ($fileHandle === false) {
+            // @codeCoverageIgnoreStart
             throw new \RuntimeException(sprintf('Unable to open file %s for read purpose!', $strFileName));
+            // @codeCoverageIgnoreEnd
         }
         $fileContent   = fread($fileHandle, ((int) filesize($strFileName)));
         fclose($fileHandle);
         $arrayToReturn = json_decode($fileContent, true);
         if (json_last_error() != JSON_ERROR_NONE) {
+            // @codeCoverageIgnoreStart
             throw new \RuntimeException(sprintf('Unable to interpret JSON from %s file...', $strFileName));
+            // @codeCoverageIgnoreEnd
         }
         return $arrayToReturn;
     }
