@@ -151,18 +151,16 @@ trait TraitBasic
     public function getRightMethod($existingFunction, $given_parameters = null): array | string
     {
         try {
-            if (is_null($given_parameters)) {
-                return call_user_func([$this, $existingFunction]);
+            if (is_array($given_parameters)) {
+                return call_user_func_array([$this, $existingFunction], [$given_parameters]);
             } else {
-                if (is_array($given_parameters)) {
-                    return call_user_func_array([$this, $existingFunction], [$given_parameters]);
-                } else {
-                    return call_user_func([$this, $existingFunction], $given_parameters);
-                }
+                return call_user_func([$this, $existingFunction], $given_parameters);
             }
+            // @codeCoverageIgnoreStart
         } catch (\Exception $ex) {
             echo $ex->getMessage();
             return false;
         }
+        // @codeCoverageIgnoreEnd
     }
 }
