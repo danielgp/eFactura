@@ -57,7 +57,7 @@ trait TraitLines
                     break;
                 case 'Multiple':
                     if (count($child->children('cac', true)->$strElement) !== 0) {
-                        $arrayOutput[$strElement] = $this->getMultipleItemAttributes($child, $strElement);
+                        $arrayOutput[$strElement] = $this->getMultipleElementsByKey($child, $strElement);
                     }
                     break;
                 case 'Single':
@@ -78,7 +78,7 @@ trait TraitLines
         foreach ($this->arrayProcessing['Lines_Item@Read'] as $key => $value) {
             switch ($value) {
                 case 'Multiple':
-                    $arrayOutput[$key] = $this->getMultipleItemAttributes($child3, $key);
+                    $arrayOutput[$key] = $this->getMultipleElementsByKey($child3, $key);
                     break;
                 case 'Single':
                     if (count($child3->children('cbc', true)->$key) !== 0) {
@@ -91,18 +91,6 @@ trait TraitLines
                     $arrayOutput[$key] = $this->getTaxCategory($child3->children('cac', true)->$key, $key);
                     break;
             }
-        }
-        return $arrayOutput;
-    }
-
-    private function getMultipleItemAttributes(\SimpleXMLElement $child3, string $strKey): array
-    {
-        $arrayOutput = [];
-        $intLineNo   = 0;
-        foreach ($child3->children('cac', true)->$strKey as $value2) {
-            $intLineNo++;
-            $intLineStr               = $this->getLineStringFromNumber($intLineNo);
-            $arrayOutput[$intLineStr] = $this->getElements($value2);
         }
         return $arrayOutput;
     }

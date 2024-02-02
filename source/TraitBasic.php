@@ -101,6 +101,18 @@ trait TraitBasic
         return ($intLineNo < 10 ? '0' : '') . $intLineNo;
     }
 
+    private function getMultipleElementsByKey(\SimpleXMLElement $child3, string $strKey): array
+    {
+        $arrayOutput = [];
+        $intLineNo   = 0;
+        foreach ($child3->children('cac', true)->$strKey as $value2) {
+            $intLineNo++;
+            $intLineStr               = $this->getLineStringFromNumber($intLineNo);
+            $arrayOutput[$intLineStr] = $this->getElements($value2);
+        }
+        return $arrayOutput;
+    }
+
     private function getMultipleElementsStandard(array|\SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];

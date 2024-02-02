@@ -40,8 +40,7 @@ class ElectronicInvoiceRead
         foreach ($this->arraySettings['CustomOrder'][$arrayIn['type']] as $strElement) {
             if (isset($arrayIn['data']->children('cac', true)->$strElement)) {
                 if ($strElement === 'PartyTaxScheme') {
-                    $arrayOut[$strElement] = $this->getMultipleElements($arrayIn['data']
-                            ->children('cac', true)->$strElement);
+                    $arrayOut[$strElement] = $this->getMultipleElementsByKey($arrayIn['data'], $strElement);
                 } else {
                     $arrayOut[$strElement] = $this->getElements($arrayIn['data']->children('cac', true)->$strElement);
                 }
@@ -100,8 +99,7 @@ class ElectronicInvoiceRead
             if (isset($arrayParams['CAC']->$key)) {
                 switch ($value) {
                     case 'Multiple':
-                        $arrayDocument[$strCAC][$key] = $this->getMultipleElements($arrayParams['CAC']
-                            ->$key);
+                        $arrayDocument[$strCAC][$key] = $this->getMultipleElementsByKey($arrayParams['data'], $key);
                         break;
                     case 'MultipleStandard':
                         $arrayDocument[$strCAC][$key] = $this->getMultipleElementsStandard($arrayParams['CAC']->$key);
@@ -129,18 +127,6 @@ class ElectronicInvoiceRead
         return $arrayDocument;
     }
 
-    private function getMultipleElements(array|\SimpleXMLElement $arrayIn): array
-    {
-        $arrayToReturn = [];
-        $intLineNo     = 0;
-        foreach ($arrayIn as $child) {
-            $intLineNo++;
-            $intLineStr                 = $this->getLineStringFromNumber($intLineNo);
-            $arrayToReturn[$intLineStr] = $this->getElements($child);
-        }
-        return $arrayToReturn;
-    }
-
     public function readElectronicInvoice(string $strFile): array
     {
         $this->getProcessingDetails();
@@ -153,6 +139,7 @@ class ElectronicInvoiceRead
             'CAC'                => $objFile->children('cac', true),
             'cacName'            => $strElementA,
             'CBC'                => $objFile->children('cbc', true),
+            'data'               => $objFile,
             'DocumentNameSpaces' => $arrayDocument['DocumentNameSpaces'],
             'DocumentTagName'    => $arrayDocument['DocumentTagName'],
         ]);
