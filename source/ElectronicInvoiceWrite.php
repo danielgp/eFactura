@@ -34,6 +34,42 @@ class ElectronicInvoiceWrite
 
     protected \XMLWriter $objXmlWriter;
 
+    private function setDecisionElements(array $arrayInput, string $strKey, string $strTag, string $strCategory): void
+    {
+        switch ($strCategory) {
+            case 'ArrayElementsOrdered':
+                foreach ($arrayInput['data'][$strTag] as $value2) {
+                    $this->setElementsOrdered([
+                        'commentParentKey' => $strKey,
+                        'data'             => $value2,
+                        'tag'              => $strTag,
+                    ]);
+                }
+                break;
+            case 'ElementsOrdered':
+                $this->setElementsOrdered([
+                    'commentParentKey' => $strKey,
+                    'data'             => $arrayInput['data'][$strTag],
+                    'tag'              => $strTag,
+                ]);
+                break;
+            case 'MultipleElementsOrdered':
+                $this->setMultipleElementsOrdered([
+                    'commentParentKey' => $strKey,
+                    'data'             => $arrayInput['data'][$strTag],
+                    'tag'              => $strTag,
+                ]);
+                break;
+            case 'SingleElementWithAttribute':
+                $this->setSingleElementWithAttribute([
+                    'commentParentKey' => $arrayInput['commentParentKey'],
+                    'data'             => $arrayInput['data'][$strTag],
+                    'tag'              => $strTag,
+                ]);
+                break;
+        }
+    }
+
     private function setDocumentTag(array $arrayDocumentData): void
     {
         $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
@@ -69,8 +105,7 @@ class ElectronicInvoiceWrite
         $this->setElementComment($arrayInput['commentParentKey']);
         $this->objXmlWriter->startElement('cac:' . $arrayInput['tag']);
         $this->setExtraElement($arrayInput, 'Start');
-        $arrayCustomOrder = $this->arraySettings['CustomOrder'][$arrayInput['commentParentKey']];
-        foreach ($arrayCustomOrder as $value) { // get the values in expected order
+        foreach ($this->arraySettings['CustomOrder'][$arrayInput['commentParentKey']] as $value) {
             if (array_key_exists($value, $arrayInput['data'])) { // because certain value are optional
                 $key         = implode('_', [$arrayInput['commentParentKey'], $value]);
                 $matches     = [];
@@ -81,42 +116,11 @@ class ElectronicInvoiceWrite
                     'matches'          => $matches,
                     'tag'              => $value,
                 ]);
-                switch ($strCategory) {
-                    case 'ArrayElementsOrdered':
-                        foreach ($arrayInput['data'][$value] as $value2) {
-                            $this->setElementsOrdered([
-                                'commentParentKey' => $key,
-                                'data'             => $value2,
-                                'tag'              => $value,
-                            ]);
-                        }
-                        break;
-                    case 'ElementsOrdered':
-                        $this->setElementsOrdered([
-                            'commentParentKey' => $key,
-                            'data'             => $arrayInput['data'][$value],
-                            'tag'              => $value,
-                        ]);
-                        break;
-                    case 'MultipleElementsOrdered':
-                        $this->setMultipleElementsOrdered([
-                            'commentParentKey' => $key,
-                            'data'             => $arrayInput['data'][$value],
-                            'tag'              => $value,
-                        ]);
-                        break;
-                    case 'SingleElementWithAttribute':
-                        $this->setSingleElementWithAttribute([
-                            'commentParentKey' => $arrayInput['commentParentKey'],
-                            'data'             => $arrayInput['data'][$value],
-                            'tag'              => $value,
-                        ]);
-                        break;
-                }
+                $this->setDecisionElements($arrayInput, $key, $value, $strCategory);
             }
         }
         $this->setExtraElement($arrayInput, 'End');
-        $this->objXmlWriter->endElement(); // $key
+        $this->objXmlWriter->endElement(); // $arrayInput['tag']
     }
 
     private function setExtraElement(array $arrayInput, string $strType): void
