@@ -154,7 +154,7 @@ trait TraitBasic
                     return call_user_func([$this, $existingFunction], $given_parameters);
                 }
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             echo $ex->getMessage();
             return false;
         }
