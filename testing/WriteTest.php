@@ -27,19 +27,35 @@ final class WriteTest extends TestCase
             . 'Romanian/eInvoice_ex.xml', $strTargetFile);
     }
 
-    public function testGetLocalJsonInvoiceIntoXmlWithDefaults()
+    public function testGetLocalJsonInvoiceIntoXmlWithComments()
     {
-        // given file does not contain namespaces, as these elements are Optional and taken from default if not provided
-        $url           = self::LOCAL_UBL_EXAMPLES_PATH . 'Romanian/Invoice_Data.json';
+        $url           = self::LOCAL_UBL_EXAMPLES_PATH . 'Romanian/Invoice.json';
         $fileHandle    = fopen($url, 'r');
         $jsonData      = fread($fileHandle, ((int) filesize($url)));
         fclose($fileHandle);
         $arrayData     = json_decode($jsonData, true);
         $classWrite    = new \danielgp\efactura\ElectronicInvoiceWrite();
-        $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '_raw.xml';
+        $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '_with_Comments.xml';
+        $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
+            'Comments'       => true,
+            'SchemaLocation' => false,
+        ]);
+        $this->assertXmlFileEqualsXmlFile(self::LOCAL_UBL_EXAMPLES_PATH
+            . 'Romanian/eInvoice_ex.xml', $strTargetFile);
+    }
+
+    public function testGetLocalJsonInvoiceIntoXmlWithSchemaLocation()
+    {
+        $url           = self::LOCAL_UBL_EXAMPLES_PATH . 'Romanian/Invoice.json';
+        $fileHandle    = fopen($url, 'r');
+        $jsonData      = fread($fileHandle, ((int) filesize($url)));
+        fclose($fileHandle);
+        $arrayData     = json_decode($jsonData, true);
+        $classWrite    = new \danielgp\efactura\ElectronicInvoiceWrite();
+        $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '_with_SchemaLocation.xml';
         $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
             'Comments'       => false,
-            'SchemaLocation' => false,
+            'SchemaLocation' => true,
         ]);
         $this->assertXmlFileNotEqualsXmlFile(self::LOCAL_UBL_EXAMPLES_PATH
             . 'Romanian/eInvoice_ex.xml', $strTargetFile);
