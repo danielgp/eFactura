@@ -37,15 +37,6 @@ class ElectronicInvoiceWrite
     private function setDecisionElements(array $arrayInput, string $strKey, string $strTag, string $strCategory): void
     {
         switch ($strCategory) {
-            case 'ArrayElementsOrdered':
-                foreach ($arrayInput['data'][$strTag] as $value2) {
-                    $this->setElementsOrdered([
-                        'commentParentKey' => $strKey,
-                        'data'             => $value2,
-                        'tag'              => $strTag,
-                    ]);
-                }
-                break;
             case 'ElementsOrdered':
                 $this->setElementsOrdered([
                     'commentParentKey' => $strKey,
@@ -170,26 +161,20 @@ class ElectronicInvoiceWrite
         foreach ($this->arrayProcessing['OptionalElementsHeader'] as $key => $strLogicType) {
             if (array_key_exists($key, $arrayData)) {
                 switch ($strLogicType) {
-                    case 'Multiple':
-                        $this->setMultipleElementsOrdered([
-                            'commentParentKey' => $key,
-                            'data'             => $arrayData[$key],
-                            'tag'              => $key,
-                        ]);
-                        break;
-                    case 'Single':
-                        $this->setElementsOrdered([
-                            'commentParentKey' => $key,
-                            'data'             => $arrayData[$key],
-                            'tag'              => $key,
-                        ]);
-                        break;
                     case 'SingleCompany':
                         $this->setElementsOrdered([
                             'commentParentKey' => $key,
                             'data'             => $arrayData[$key]['Party'],
                             'tag'              => $key,
                         ]);
+                        break;
+                    default:
+                        $arrayInput = [
+                            'commentParentKey' => $key,
+                            'data'             => $arrayData,
+                            'tag'              => $key
+                        ];
+                        $this->setDecisionElements($arrayInput, $key, $key, $strLogicType);
                         break;
                 }
             }

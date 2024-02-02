@@ -32,26 +32,26 @@
         "AdditionalItemProperty"    : "Multiple"
     },
     "OptionalElementsHeader": {
-        "InvoicePeriod"               : "Single",
-        "OrderReference"              : "Single",
-        "BillingReference"            : "Single",
-        "DespatchDocumentReference"   : "Single",
-        "ReceiptDocumentReference"    : "Single",
-        "OriginatorDocumentReference" : "Single",
-        "ContractDocumentReference"   : "Single",
-        "AdditionalDocumentReference" : "Multiple",
-        "ProjectReference"            : "Single",
+        "InvoicePeriod"               : "ElementsOrdered",
+        "OrderReference"              : "ElementsOrdered",
+        "BillingReference"            : "ElementsOrdered",
+        "DespatchDocumentReference"   : "ElementsOrdered",
+        "ReceiptDocumentReference"    : "ElementsOrdered",
+        "OriginatorDocumentReference" : "ElementsOrdered",
+        "ContractDocumentReference"   : "ElementsOrdered",
+        "AdditionalDocumentReference" : "MultipleElementsOrdered",
+        "ProjectReference"            : "ElementsOrdered",
         "AccountingSupplierParty"     : "SingleCompany",
         "AccountingCustomerParty"     : "SingleCompany",
-        "PayeeParty"                  : "Single",
-        "TaxRepresentativeParty"      : "Single",
-        "Delivery"                    : "Single",
-        "PaymentMeans"                : "Multiple",
-        "PaymentTerms"                : "Single",
-        "DocumentReference"           : "Single",
-        "AllowanceCharge"             : "Multiple",
-        "TaxTotal"                    : "Multiple",
-        "LegalMonetaryTotal"          : "Single"
+        "PayeeParty"                  : "ElementsOrdered",
+        "TaxRepresentativeParty"      : "ElementsOrdered",
+        "Delivery"                    : "ElementsOrdered",
+        "PaymentMeans"                : "MultipleElementsOrdered",
+        "PaymentTerms"                : "ElementsOrdered",
+        "DocumentReference"           : "ElementsOrdered",
+        "AllowanceCharge"             : "MultipleElementsOrdered",
+        "TaxTotal"                    : "MultipleElementsOrdered",
+        "LegalMonetaryTotal"          : "ElementsOrdered"
     },
     "TaxCategory": {
         "ID"                : "Single",
@@ -78,7 +78,7 @@
             "PayeeParty_PartyIdentification"
         ],
         "Key": {
-            "Lines_AllowanceCharge"        : "ArrayElementsOrdered",
+            "Lines_AllowanceCharge"        : "MultipleElementsOrdered",
             "Delivery_DeliveryLocation_ID" : "SingleElementWithAttribute"
         },
         "Tag": {
