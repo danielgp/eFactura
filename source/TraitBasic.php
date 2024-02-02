@@ -38,7 +38,7 @@ trait TraitBasic
         return $this->getJsonFromFile('json/ElectronicInvoiceComments.json');
     }
 
-    private function getElements(\SimpleXMLElement|null $arrayIn): array
+    private function getElements(\SimpleXMLElement | null $arrayIn): array
     {
         $arrayToReturn = [];
         if (!is_null($arrayIn)) {
@@ -56,7 +56,7 @@ trait TraitBasic
         return $arrayToReturn;
     }
 
-    private function getElementSingle(\SimpleXMLElement|null $value)
+    private function getElementSingle(\SimpleXMLElement | null $value)
     {
         $arrayToReturn = [];
         if (!is_null($value)) {
@@ -113,7 +113,7 @@ trait TraitBasic
         return $arrayOutput;
     }
 
-    private function getMultipleElementsStandard(array|\SimpleXMLElement $arrayIn): array
+    private function getMultipleElementsStandard(array | \SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];
         $intLineNo     = 0;

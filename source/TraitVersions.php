@@ -165,7 +165,7 @@ trait TraitVersions
         return $strCommentParentKey;
     }
 
-    protected function setNumericValue(string $strTag, array $arrayDataIn): string|float
+    protected function setNumericValue(string $strTag, array $arrayDataIn): string | float
     {
         $sReturn      = $arrayDataIn['value'];
         $arrayRawTags = ['CreditedQuantity', 'EndpointID', 'InvoicedQuantity', 'ItemClassificationCode', 'PriceAmount'];
