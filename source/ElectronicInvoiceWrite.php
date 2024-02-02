@@ -167,29 +167,27 @@ class ElectronicInvoiceWrite
 
     private function setProduceMiddleXml(array $arrayData): void
     {
-        $arrayAggregates = $arrayData['Header']['CommonAggregateComponents-2'];
-        $arrayOptionals  = $this->arrayProcessing['OptionalElementsHeader'];
-        foreach ($arrayOptionals as $key => $strLogicType) {
-            if (array_key_exists($key, $arrayAggregates)) {
+        foreach ($this->arrayProcessing['OptionalElementsHeader'] as $key => $strLogicType) {
+            if (array_key_exists($key, $arrayData)) {
                 switch ($strLogicType) {
                     case 'Multiple':
                         $this->setMultipleElementsOrdered([
                             'commentParentKey' => $key,
-                            'data'             => $arrayAggregates[$key],
+                            'data'             => $arrayData[$key],
                             'tag'              => $key,
                         ]);
                         break;
                     case 'Single':
                         $this->setElementsOrdered([
                             'commentParentKey' => $key,
-                            'data'             => $arrayAggregates[$key],
+                            'data'             => $arrayData[$key],
                             'tag'              => $key,
                         ]);
                         break;
                     case 'SingleCompany':
                         $this->setElementsOrdered([
                             'commentParentKey' => $key,
-                            'data'             => $arrayAggregates[$key]['Party'],
+                            'data'             => $arrayData[$key]['Party'],
                             'tag'              => $key,
                         ]);
                         break;
@@ -236,7 +234,7 @@ class ElectronicInvoiceWrite
         $this->setPrepareXml($strFile, $arrayFeatures['Ident']);
         $this->setDocumentTag($arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
-        $this->setProduceMiddleXml($arrayData);
+        $this->setProduceMiddleXml($arrayData['Header']['CommonAggregateComponents-2']);
         // multiple Lines
         $this->setMultipleElementsOrdered([
             'commentParentKey' => 'Lines',
