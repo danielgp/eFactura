@@ -70,22 +70,6 @@ class ElectronicInvoiceWrite
         }
     }
 
-    private function setDocumentTag(array $arrayDocumentData): void
-    {
-        $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
-        foreach ($arrayDocumentData['DocumentNameSpaces'] as $key => $value) {
-            if ($key === '') {
-                $strValue = sprintf($value, $arrayDocumentData['DocumentTagName']);
-                $this->objXmlWriter->writeAttributeNS(null, 'xmlns', null, $strValue);
-            } else {
-                $this->objXmlWriter->writeAttributeNS('xmlns', $key, null, $value);
-            }
-        }
-        if (array_key_exists('SchemaLocation', $arrayDocumentData)) {
-            $this->objXmlWriter->writeAttribute('xsi:schemaLocation', $arrayDocumentData['SchemaLocation']);
-        }
-    }
-
     private function setElementComment(string $strKey): void
     {
         if (array_key_exists($strKey, $this->arraySettings['Comments'])) {
@@ -160,13 +144,25 @@ class ElectronicInvoiceWrite
         }
     }
 
-    private function setPrepareXml(string $strFile, int $intIdent = 4): void
+    private function setPrepareXml(string $strFile, int $intIdent = 4, array $arrayDocumentData): void
     {
         $this->objXmlWriter = new \XMLWriter();
         $this->objXmlWriter->openURI($strFile);
         $this->objXmlWriter->setIndent(true);
         $this->objXmlWriter->setIndentString(str_repeat(' ', $intIdent));
         $this->objXmlWriter->startDocument('1.0', 'UTF-8');
+        $this->objXmlWriter->startElement($arrayDocumentData['DocumentTagName']);
+        foreach ($arrayDocumentData['DocumentNameSpaces'] as $key => $value) {
+            if ($key === '') {
+                $strValue = sprintf($value, $arrayDocumentData['DocumentTagName']);
+                $this->objXmlWriter->writeAttributeNS(null, 'xmlns', null, $strValue);
+            } else {
+                $this->objXmlWriter->writeAttributeNS('xmlns', $key, null, $value);
+            }
+        }
+        if (array_key_exists('SchemaLocation', $arrayDocumentData)) {
+            $this->objXmlWriter->writeAttribute('xsi:schemaLocation', $arrayDocumentData['SchemaLocation']);
+        }
     }
 
     private function setProduceMiddleXml(array $arrayData): void
@@ -235,8 +231,7 @@ class ElectronicInvoiceWrite
         if (!array_key_exists('Ident', $arrayFeatures)) {
             $arrayFeatures['Ident'] = 4;
         }
-        $this->setPrepareXml($strFile, $arrayFeatures['Ident']);
-        $this->setDocumentTag($arrayData);
+        $this->setPrepareXml($strFile, $arrayFeatures['Ident'], $arrayData);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
         $this->setProduceMiddleXml($arrayData['Header']['CommonAggregateComponents-2']);
         // multiple Lines
