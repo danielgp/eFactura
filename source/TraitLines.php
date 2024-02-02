@@ -59,12 +59,6 @@ trait TraitLines
                     if (count($child->children('cac', true)->$strElement) !== 0) {
                         $arrayOutput[$strElement] = $this->getMultipleItemAttributes($child, $strElement);
                     }
-                    /* $intLineNo                = 0;
-                      foreach ($child->children('cac', true)->$strElement as $value2) {
-                      $intLineNo++;
-                      $intLineStr                            = $this->getLineStringFromNumber($intLineNo);
-                      $arrayOutput[$strElement][$intLineStr] = $this->getElements($value2);
-                      } */
                     break;
                 case 'Single':
                     if (count($child->children('cbc', true)->$strElement) !== 0) {
