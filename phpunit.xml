@@ -24,6 +24,9 @@
         </report>
     </coverage>
     <source>
+        <exclude>
+            <file>ClassElectronicInvoiceUserInterface.php</file>
+        </exclude>
         <include>
             <directory suffix=".php">source</directory>
         </include>

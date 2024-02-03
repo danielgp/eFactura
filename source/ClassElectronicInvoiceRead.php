@@ -61,6 +61,12 @@ class ClassElectronicInvoiceRead
         return $arrayOut;
     }
 
+    private function getBasicOrAggregateKey(array $arrayDocNmSp, string $strBasOrAggr): string
+    {
+        $arrayPieces = explode(':', $arrayDocNmSp[$strBasOrAggr]);
+        return $arrayPieces[count($arrayPieces) - 1];
+    }
+
     private function getDocumentRoot(object $objFile): array
     {
         $arrayDocument = [
@@ -134,24 +140,21 @@ class ClassElectronicInvoiceRead
     {
         $this->getProcessingDetails();
         $this->getHierarchyTagOrder();
-        $objFile                        = new \SimpleXMLElement($strFile, null, true);
-        $arrayDocument                  = $this->getDocumentRoot($objFile);
-        $arrayCBC                       = explode(':', $arrayDocument['DocumentNameSpaces']['cbc']);
-        $arrayCommonBasicComponents     = $this->getElementsOrdered([
+        $objFile                 = new \SimpleXMLElement($strFile, null, true);
+        $arrayDocument           = $this->getDocumentRoot($objFile);
+        $arrayBasics             = $this->getElementsOrdered([
             'data'          => $objFile->children('cbc', true),
             'namespace_cbc' => $arrayDocument['DocumentNameSpaces']['cbc'],
         ]);
-        $arrayCAC                       = explode(':', $arrayDocument['DocumentNameSpaces']['cac']);
-        // CommonAggregateComponents
-        $arrayCommonAggregateComponents = $this->getHeader([
+        $arrayAggregates         = $this->getHeader([
             'CAC'  => $objFile->children('cac', true),
             'data' => $objFile,
         ]);
-        $arrayDocument['Header']        = [
-            $arrayCBC[count($arrayCBC) - 1] => $arrayCommonBasicComponents,
-            $arrayCAC[count($arrayCAC) - 1] => $arrayCommonAggregateComponents,
+        $arrayDocument['Header'] = [
+            $this->getBasicOrAggregateKey($arrayDocument['DocumentNameSpaces'], 'cbc') => $arrayBasics,
+            $this->getBasicOrAggregateKey($arrayDocument['DocumentNameSpaces'], 'cac') => $arrayAggregates,
         ];
-        $arrayDocument['Lines']         = $this->getDocumentLines($objFile, $arrayDocument['DocumentTagName']);
+        $arrayDocument['Lines']  = $this->getDocumentLines($objFile, $arrayDocument['DocumentTagName']);
         return $arrayDocument;
     }
 }

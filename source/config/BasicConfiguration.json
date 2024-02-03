@@ -1,0 +1,9 @@
+{
+    "Application": {
+        "Name": "Electronic Invoice",
+        "Developer": "Daniel Popiniuc"
+    },
+    "Feedback": {
+        "DifferentFile": "A different file named &quot;%s&quot; than expected ones is present in the archive &quot;%s&quot;... weird..."
+    }
+}
