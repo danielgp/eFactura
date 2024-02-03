@@ -148,7 +148,7 @@ trait TraitBasic
         $this->arrayProcessing = $this->getJsonFromFile('json/ElectronicInvoiceProcessingDetails.json');
     }
 
-    public function getRightMethod($existingFunction, $given_parameters = null): array | string
+    public function getRightMethod(string $existingFunction, $given_parameters = null): array | string
     {
         try {
             if (is_array($given_parameters)) {
@@ -162,25 +162,5 @@ trait TraitBasic
             return false;
         }
         // @codeCoverageIgnoreEnd
-    }
-
-    private function getTaxCategory(\SimpleXMLElement $child3, string $strElementName): array
-    {
-        $arrayOut = [];
-        foreach ($this->arrayProcessing[$strElementName] as $strElement => $strType) {
-            switch ($strType) {
-                case 'Elements':
-                    if (isset($child3->children('cac', true)->$strElement)) {
-                        $arrayOut[$strElement] = $this->getElements($child3->children('cac', true)->$strElement);
-                    }
-                    break;
-                case 'Single':
-                    if (isset($child3->children('cbc', true)->$strElement)) {
-                        $arrayOut[$strElement] = $this->getElementSingle($child3->children('cbc', true)->$strElement);
-                    }
-                    break;
-            }
-        }
-        return $arrayOut;
     }
 }

@@ -31,6 +31,7 @@ namespace danielgp\efactura;
 trait TraitLines
 {
     use TraitBasic;
+    use TraitTax;
 
     private function getDocumentLines(\SimpleXMLElement $arrayDataIn, string $strTag): array
     {
