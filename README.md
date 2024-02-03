@@ -65,3 +65,4 @@ PHP developers that serves various business to accomodate custom applications in
 ## Code quality analysis
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/danielgp/efactura/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/danielgp/efactura/?branch=main)
+[![Scrutinizer Code Coverage](https://scrutinizer-ci.com/g/danielgp/eFactura/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/danielgp/eFactura/?branch=main)
