@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
-         backupGlobals="false">
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11/phpunit.xsd"
+         backupGlobals="false"
+         cacheResult="false">
     <testsuites>
         <testsuite name="read_write">
             <file>testing/ReadWriteTest.php</file>
@@ -10,12 +11,30 @@
             <file>testing/WriteTest.php</file>
         </testsuite>
     </testsuites>
+    <coverage
+        pathCoverage="false">
+        <report>
+            <clover outputFile="testing/coverage/clover.xml"/>
+            <cobertura outputFile="testing/coverage/cobertura.xml"/>
+            <crap4j outputFile="testing/coverage/crap4j.xml" threshold="50"/>
+            <html outputDirectory="testing/coverage/html-coverage" lowUpperBound="50" highLowerBound="90"/>
+            <php outputFile="testing/coverage/coverage.php"/>
+            <text outputFile="testing/coverage/coverage.txt" showUncoveredFiles="false" showOnlySummary="true"/>
+            <xml outputDirectory="testing/coverage/xml-coverage"/>
+        </report>
+    </coverage>
     <source>
         <exclude>
             <file>source/ElectronicInvoiceComments.php</file>
         </exclude>
         <include>
-            <directory>source</directory>
+            <directory suffix=".php">source</directory>
         </include>
     </source>
+    <logging>
+        <junit outputFile="testing/logs/junit.xml"/>
+        <teamcity outputFile="testing/logs/teamcity.txt"/>
+        <testdoxHtml outputFile="testing/logs/testdox.html"/>
+        <testdoxText outputFile="testing/logs/testdox.txt"/>
+    </logging>
 </phpunit>
