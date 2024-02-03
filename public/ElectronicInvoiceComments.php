@@ -61,7 +61,7 @@ class ElectronicInvoiceComments
         return $arrayCommentsTable;
     }
 
-    public function getCommentsIntoArrayForVerifications(): array
+    private function getCommentsIntoArrayForVerifications(): array
     {
         $arrayCommentsRaw   = $this->getCommentsFromFileAsArray();
         $arrayCommentsTable = [];
@@ -75,7 +75,7 @@ class ElectronicInvoiceComments
         return $arrayCommentsTable;
     }
 
-    public function getKeyFromArrayOrAlternative(string $strKey, array $arrayIn, string $strAlternative): string
+    private function getKeyFromArrayOrAlternative(string $strKey, array $arrayIn, string $strAlternative): string
     {
         $strToReturn = $strAlternative;
         if (array_key_exists($strKey, $arrayIn)) {
@@ -84,7 +84,7 @@ class ElectronicInvoiceComments
         return $strToReturn;
     }
 
-    private function getOneOrMultipleTags(string|array $inElement, array $arrayIn): array
+    private function getOneOrMultipleTags(string | array $inElement, array $arrayIn): array
     {
         $arrayToReturn = [];
         if (is_array($inElement)) {

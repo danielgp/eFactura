@@ -35,7 +35,7 @@ trait TraitBasic
 
     private function getCommentsFromFileAsArray(): array
     {
-        return $this->getJsonFromFile('json/ElectronicInvoiceComments.json');
+        return $this->getJsonFromFile('config/ElectronicInvoiceComments.json');
     }
 
     private function getElements(\SimpleXMLElement | null $arrayIn): array
@@ -99,7 +99,7 @@ trait TraitBasic
 
     private function getHierarchyTagOrder(): void
     {
-        $this->arraySettings['CustomOrder'] = $this->getJsonFromFile('json/ElectronicInvoiceHierarchyTagOrder.json');
+        $this->arraySettings['CustomOrder'] = $this->getJsonFromFile('config/ElectronicInvoiceHierarchyTagOrder.json');
     }
 
     private function getLineStringFromNumber(int $intLineNo): string
@@ -145,7 +145,7 @@ trait TraitBasic
 
     private function getProcessingDetails(): void
     {
-        $this->arrayProcessing = $this->getJsonFromFile('json/ElectronicInvoiceProcessingDetails.json');
+        $this->arrayProcessing = $this->getJsonFromFile('config/ElectronicInvoiceProcessingDetails.json');
     }
 
     public function getRightMethod(string $existingFunction, $given_parameters = null): array | string

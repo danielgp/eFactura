@@ -11,13 +11,19 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
-        "ext-XML": "*",
-        "ext-SimpleXML": "*",
-        "ext-XMLWriter": "*"
+        "php"                       : ">=7.4",
+        "danielgp/io-operations"    : "~1.1",
+        "fortawesome/font-awesome"  : "~6.4",
+        "phpunit/php-timer"         : "~7.0",
+        "twbs/bootstrap"            : "~5.3",
+        "ext-json"                  : "*",
+        "ext-mbstring"              : "*",
+        "ext-SimpleXML"             : "*",
+        "ext-XML"                   : "*",
+        "ext-XMLWriter"             : "*"
     },
     "require-dev": {
-        "phpunit/phpunit": ">=10"
+        "phpunit/phpunit": "~11"
     },
     "config": {
         "platform": {
@@ -35,9 +41,9 @@
             "source/TraitVersions.php",
             "source/TraitTax.php",
             "source/TraitLines.php",
-            "source/ElectronicInvoiceRead.php",
-            "source/ElectronicInvoiceWrite.php",
-            "source/ElectronicInvoiceComments.php"
+            "source/ClassElectronicInvoiceRead.php",
+            "source/ClassElectronicInvoiceWrite.php",
+            "source/ClassElectronicInvoiceUserInterface.php"
         ]
     },
     "minimum-stability": "beta",

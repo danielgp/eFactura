@@ -28,7 +28,7 @@
 
 namespace danielgp\efactura;
 
-class ElectronicInvoiceRead
+class ClassElectronicInvoiceRead
 {
     use TraitBasic;
     use TraitTax;

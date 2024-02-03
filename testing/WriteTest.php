@@ -5,7 +5,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(\danielgp\efactura\ElectronicInvoiceWrite::class)]
+#[CoversClass(\danielgp\efactura\ClassElectronicInvoiceWrite::class)]
 final class WriteTest extends TestCase
 {
     const LOCAL_UBL_EXAMPLES_PATH = __DIR__ . '/UBL_examples/';
@@ -17,7 +17,7 @@ final class WriteTest extends TestCase
         $jsonData      = fread($fileHandle, ((int) filesize($url)));
         fclose($fileHandle);
         $arrayData     = json_decode($jsonData, true);
-        $classWrite    = new \danielgp\efactura\ElectronicInvoiceWrite();
+        $classWrite    = new \danielgp\efactura\ClassElectronicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '.xml';
         $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
             'Comments'       => false,
@@ -34,7 +34,7 @@ final class WriteTest extends TestCase
         $jsonData      = fread($fileHandle, ((int) filesize($url)));
         fclose($fileHandle);
         $arrayData     = json_decode($jsonData, true);
-        $classWrite    = new \danielgp\efactura\ElectronicInvoiceWrite();
+        $classWrite    = new \danielgp\efactura\ClassElectronicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '_with_Comments.xml';
         $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
             'Comments'       => true,
@@ -51,7 +51,7 @@ final class WriteTest extends TestCase
         $jsonData      = fread($fileHandle, ((int) filesize($url)));
         fclose($fileHandle);
         $arrayData     = json_decode($jsonData, true);
-        $classWrite    = new \danielgp\efactura\ElectronicInvoiceWrite();
+        $classWrite    = new \danielgp\efactura\ClassElectronicInvoiceWrite();
         $strTargetFile = __DIR__ . '/' . pathinfo($url)['filename'] . '_with_SchemaLocation.xml';
         $classWrite->writeElectronicInvoice($strTargetFile, $arrayData, [
             'Comments'       => false,

@@ -28,7 +28,7 @@
 
 namespace danielgp\efactura;
 
-class ElectronicInvoiceWrite
+class ClassElectronicInvoiceWrite
 {
     use TraitVersions;
 
