@@ -135,7 +135,7 @@ class ElectronicInvoiceWrite
         }
     }
 
-    private function setPrepareXml(string $strFile, int $intIdent = 4, array $arrayDocumentData): void
+    private function setPrepareXml(string $strFile, array $arrayDocumentData, int $intIdent = 4): void
     {
         $this->objXmlWriter = new \XMLWriter();
         $this->objXmlWriter->openURI($strFile);
@@ -216,7 +216,7 @@ class ElectronicInvoiceWrite
         if (!array_key_exists('Ident', $arrayFeatures)) {
             $arrayFeatures['Ident'] = 4;
         }
-        $this->setPrepareXml($strFile, $arrayFeatures['Ident'], $arrayData);
+        $this->setPrepareXml($strFile, $arrayData, $arrayFeatures['Ident']);
         $this->setHeaderCommonBasicComponents($arrayData['Header']['CommonBasicComponents-2']);
         $this->setProduceMiddleXml($arrayData['Header']['CommonAggregateComponents-2']);
         // multiple Lines
