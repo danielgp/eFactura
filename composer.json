@@ -2,7 +2,7 @@
     "name": "danielgp/efactura",
     "description": "eFactura scripts to produce and read XML files containing official selling details to help out business data exchange and authorities oversight",
     "type": "library",
-    "license": "MIT",
+    "license": "EPL-2.0",
     "authors": [
         {
             "name":     "Daniel Popiniuc",
