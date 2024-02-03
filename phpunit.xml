@@ -37,9 +37,4 @@
         <testdoxHtml outputFile="testing/logs/testdox.html"/>
         <testdoxText outputFile="testing/logs/testdox.txt"/>
     </logging>
-    <php>
-        <ini name="error_reporting" value="-1" />
-        <ini name="xdebug.mode" value="coverage" />
-        <env name="XDEBUG_MODE" value="coverage"/>
-    </php>
 </phpunit>
