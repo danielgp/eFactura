@@ -29,7 +29,7 @@ class ClassElectronicInvoiceUserInterface
             . DIRECTORY_SEPARATOR . 'config', 'BasicConfiguration.json');
     }
 
-    private function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
+    public function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
     {
         $arrayFiles    = new \RecursiveDirectoryIterator($strFilePath, \FilesystemIterator::SKIP_DOTS);
         $arrayInvoices = [];
@@ -68,10 +68,9 @@ class ClassElectronicInvoiceUserInterface
         $res           = $classZip->open($strFile, \ZipArchive::RDONLY);
         if ($res === true) {
             $intFilesArchived = $classZip->numFiles;
-            for ($intArchivedFile = 0;
-                $intArchivedFile < $intFilesArchived;
-                $intArchivedFile++) {
+            for ($intArchivedFile = 0; $intArchivedFile < $intFilesArchived; $intArchivedFile++) {
                 $strArchivedFile = $classZip->getNameIndex($intArchivedFile);
+                $strFileStats    = $classZip->statIndex($intArchivedFile);
                 $matches         = [];
                 preg_match('/^[0-9]{5,20}\.xml$/', $strArchivedFile, $matches, PREG_OFFSET_CAPTURE);
                 $matches2        = [];
@@ -82,7 +81,8 @@ class ClassElectronicInvoiceUserInterface
                     fclose($resInvoice);
                     $arrayToReturn     = $this->setStandardizedFeedbackArray([
                         'Response_Index'      => pathinfo($strFile)['filename'],
-                        'Size'                => strlen($strInvoiceContent),
+                        'Size'                => $strFileStats['size'],
+                        'FileDate'            => date('Y-m-d H:i:s', $strFileStats['mtime']),
                         'Matches'             => $matches,
                         'strArchivedFileName' => $strArchivedFile,
                         'strInvoiceContent'   => $strInvoiceContent,
@@ -133,18 +133,19 @@ class ClassElectronicInvoiceUserInterface
             'Issue_Date'     => 'Data emiterii',
             'Loading_Index'  => 'Index încărcare',
             'No_Lines'       => 'Nr. linii',
+            'Response_Date'  => 'Data răspuns',
             'Response_Index' => 'Index răspuns',
             'Supplier_CUI'   => 'CUI emitent',
             'Supplier_Name'  => 'Nume emitent',
         ];
-        $strToReturn = '';
+        $strToReturn = '<th>#</th>';
         foreach ($arrayData as $key) {
             $strToReturn .= sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
         }
         return '<thead><tr>' . $strToReturn . '</tr></thead>';
     }
 
-    private function setArrayToHtmlTable(array $arrayData)
+    public function setArrayToHtmlTable(array $arrayData)
     {
         foreach ($arrayData as $intLineNo => $arrayContent) {
             ksort($arrayContent);
@@ -154,6 +155,7 @@ class ClassElectronicInvoiceUserInterface
                 . '<tbody>';
             }
             echo '<tr' . ($arrayContent['Error'] === '' ? '' : ' style="color:red;"') . '>'
+            . '<td>' . $intLineNo . '</td>'
             . '<td>' . implode('</td><td>', array_values($arrayContent)) . '</td>'
             . '</tr>';
         }
@@ -191,6 +193,7 @@ class ClassElectronicInvoiceUserInterface
     private function setStandardizedFeedbackArray(array $arrayData): array
     {
         $arrayToReturn = [
+            'Response_Date'  => '',
             'Response_Index' => $arrayData['Response_Index'],
             'Loading_Index'  => '',
             'Size'           => '',
@@ -224,12 +227,18 @@ class ClassElectronicInvoiceUserInterface
             $arrayToReturn['Size']          = $arrayData['Size'];
             $arrayToReturn['Document_No']   = $arrayBasic['ID'];
             $arrayToReturn['Issue_Date']    = $arrayBasic['IssueDate'];
+            $arrayToReturn['Response_Date'] = $arrayData['FileDate'];
             $arrayToReturn['Amount_wo_VAT'] = $floatAmounts['wo_VAT'];
             $arrayToReturn['Amount_TOTAL']  = $floatAmounts['TOTAL'];
-            $arrayToReturn['Amount_VAT']    = ($floatAmounts['TOTAL'] - $floatAmounts['wo_VAT']);
+            $arrayToReturn['Amount_VAT']    = round(($floatAmounts['TOTAL'] - $floatAmounts['wo_VAT']), 2);
             $arrayToReturn['Supplier_CUI']  = $arrayParties['Supplier']['PartyTaxScheme']['01']['CompanyID'];
             $arrayToReturn['Supplier_Name'] = $arrayParties['Supplier']['PartyLegalEntity']['RegistrationName'];
-            $arrayToReturn['Customer_CUI']  = $arrayParties['Customer']['PartyTaxScheme']['01']['CompanyID'];
+            if (isset($arrayParties['Customer']['PartyTaxScheme']['01']['CompanyID'])) {
+                $strCustomerCui  = $arrayParties['Customer']['PartyTaxScheme']['01']['CompanyID'];
+            } else {
+                $strCustomerCui  = $arrayParties['Customer']['PartyLegalEntity']['CompanyID'];
+            }
+            $arrayToReturn['Customer_CUI']  = (is_numeric($strCustomerCui) ? 'RO' : '') . $strCustomerCui;
             $arrayToReturn['Customer_Name'] = $arrayParties['Customer']['PartyLegalEntity']['RegistrationName'];
             $arrayToReturn['No_Lines']      = count($arrayElectronicInv['Lines']);
             unlink($arrayData['strArchivedFileName']);
@@ -237,6 +246,7 @@ class ClassElectronicInvoiceUserInterface
             $objErrors                      = new \SimpleXMLElement($arrayData['strInvoiceContent']);
             $arrayToReturn['Loading_Index'] = $objErrors->attributes()->Index_incarcare->__toString();
             $arrayToReturn['Size']          = $arrayData['Size'];
+            $arrayToReturn['Response_Date'] = $arrayData['FileDate'];
             $arrayToReturn['Supplier_CUI']  = 'RO' . $objErrors->attributes()->Cif_emitent->__toString();
             $arrayToReturn['Supplier_Name'] = '??????????';
             $arrayToReturn['Error']         = '<div style="max-width:200px;font-size:0.8rem;">'
