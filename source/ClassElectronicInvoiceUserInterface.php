@@ -157,7 +157,7 @@ class ClassElectronicInvoiceUserInterface
                 . '<tbody>';
             }
             echo '<tr' . ($arrayContent['Error'] === '' ? '' : ' style="color:red;"') . '>'
-            . '<td>' . $intLineNo . '</td>'
+            . '<td>' . ($intLineNo + 1) . '</td>'
             . '<td>' . implode('</td><td>', array_values($arrayContent)) . '</td>'
             . '</tr>';
         }
