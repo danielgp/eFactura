@@ -79,7 +79,7 @@ class ClassElectronicInvoiceUserInterface
                     $strInvoiceContent = stream_get_contents($resInvoice);
                     fclose($resInvoice);
                     $arrayToReturn     = $this->setStandardizedFeedbackArray([
-                        'ResponseIndex'       => pathinfo($strFile)['filename'],
+                        'Response_Index'      => pathinfo($strFile)['filename'],
                         'Size'                => strlen($strInvoiceContent),
                         'Matches'             => $matches,
                         'strArchivedFileName' => $strArchivedFile,
@@ -120,14 +120,31 @@ class ClassElectronicInvoiceUserInterface
 
     private function setArrayToHtmlTable(array $arrayData)
     {
+        $arrayMap = [
+            'Amount_TOTAL'   => 'TOTAL',
+            'Amount_VAT'     => 'TVA',
+            'Amount_wo_VAT'  => 'Valoare',
+            'Customer_CUI'   => 'CUI client',
+            'Customer_Name'  => 'Nume client',
+            'Document_No'    => 'Identificator',
+            'Error'          => 'Eroare',
+            'Issue_Date'     => 'Data emiterii',
+            'Loading_Index'  => 'Index încărcare',
+            'No_Lines'       => 'Nr. linii',
+            'Response_Index' => 'Index răspuns',
+            'Supplier_CUI'   => 'CUI emitent',
+            'Supplier_Name'  => 'Nume emitent',
+        ];
         foreach ($arrayData as $intLineNo => $arrayContent) {
             ksort($arrayContent);
             if ($intLineNo === 0) {
                 echo '<table style="margin-left:auto;margin-right:auto;">'
                 . '<thead>'
-                . '<tr>'
-                . '<th>' . implode('</th><th>', array_keys($arrayContent)) . '</th>'
-                . '</tr>'
+                . '<tr>';
+                foreach (array_keys($arrayContent) as $key) {
+                    echo sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
+                }
+                echo '</tr>'
                 . '</thead>';
                 echo '<tbody>';
             }
@@ -169,19 +186,20 @@ class ClassElectronicInvoiceUserInterface
     private function setStandardizedFeedbackArray(array $arrayData): array
     {
         $arrayToReturn = [
-            'ResponseIndex' => $arrayData['ResponseIndex'],
-            'LoadingIndex'  => '',
-            'Size'          => '',
-            'Document_No'   => '',
-            'Issue_Date'    => '',
-            'Amount_wo_VAT' => '',
-            'Amount_TOTAL'  => '',
-            'Amount_VAT'    => '',
-            'Supplier_CUI'  => '',
-            'Supplier_Name' => '',
-            'Customer_CUI'  => '',
-            'Customer_Name' => '',
-            'Error'         => '',
+            'Response_Index' => $arrayData['Response_Index'],
+            'Loading_Index'  => '',
+            'Size'           => '',
+            'Document_No'    => '',
+            'Issue_Date'     => '',
+            'Amount_wo_VAT'  => '',
+            'Amount_TOTAL'   => '',
+            'Amount_VAT'     => '',
+            'Supplier_CUI'   => '',
+            'Supplier_Name'  => '',
+            'Customer_CUI'   => '',
+            'Customer_Name'  => '',
+            'No_Lines'       => '',
+            'Error'          => '',
         ];
         if ($arrayData['Size'] > 1000) {
             file_put_contents($arrayData['strArchivedFileName'], $arrayData['strInvoiceContent']);
@@ -197,7 +215,7 @@ class ClassElectronicInvoiceUserInterface
                 'Customer' => $arrayAggregate['AccountingCustomerParty']['Party'],
                 'Supplier' => $arrayAggregate['AccountingSupplierParty']['Party'],
             ];
-            $arrayToReturn['LoadingIndex']  = substr($arrayData['Matches'][0][0], 0, -4);
+            $arrayToReturn['Loading_Index'] = substr($arrayData['Matches'][0][0], 0, -4);
             $arrayToReturn['Size']          = $arrayData['Size'];
             $arrayToReturn['Document_No']   = $arrayBasic['ID'];
             $arrayToReturn['Issue_Date']    = $arrayBasic['IssueDate'];
@@ -208,14 +226,16 @@ class ClassElectronicInvoiceUserInterface
             $arrayToReturn['Supplier_Name'] = $arrayParties['Supplier']['PartyLegalEntity']['RegistrationName'];
             $arrayToReturn['Customer_CUI']  = $arrayParties['Customer']['PartyTaxScheme']['01']['CompanyID'];
             $arrayToReturn['Customer_Name'] = $arrayParties['Customer']['PartyLegalEntity']['RegistrationName'];
+            $arrayToReturn['No_Lines']      = count($arrayElectronicInv['Lines']);
             unlink($arrayData['strArchivedFileName']);
         } elseif ($arrayData['Size'] > 0) {
             $objErrors                      = new \SimpleXMLElement($arrayData['strInvoiceContent']);
-            $arrayToReturn['LoadingIndex']  = $objErrors->attributes()->Index_incarcare->__toString();
+            $arrayToReturn['Loading_Index'] = $objErrors->attributes()->Index_incarcare->__toString();
             $arrayToReturn['Size']          = $arrayData['Size'];
-            $arrayToReturn['Supplier_CUI']  = $objErrors->attributes()->Cif_emitent->__toString();
+            $arrayToReturn['Supplier_CUI']  = 'RO' . $objErrors->attributes()->Cif_emitent->__toString();
             $arrayToReturn['Supplier_Name'] = '??????????';
-            $arrayToReturn['Error']         = $objErrors->Error->attributes()->errorMessage->__toString();
+            $arrayToReturn['Error']         = '<div style="max-width:200px;font-size:0.8rem;">'
+                . $objErrors->Error->attributes()->errorMessage->__toString() . '</div>';
         }
         return $arrayToReturn;
     }
