@@ -129,6 +129,7 @@ class ClassElectronicInvoiceUserInterface
             'Amount_wo_VAT'  => 'Valoare',
             'Customer_CUI'   => 'CUI client',
             'Customer_Name'  => 'Nume client',
+            'Days_Between'   => 'Zile emitere-depunere',
             'Document_No'    => 'Identificator',
             'Error'          => 'Eroare',
             'Issue_Date'     => 'Data emiterii',
@@ -223,6 +224,7 @@ class ClassElectronicInvoiceUserInterface
             'Customer_Name'  => '',
             'No_Lines'       => '',
             'Error'          => '',
+            'Days_Between'   => '',
         ];
         if ($arrayData['Size'] > 1000) {
             file_put_contents($arrayData['strArchivedFileName'], $arrayData['strInvoiceContent']);
@@ -251,6 +253,10 @@ class ClassElectronicInvoiceUserInterface
             $arrayToReturn['Customer_CUI']  = $this->setDataSupplierOrCustomer($arrayParties['Customer']);
             $arrayToReturn['Customer_Name'] = $arrayParties['Customer']['PartyLegalEntity']['RegistrationName'];
             $arrayToReturn['No_Lines']      = count($arrayElectronicInv['Lines']);
+            $origin                         = new \DateTimeImmutable($arrayBasic['IssueDate']);
+            $target                         = new \DateTimeImmutable($arrayData['FileDate']);
+            $interval                       = $origin->diff($target);
+            $arrayToReturn['Days_Between']  = $interval->format('%R%a');
             unlink($arrayData['strArchivedFileName']);
         } elseif ($arrayData['Size'] > 0) {
             $objErrors                      = new \SimpleXMLElement($arrayData['strInvoiceContent']);
