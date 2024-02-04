@@ -16,6 +16,7 @@ namespace danielgp\efactura;
 
 class ClassElectronicInvoiceUserInterface
 {
+
     use \danielgp\io_operations\InputOutputFiles;
 
     private array $arrayConfiguration;
@@ -95,9 +96,9 @@ class ClassElectronicInvoiceUserInterface
                 }
             }
         } else {
-// @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
             throw new \RuntimeException(sprintf('Archive %s could not be opened!', $strFile));
-// @codeCoverageIgnoreEnd
+            // @codeCoverageIgnoreEnd
         }
         return $arrayToReturn;
     }
@@ -161,6 +162,20 @@ class ClassElectronicInvoiceUserInterface
         }
         echo '</tbody>'
         . '</table>';
+    }
+
+    private function setDataSupplierOrCustomer(array $arrayData)
+    {
+        $strCustomerCui = '';
+        if (isset($arrayData['PartyTaxScheme']['01']['CompanyID'])) {
+            $strCustomerCui = $arrayData['PartyTaxScheme']['01']['CompanyID'];
+        } else {
+            $strCustomerCui = $arrayData['PartyLegalEntity']['CompanyID'];
+        }
+        if (is_numeric($strCustomerCui)) {
+            $strCustomerCui = 'RO' . $strCustomerCui;
+        }
+        return $strCustomerCui;
     }
 
     public function setHtmlFooter(): void
@@ -231,14 +246,9 @@ class ClassElectronicInvoiceUserInterface
             $arrayToReturn['Amount_wo_VAT'] = $floatAmounts['wo_VAT'];
             $arrayToReturn['Amount_TOTAL']  = $floatAmounts['TOTAL'];
             $arrayToReturn['Amount_VAT']    = round(($floatAmounts['TOTAL'] - $floatAmounts['wo_VAT']), 2);
-            $arrayToReturn['Supplier_CUI']  = $arrayParties['Supplier']['PartyTaxScheme']['01']['CompanyID'];
+            $arrayToReturn['Supplier_CUI']  = $this->setDataSupplierOrCustomer($arrayParties['Supplier']);
             $arrayToReturn['Supplier_Name'] = $arrayParties['Supplier']['PartyLegalEntity']['RegistrationName'];
-            if (isset($arrayParties['Customer']['PartyTaxScheme']['01']['CompanyID'])) {
-                $strCustomerCui  = $arrayParties['Customer']['PartyTaxScheme']['01']['CompanyID'];
-            } else {
-                $strCustomerCui  = $arrayParties['Customer']['PartyLegalEntity']['CompanyID'];
-            }
-            $arrayToReturn['Customer_CUI']  = (is_numeric($strCustomerCui) ? 'RO' : '') . $strCustomerCui;
+            $arrayToReturn['Customer_CUI']  = $this->setDataSupplierOrCustomer($arrayParties['Customer']);
             $arrayToReturn['Customer_Name'] = $arrayParties['Customer']['PartyLegalEntity']['RegistrationName'];
             $arrayToReturn['No_Lines']      = count($arrayElectronicInv['Lines']);
             unlink($arrayData['strArchivedFileName']);
