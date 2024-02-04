@@ -68,7 +68,9 @@ class ClassElectronicInvoiceUserInterface
         $res           = $classZip->open($strFile, \ZipArchive::RDONLY);
         if ($res === true) {
             $intFilesArchived = $classZip->numFiles;
-            for ($intArchivedFile = 0; $intArchivedFile < $intFilesArchived; $intArchivedFile++) {
+            for ($intArchivedFile = 0;
+                $intArchivedFile < $intFilesArchived;
+                $intArchivedFile++) {
                 $strArchivedFile = $classZip->getNameIndex($intArchivedFile);
                 $matches         = [];
                 preg_match('/^[0-9]{5,20}\.xml$/', $strArchivedFile, $matches, PREG_OFFSET_CAPTURE);
@@ -93,9 +95,9 @@ class ClassElectronicInvoiceUserInterface
                 }
             }
         } else {
-            // @codeCoverageIgnoreStart
+// @codeCoverageIgnoreStart
             throw new \RuntimeException(sprintf('Archive %s could not be opened!', $strFile));
-            // @codeCoverageIgnoreEnd
+// @codeCoverageIgnoreEnd
         }
         return $arrayToReturn;
     }
@@ -118,9 +120,9 @@ class ClassElectronicInvoiceUserInterface
         echo '</main>';
     }
 
-    private function setArrayToHtmlTable(array $arrayData)
+    private function setArrayToHtmlTableHeader(array $arrayData): string
     {
-        $arrayMap = [
+        $arrayMap    = [
             'Amount_TOTAL'   => 'TOTAL',
             'Amount_VAT'     => 'TVA',
             'Amount_wo_VAT'  => 'Valoare',
@@ -135,18 +137,21 @@ class ClassElectronicInvoiceUserInterface
             'Supplier_CUI'   => 'CUI emitent',
             'Supplier_Name'  => 'Nume emitent',
         ];
+        $strToReturn = '';
+        foreach ($arrayData as $key) {
+            $strToReturn .= sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
+        }
+        return '<thead><tr>' . $strToReturn . '</tr></thead>';
+    }
+
+    private function setArrayToHtmlTable(array $arrayData)
+    {
         foreach ($arrayData as $intLineNo => $arrayContent) {
             ksort($arrayContent);
             if ($intLineNo === 0) {
                 echo '<table style="margin-left:auto;margin-right:auto;">'
-                . '<thead>'
-                . '<tr>';
-                foreach (array_keys($arrayContent) as $key) {
-                    echo sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
-                }
-                echo '</tr>'
-                . '</thead>';
-                echo '<tbody>';
+                . $this->setArrayToHtmlTableHeader(array_keys($arrayContent))
+                . '<tbody>';
             }
             echo '<tr' . ($arrayContent['Error'] === '' ? '' : ' style="color:red;"') . '>'
             . '<td>' . implode('</td><td>', array_values($arrayContent)) . '</td>'
