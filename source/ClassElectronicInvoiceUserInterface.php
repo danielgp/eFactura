@@ -16,7 +16,6 @@ namespace danielgp\efactura;
 
 class ClassElectronicInvoiceUserInterface
 {
-
     use \danielgp\io_operations\InputOutputFiles;
 
     private array $arrayConfiguration;
@@ -124,21 +123,22 @@ class ClassElectronicInvoiceUserInterface
     private function setArrayToHtmlTableHeader(array $arrayData): string
     {
         $arrayMap    = [
-            'Amount_TOTAL'   => 'TOTAL',
-            'Amount_VAT'     => 'TVA',
-            'Amount_wo_VAT'  => 'Valoare',
-            'Customer_CUI'   => 'CUI client',
-            'Customer_Name'  => 'Nume client',
-            'Days_Between'   => 'Zile emitere-depunere',
-            'Document_No'    => 'Identificator',
-            'Error'          => 'Eroare',
-            'Issue_Date'     => 'Data emiterii',
-            'Loading_Index'  => 'Index încărcare',
-            'No_Lines'       => 'Nr. linii',
-            'Response_Date'  => 'Data răspuns',
-            'Response_Index' => 'Index răspuns',
-            'Supplier_CUI'   => 'CUI emitent',
-            'Supplier_Name'  => 'Nume emitent',
+            'Amount_TOTAL'    => 'TOTAL',
+            'Amount_VAT'      => 'TVA',
+            'Amount_wo_VAT'   => 'Valoare',
+            'Customer_CUI'    => 'CUI client',
+            'Customer_Name'   => 'Nume client',
+            'Days_Between'    => 'Zile emitere-depunere',
+            'Document_No'     => 'Identificator',
+            'Error'           => 'Eroare',
+            'Issue_Date'      => 'Data emiterii',
+            'Issue_YearMonth' => 'Anul și luna emiterii',
+            'Loading_Index'   => 'Index încărcare',
+            'No_Lines'        => 'Nr. linii',
+            'Response_Date'   => 'Data răspuns',
+            'Response_Index'  => 'Index răspuns',
+            'Supplier_CUI'    => 'CUI emitent',
+            'Supplier_Name'   => 'Nume emitent',
         ];
         $strToReturn = '<th>#</th>';
         foreach ($arrayData as $key) {
