@@ -209,54 +209,58 @@ class ClassElectronicInvoiceUserInterface
     private function setStandardizedFeedbackArray(array $arrayData): array
     {
         $arrayToReturn = [
-            'Response_Date'  => '',
-            'Response_Index' => $arrayData['Response_Index'],
-            'Loading_Index'  => '',
-            'Size'           => '',
-            'Document_No'    => '',
-            'Issue_Date'     => '',
-            'Amount_wo_VAT'  => '',
-            'Amount_TOTAL'   => '',
-            'Amount_VAT'     => '',
-            'Supplier_CUI'   => '',
-            'Supplier_Name'  => '',
-            'Customer_CUI'   => '',
-            'Customer_Name'  => '',
-            'No_Lines'       => '',
-            'Error'          => '',
-            'Days_Between'   => '',
+            'Response_Date'   => '',
+            'Response_Index'  => $arrayData['Response_Index'],
+            'Loading_Index'   => '',
+            'Size'            => '',
+            'Document_No'     => '',
+            'Issue_Date'      => '',
+            'Issue_YearMonth' => '',
+            'Amount_wo_VAT'   => '',
+            'Amount_TOTAL'    => '',
+            'Amount_VAT'      => '',
+            'Supplier_CUI'    => '',
+            'Supplier_Name'   => '',
+            'Customer_CUI'    => '',
+            'Customer_Name'   => '',
+            'No_Lines'        => '',
+            'Error'           => '',
+            'Days_Between'    => '',
         ];
         if ($arrayData['Size'] > 1000) {
             file_put_contents($arrayData['strArchivedFileName'], $arrayData['strInvoiceContent']);
-            $appR                           = new \danielgp\efactura\ClassElectronicInvoiceRead();
-            $arrayElectronicInv             = $appR->readElectronicInvoice($arrayData['strArchivedFileName']);
-            $arrayBasic                     = $arrayElectronicInv['Header']['CommonBasicComponents-2'];
-            $arrayAggregate                 = $arrayElectronicInv['Header']['CommonAggregateComponents-2'];
-            $floatAmounts                   = [
+            $appR                             = new \danielgp\efactura\ClassElectronicInvoiceRead();
+            $arrayElectronicInv               = $appR->readElectronicInvoice($arrayData['strArchivedFileName']);
+            $arrayBasic                       = $arrayElectronicInv['Header']['CommonBasicComponents-2'];
+            $arrayAggregate                   = $arrayElectronicInv['Header']['CommonAggregateComponents-2'];
+            $floatAmounts                     = [
                 'wo_VAT' => (float) $arrayAggregate['LegalMonetaryTotal']['TaxExclusiveAmount']['value'],
                 'TOTAL'  => (float) $arrayAggregate['LegalMonetaryTotal']['TaxInclusiveAmount']['value'],
             ];
-            $arrayParties                   = [
+            $arrayParties                     = [
                 'Customer' => $arrayAggregate['AccountingCustomerParty']['Party'],
                 'Supplier' => $arrayAggregate['AccountingSupplierParty']['Party'],
             ];
-            $arrayToReturn['Loading_Index'] = substr($arrayData['Matches'][0][0], 0, -4);
-            $arrayToReturn['Size']          = $arrayData['Size'];
-            $arrayToReturn['Document_No']   = $arrayBasic['ID'];
-            $arrayToReturn['Issue_Date']    = $arrayBasic['IssueDate'];
-            $arrayToReturn['Response_Date'] = $arrayData['FileDate'];
-            $arrayToReturn['Amount_wo_VAT'] = $floatAmounts['wo_VAT'];
-            $arrayToReturn['Amount_TOTAL']  = $floatAmounts['TOTAL'];
-            $arrayToReturn['Amount_VAT']    = round(($floatAmounts['TOTAL'] - $floatAmounts['wo_VAT']), 2);
-            $arrayToReturn['Supplier_CUI']  = $this->setDataSupplierOrCustomer($arrayParties['Supplier']);
-            $arrayToReturn['Supplier_Name'] = $arrayParties['Supplier']['PartyLegalEntity']['RegistrationName'];
-            $arrayToReturn['Customer_CUI']  = $this->setDataSupplierOrCustomer($arrayParties['Customer']);
-            $arrayToReturn['Customer_Name'] = $arrayParties['Customer']['PartyLegalEntity']['RegistrationName'];
-            $arrayToReturn['No_Lines']      = count($arrayElectronicInv['Lines']);
-            $origin                         = new \DateTimeImmutable($arrayBasic['IssueDate']);
-            $target                         = new \DateTimeImmutable($arrayData['FileDate']);
-            $interval                       = $origin->diff($target);
-            $arrayToReturn['Days_Between']  = $interval->format('%R%a');
+            $arrayToReturn['Loading_Index']   = substr($arrayData['Matches'][0][0], 0, -4);
+            $arrayToReturn['Size']            = $arrayData['Size'];
+            $arrayToReturn['Document_No']     = $arrayBasic['ID'];
+            $arrayToReturn['Issue_Date']      = $arrayBasic['IssueDate'];
+            $dtIssueDate                      = new \DateTime($arrayBasic['IssueDate']);
+            $arrayToReturn['Issue_YearMonth'] = substr($arrayBasic['IssueDate'], 0, 8)
+                . $dtIssueDate->format('F');
+            $arrayToReturn['Response_Date']   = $arrayData['FileDate'];
+            $arrayToReturn['Amount_wo_VAT']   = $floatAmounts['wo_VAT'];
+            $arrayToReturn['Amount_TOTAL']    = $floatAmounts['TOTAL'];
+            $arrayToReturn['Amount_VAT']      = round(($floatAmounts['TOTAL'] - $floatAmounts['wo_VAT']), 2);
+            $arrayToReturn['Supplier_CUI']    = $this->setDataSupplierOrCustomer($arrayParties['Supplier']);
+            $arrayToReturn['Supplier_Name']   = $arrayParties['Supplier']['PartyLegalEntity']['RegistrationName'];
+            $arrayToReturn['Customer_CUI']    = $this->setDataSupplierOrCustomer($arrayParties['Customer']);
+            $arrayToReturn['Customer_Name']   = $arrayParties['Customer']['PartyLegalEntity']['RegistrationName'];
+            $arrayToReturn['No_Lines']        = count($arrayElectronicInv['Lines']);
+            $origin                           = new \DateTimeImmutable($arrayBasic['IssueDate']);
+            $target                           = new \DateTimeImmutable($arrayData['FileDate']);
+            $interval                         = $origin->diff($target);
+            $arrayToReturn['Days_Between']    = $interval->format('%R%a');
             unlink($arrayData['strArchivedFileName']);
         } elseif ($arrayData['Size'] > 0) {
             $objErrors                      = new \SimpleXMLElement($arrayData['strInvoiceContent']);
