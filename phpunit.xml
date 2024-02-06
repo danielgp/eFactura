@@ -24,12 +24,12 @@
         </report>
     </coverage>
     <source>
-        <exclude>
-            <file>ClassElectronicInvoiceUserInterface.php</file>
-        </exclude>
         <include>
             <directory suffix=".php">source</directory>
         </include>
+        <exclude>
+            <file>source/ClassElectronicInvoiceUserInterface.php</file>
+        </exclude>
     </source>
     <logging>
         <junit outputFile="testing/logs/junit.xml"/>
