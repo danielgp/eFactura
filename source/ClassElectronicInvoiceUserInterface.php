@@ -245,9 +245,14 @@ class ClassElectronicInvoiceUserInterface
             $arrayToReturn['Size']            = $arrayData['Size'];
             $arrayToReturn['Document_No']     = $arrayBasic['ID'];
             $arrayToReturn['Issue_Date']      = $arrayBasic['IssueDate'];
-            $dtIssueDate                      = new \DateTime($arrayBasic['IssueDate']);
-            $arrayToReturn['Issue_YearMonth'] = substr($arrayBasic['IssueDate'], 0, 8)
-                . $dtIssueDate->format('F');
+            $arrayToReturn['Issue_YearMonth'] = (new \IntlDateFormatter(
+                    'ro_RO',
+                    \IntlDateFormatter::FULL,
+                    \IntlDateFormatter::FULL,
+                    'Europe/Bucharest',
+                    \IntlDateFormatter::GREGORIAN,
+                    'r-MM__MMMM'
+                ))->format(new \DateTime($arrayBasic['IssueDate']));
             $arrayToReturn['Response_Date']   = $arrayData['FileDate'];
             $arrayToReturn['Amount_wo_VAT']   = $floatAmounts['wo_VAT'];
             $arrayToReturn['Amount_TOTAL']    = $floatAmounts['TOTAL'];
