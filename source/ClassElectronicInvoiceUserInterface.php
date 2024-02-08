@@ -112,8 +112,15 @@ class ClassElectronicInvoiceUserInterface
         if (array_key_exists('action', $arrayInputs)) {
             switch ($arrayInputs['action']) {
                 case 'AnalyzeZIPfromANAFfromLocalFolder':
-                    $arrayInvoices = $this->actionAnalyzeZIPfromANAFfromLocalFolder('P:/e-Factura/Downloaded/');
-                    $this->setArrayToHtmlTable($arrayInvoices);
+                    $strRelevantFolder = 'P:/e-Factura/Downloaded/';
+                    $arrayInvoices     = $this->actionAnalyzeZIPfromANAFfromLocalFolder($strRelevantFolder);
+                    if (count($arrayInvoices) === 0) {
+                        echo vsprintf('<p style="color:red;">%s</p>', [
+                            'Unfortunatelly there are no zip files in given folder (' . $strRelevantFolder . ')...',
+                        ]);
+                    } else {
+                        $this->setArrayToHtmlTable($arrayInvoices);
+                    }
                     break;
             }
         }
