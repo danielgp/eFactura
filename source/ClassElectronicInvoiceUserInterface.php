@@ -102,6 +102,33 @@ class ClassElectronicInvoiceUserInterface
         return $arrayToReturn;
     }
 
+    /**
+     * Archived document interpretation requires a temporary files to be stored
+     * and upon processing file is removed immediately
+     *
+     * @param array $arrayData
+     * @return array
+     */
+    private function getDocumentDetails(array $arrayData): array
+    {
+        file_put_contents($arrayData['strArchivedFileName'], $arrayData['strInvoiceContent']);
+        $appR               = new \danielgp\efactura\ClassElectronicInvoiceRead();
+        $arrayElectronicInv = $appR->readElectronicInvoice($arrayData['strArchivedFileName']);
+        $arrayBasic         = $arrayElectronicInv['Header']['CommonBasicComponents-2'];
+        $arrayAggregate     = $arrayElectronicInv['Header']['CommonAggregateComponents-2'];
+        $arrayStandardized  = [
+            'Customer'    => $arrayAggregate['AccountingCustomerParty']['Party'],
+            'ID'          => $arrayBasic['ID'],
+            'IssueDate'   => $arrayBasic['IssueDate'],
+            'No_of_Lines' => count($arrayElectronicInv['Lines']),
+            'Supplier'    => $arrayAggregate['AccountingSupplierParty']['Party'],
+            'TOTAL'       => (float) $arrayAggregate['LegalMonetaryTotal']['TaxInclusiveAmount']['value'],
+            'wo_VAT'      => (float) $arrayAggregate['LegalMonetaryTotal']['TaxExclusiveAmount']['value'],
+        ];
+        unlink($arrayData['strArchivedFileName']);
+        return $arrayStandardized;
+    }
+
     public function setActionToDo(): void
     {
         echo '<main>';
@@ -112,64 +139,19 @@ class ClassElectronicInvoiceUserInterface
         if (array_key_exists('action', $arrayInputs)) {
             switch ($arrayInputs['action']) {
                 case 'AnalyzeZIPfromANAFfromLocalFolder':
-                    $strRelevantFolder = 'P:/e-Factura/Downloaded/';
+                    $strRelevantFolder = 'P:/eFactura_Responses/Luna_Anterioara_NeDeclarata_Inca/';
                     $arrayInvoices     = $this->actionAnalyzeZIPfromANAFfromLocalFolder($strRelevantFolder);
                     if (count($arrayInvoices) === 0) {
-                        echo vsprintf('<p style="color:red;">%s</p>', [
-                            'Unfortunatelly there are no zip files in given folder (' . $strRelevantFolder . ')...',
-                        ]);
+                        echo sprintf('<p style="color:red;">'
+                            . 'Unfortunatelly there are no zip files in given folder (%s)...'
+                            . '</p>', $strRelevantFolder);
                     } else {
-                        $this->setArrayToHtmlTable($arrayInvoices);
+                        echo $this->setHtmlTable($arrayInvoices);
                     }
                     break;
             }
         }
         echo '</main>';
-    }
-
-    private function setArrayToHtmlTableHeader(array $arrayData): string
-    {
-        $arrayMap    = [
-            'Amount_TOTAL'    => 'TOTAL',
-            'Amount_VAT'      => 'TVA',
-            'Amount_wo_VAT'   => 'Valoare',
-            'Customer_CUI'    => 'CUI client',
-            'Customer_Name'   => 'Nume client',
-            'Days_Between'    => 'Zile emitere-depunere',
-            'Document_No'     => 'Identificator',
-            'Error'           => 'Eroare',
-            'Issue_Date'      => 'Data emiterii',
-            'Issue_YearMonth' => 'Anul și luna emiterii',
-            'Loading_Index'   => 'Index încărcare',
-            'No_Lines'        => 'Nr. linii',
-            'Response_Date'   => 'Data răspuns',
-            'Response_Index'  => 'Index răspuns',
-            'Supplier_CUI'    => 'CUI emitent',
-            'Supplier_Name'   => 'Nume emitent',
-        ];
-        $strToReturn = '<th>#</th>';
-        foreach ($arrayData as $key) {
-            $strToReturn .= sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
-        }
-        return '<thead><tr>' . $strToReturn . '</tr></thead>';
-    }
-
-    public function setArrayToHtmlTable(array $arrayData)
-    {
-        foreach ($arrayData as $intLineNo => $arrayContent) {
-            ksort($arrayContent);
-            if ($intLineNo === 0) {
-                echo '<table style="margin-left:auto;margin-right:auto;">'
-                . $this->setArrayToHtmlTableHeader(array_keys($arrayContent))
-                . '<tbody>';
-            }
-            echo '<tr' . ($arrayContent['Error'] === '' ? '' : ' style="color:red;"') . '>'
-            . '<td>' . ($intLineNo + 1) . '</td>'
-            . '<td>' . implode('</td><td>', array_values($arrayContent)) . '</td>'
-            . '</tr>';
-        }
-        echo '</tbody>'
-        . '</table>';
     }
 
     private function setDataSupplierOrCustomer(array $arrayData)
@@ -184,6 +166,14 @@ class ClassElectronicInvoiceUserInterface
             $strCustomerCui = 'RO' . $strCustomerCui;
         }
         return $strCustomerCui;
+    }
+
+    private function setDaysElapsed(string $strFirstDate, string $strLaterDate): string
+    {
+        $origin   = new \DateTimeImmutable($strFirstDate);
+        $target   = new \DateTimeImmutable($strLaterDate);
+        $interval = $origin->diff($target);
+        return $interval->format('%R%a');
     }
 
     public function setHtmlFooter(): void
@@ -213,6 +203,74 @@ class ClassElectronicInvoiceUserInterface
         ]);
     }
 
+    private function setHtmlTable(array $arrayData): string
+    {
+        $strReturn = '<table style="margin-left:auto;margin-right:auto;">';
+        foreach ($arrayData as $intLineNo => $arrayContent) {
+            ksort($arrayContent);
+            if ($intLineNo === 0) {
+                $strReturn .= $this->setHtmlTableHeader(array_keys($arrayContent))
+                    . '<tbody>';
+            }
+            $strReturn .= $this->setHtmlTableLine(($intLineNo + 1), $arrayContent);
+        }
+        return ($strReturn . '</tbody>' . '</table>');
+    }
+
+    private function setHtmlTableHeader(array $arrayData): string
+    {
+        $arrayMap    = [
+            'Amount_TOTAL'    => 'TOTAL',
+            'Amount_VAT'      => 'TVA',
+            'Amount_wo_VAT'   => 'Valoare',
+            'Customer_CUI'    => 'CUI client',
+            'Customer_Name'   => 'Nume client',
+            'Days_Between'    => 'Zile emitere-depunere',
+            'Document_No'     => 'Identificator',
+            'Error'           => 'Eroare',
+            'Issue_Date'      => 'Data emiterii',
+            'Issue_YearMonth' => 'Anul și luna emiterii',
+            'Loading_Index'   => 'Index încărcare',
+            'No_of_Lines'     => 'Nr. linii',
+            'Response_Date'   => 'Data răspuns',
+            'Response_Index'  => 'Index răspuns',
+            'Size'            => 'Dim. [bytes]',
+            'Supplier_CUI'    => 'CUI emitent',
+            'Supplier_Name'   => 'Nume emitent',
+        ];
+        $strToReturn = '<th>#</th>';
+        foreach ($arrayData as $key) {
+            $strToReturn .= sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
+        }
+        return '<thead><tr>' . $strToReturn . '</tr></thead>';
+    }
+
+    private function setHtmlTableLine(int $intLineNo, array $arrayLine): string
+    {
+        $arrayContent = [];
+        foreach ($arrayLine as $strColumn => $strValue) {
+            if (str_starts_with($strColumn, 'Amount_')) {
+                $arrayContent[] = sprintf('<td style="text-align:right;">%s</td>', $this->setNumbers($strValue, 2, 2));
+            } elseif (str_starts_with($strColumn, 'Size')) {
+                $arrayContent[] = sprintf('<td style="text-align:right;">%s</td>', $this->setNumbers($strValue, 0, 0));
+            } else {
+                $arrayContent[] = sprintf('<td>%s</td>', $strValue);
+            }
+        }
+        return '<tr' . ($arrayLine['Error'] === '' ? '' : ' style="color:red;"') . '>'
+            . '<td>' . $intLineNo . '</td>'
+            . implode('', $arrayContent)
+            . '</tr>';
+    }
+
+    private function setNumbers(float $floatNumber, int $intMinDigits, int $intMaxDigits): string
+    {
+        $classFormat = new \NumberFormatter('ro_RO', \NumberFormatter::DECIMAL);
+        $classFormat->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $intMinDigits);
+        $classFormat->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $intMaxDigits);
+        return $classFormat->format($floatNumber);
+    }
+
     private function setStandardizedFeedbackArray(array $arrayData): array
     {
         $arrayToReturn = [
@@ -235,23 +293,11 @@ class ClassElectronicInvoiceUserInterface
             'Days_Between'    => '',
         ];
         if ($arrayData['Size'] > 1000) {
-            file_put_contents($arrayData['strArchivedFileName'], $arrayData['strInvoiceContent']);
-            $appR                             = new \danielgp\efactura\ClassElectronicInvoiceRead();
-            $arrayElectronicInv               = $appR->readElectronicInvoice($arrayData['strArchivedFileName']);
-            $arrayBasic                       = $arrayElectronicInv['Header']['CommonBasicComponents-2'];
-            $arrayAggregate                   = $arrayElectronicInv['Header']['CommonAggregateComponents-2'];
-            $floatAmounts                     = [
-                'wo_VAT' => (float) $arrayAggregate['LegalMonetaryTotal']['TaxExclusiveAmount']['value'],
-                'TOTAL'  => (float) $arrayAggregate['LegalMonetaryTotal']['TaxInclusiveAmount']['value'],
-            ];
-            $arrayParties                     = [
-                'Customer' => $arrayAggregate['AccountingCustomerParty']['Party'],
-                'Supplier' => $arrayAggregate['AccountingSupplierParty']['Party'],
-            ];
+            $arrayAttr                        = $this->getDocumentDetails($arrayData);
             $arrayToReturn['Loading_Index']   = substr($arrayData['Matches'][0][0], 0, -4);
             $arrayToReturn['Size']            = $arrayData['Size'];
-            $arrayToReturn['Document_No']     = $arrayBasic['ID'];
-            $arrayToReturn['Issue_Date']      = $arrayBasic['IssueDate'];
+            $arrayToReturn['Document_No']     = $arrayAttr['ID'];
+            $arrayToReturn['Issue_Date']      = $arrayAttr['IssueDate'];
             $arrayToReturn['Issue_YearMonth'] = (new \IntlDateFormatter(
                     'ro_RO',
                     \IntlDateFormatter::FULL,
@@ -259,21 +305,17 @@ class ClassElectronicInvoiceUserInterface
                     'Europe/Bucharest',
                     \IntlDateFormatter::GREGORIAN,
                     'r-MM__MMMM'
-                ))->format(new \DateTime($arrayBasic['IssueDate']));
+                ))->format(new \DateTime($arrayAttr['IssueDate']));
             $arrayToReturn['Response_Date']   = $arrayData['FileDate'];
-            $arrayToReturn['Amount_wo_VAT']   = $floatAmounts['wo_VAT'];
-            $arrayToReturn['Amount_TOTAL']    = $floatAmounts['TOTAL'];
-            $arrayToReturn['Amount_VAT']      = round(($floatAmounts['TOTAL'] - $floatAmounts['wo_VAT']), 2);
-            $arrayToReturn['Supplier_CUI']    = $this->setDataSupplierOrCustomer($arrayParties['Supplier']);
-            $arrayToReturn['Supplier_Name']   = $arrayParties['Supplier']['PartyLegalEntity']['RegistrationName'];
-            $arrayToReturn['Customer_CUI']    = $this->setDataSupplierOrCustomer($arrayParties['Customer']);
-            $arrayToReturn['Customer_Name']   = $arrayParties['Customer']['PartyLegalEntity']['RegistrationName'];
-            $arrayToReturn['No_Lines']        = count($arrayElectronicInv['Lines']);
-            $origin                           = new \DateTimeImmutable($arrayBasic['IssueDate']);
-            $target                           = new \DateTimeImmutable($arrayData['FileDate']);
-            $interval                         = $origin->diff($target);
-            $arrayToReturn['Days_Between']    = $interval->format('%R%a');
-            unlink($arrayData['strArchivedFileName']);
+            $arrayToReturn['Amount_wo_VAT']   = $arrayAttr['wo_VAT'];
+            $arrayToReturn['Amount_TOTAL']    = $arrayAttr['TOTAL'];
+            $arrayToReturn['Amount_VAT']      = round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2);
+            $arrayToReturn['Supplier_CUI']    = $this->setDataSupplierOrCustomer($arrayAttr['Supplier']);
+            $arrayToReturn['Supplier_Name']   = $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'];
+            $arrayToReturn['Customer_CUI']    = $this->setDataSupplierOrCustomer($arrayAttr['Customer']);
+            $arrayToReturn['Customer_Name']   = $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'];
+            $arrayToReturn['No_of_Lines']     = $arrayAttr['No_of_Lines'];
+            $arrayToReturn['Days_Between']    = $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDate']);
         } elseif ($arrayData['Size'] > 0) {
             $objErrors                      = new \SimpleXMLElement($arrayData['strInvoiceContent']);
             $arrayToReturn['Loading_Index'] = $objErrors->attributes()->Index_incarcare->__toString();
