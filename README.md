@@ -46,6 +46,7 @@ PHP developers that serves various business to accomodate custom applications in
 
 ## Useful links
 
+* [Aplicații web RO-eFactura - completare manuală](https://mfinante.gov.ro/ro/web/efactura/aplicatii-web-ro-efactura)
 * [E-invoicing in Europe](https://dddinvoices.com/learn/e-invoicing-europe/)
 * [GitHub - eInvoicing-EN16931](https://github.com/ConnectingEurope/eInvoicing-EN16931)
 * [UBL specifications - multiple versions](https://ubl.xml.org/wiki/ubl-specifications)
