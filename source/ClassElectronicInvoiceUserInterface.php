@@ -203,7 +203,7 @@ class ClassElectronicInvoiceUserInterface
         ]);
     }
 
-    private function setHtmlTable(array $arrayData): string
+    public function setHtmlTable(array $arrayData): string
     {
         $strReturn = '<table style="margin-left:auto;margin-right:auto;">';
         foreach ($arrayData as $intLineNo => $arrayContent) {
@@ -288,7 +288,7 @@ class ClassElectronicInvoiceUserInterface
             'Supplier_Name'   => '',
             'Customer_CUI'    => '',
             'Customer_Name'   => '',
-            'No_Lines'        => '',
+            'No_of_Lines'     => '',
             'Error'           => '',
             'Days_Between'    => '',
         ];
