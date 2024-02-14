@@ -46,6 +46,7 @@
             "source/TraitLines.php",
             "source/ClassElectronicInvoiceRead.php",
             "source/ClassElectronicInvoiceWrite.php",
+            "source/TraitUserInterfaceLogic.php",
             "source/ClassElectronicInvoiceUserInterface.php"
         ]
     },
