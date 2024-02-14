@@ -73,5 +73,5 @@ msgstr "Nome del fornitore"
 msgid "i18n_Msg_NoZip"
 msgstr "Sfortunatamente non ci sono archive zip nel folder fornito (%s)..."
 
-msgid "i18n_Timezone"
+msgid "i18n_TimeZone"
 msgstr "Europe/Rome"
