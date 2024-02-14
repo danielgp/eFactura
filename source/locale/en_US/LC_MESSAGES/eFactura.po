@@ -1,0 +1,77 @@
+# English United-States translation for eFactura package.
+# Copyright (C) 2024 Daniel Popiniuc
+# This file is distributed under the same license as the PACKAGE package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: eFactura\n"
+"POT-Creation-Date: 2024-02-14 00:55+0200\n"
+"PO-Revision-Date: 2024-02-14 02:49+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+
+msgid "i18n_Btn_AnalyzeZIP"
+msgstr "Analyze ZIP archives from ANAF from a local folder"
+
+msgid "i18n_Clmn_Amount_TOTAL"
+msgstr "TOTAL"
+
+msgid "i18n_Clmn_Amount_VAT"
+msgstr "VAT"
+
+msgid "i18n_Clmn_Amount_wo_VAT"
+msgstr "Value"
+
+msgid "i18n_Clmn_Customer_CUI"
+msgstr "Customer CUI"
+
+msgid "i18n_Clmn_Customer_Name"
+msgstr "Customer Name"
+
+msgid "i18n_Clmn_Days_Between"
+msgstr "Days issue-response"
+
+msgid "i18n_Clmn_Document_No"
+msgstr "Document ID"
+
+msgid "i18n_Clmn_Error"
+msgstr "Error"
+
+msgid "i18n_Clmn_Issue_Date"
+msgstr "Issued Date"
+
+msgid "i18n_Clmn_Issue_YearMonth"
+msgstr "Issued Year and Month"
+
+msgid "i18n_Clmn_Loading_Index"
+msgstr "Loading Index"
+
+msgid "i18n_Clmn_No_of_Lines"
+msgstr "No. of Lines"
+
+msgid "i18n_Clmn_Response_Date"
+msgstr "Response Timestamp"
+
+msgid "i18n_Clmn_Response_Index"
+msgstr "Response Index"
+
+msgid "i18n_Clmn_Size"
+msgstr "Size [bytes]"
+
+msgid "i18n_Clmn_Supplier_CUI"
+msgstr "Supplier CUI"
+
+msgid "i18n_Clmn_Supplier_Name"
+msgstr "Supplier Name"
+
+msgid "i18n_Msg_NoZip"
+msgstr "Unfortunately there are no zip archives within given folder (%s)..."
+
+msgid "i18n_TimeZone"
+msgstr "America/Chicago"

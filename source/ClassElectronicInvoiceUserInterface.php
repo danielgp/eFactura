@@ -20,6 +20,7 @@ class ClassElectronicInvoiceUserInterface
 
     private array $arrayConfiguration;
     private \SebastianBergmann\Timer\Timer $classTimer;
+    private $translation;
 
     public function __construct()
     {
@@ -27,6 +28,7 @@ class ClassElectronicInvoiceUserInterface
         $this->classTimer->start();
         $this->arrayConfiguration = $this->getArrayFromJsonFile(__DIR__
             . DIRECTORY_SEPARATOR . 'config', 'BasicConfiguration.json');
+        $this->setLocalization();
     }
 
     public function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
@@ -43,19 +45,36 @@ class ClassElectronicInvoiceUserInterface
         return $arrayInvoices;
     }
 
+    private function getButtonForLocalisation(string $strLanguageCountry): string
+    {
+        $arrayMapFlags = [
+            'ro_RO' => 'ro',
+            'it_IT' => 'it',
+            'en_US' => 'us',
+        ];
+        return vsprintf('<a href="?language_COUNTRY=%s" style="float:left;margin-left:10px;">'
+            . '<span class="fi fi-%s" style="%s">&nbsp;</span>'
+            . '</a>', [
+            $strLanguageCountry . (array_key_exists('action', $_GET) ? '&action=' . $_GET['action'] : ''),
+            $arrayMapFlags[$strLanguageCountry],
+            ($strLanguageCountry === $_GET['language_COUNTRY'] ? 'width:40px;height:30px;' : 'width:20px;height:15px;'),
+        ]);
+    }
+
     private function getButtonToActionSomething(array $arrayButtonFeatures): string
     {
         $arrayButtonStyle = [
-            'font: bold 14pt Arial',
-            'margin: 2px',
-            'padding: 4px 10px',
+            'font:bold 14pt Arial',
+            'margin:2px',
+            'padding:4px 10px',
         ];
         $arrayStylePieces = $arrayButtonStyle;
         if (array_key_exists('AdditionalStyle', $arrayButtonFeatures)) {
             $arrayStylePieces = array_merge($arrayButtonStyle, $arrayButtonFeatures['AdditionalStyle']);
         }
         return vsprintf('<a href="%s" class="btn btn-outline-primary" style="%s">%s</a>', [
-            $arrayButtonFeatures['URL'],
+            $arrayButtonFeatures['URL']
+            . (array_key_exists('language_COUNTRY', $_GET) ? '&language_COUNTRY=' . $_GET['language_COUNTRY'] : ''),
             implode(';', $arrayStylePieces),
             $arrayButtonFeatures['Text'],
         ]);
@@ -102,6 +121,19 @@ class ClassElectronicInvoiceUserInterface
         return $arrayToReturn;
     }
 
+    private function getHeaderColumnMapping(array $arrayColumns): array
+    {
+        $arrayMap = [];
+        foreach ($arrayColumns as $strColumnName) {
+            $arrayMap[$strColumnName] = $strColumnName;
+            $strRelevant              = $this->translation->find(null, 'i18n_Clmn_' . $strColumnName);
+            if (!is_null($strRelevant)) {
+                $arrayMap[$strColumnName] = $strRelevant->getTranslation();
+            }
+        }
+        return $arrayMap;
+    }
+
     /**
      * Archived document interpretation requires a temporary files to be stored
      * and upon processing file is removed immediately
@@ -143,7 +175,7 @@ class ClassElectronicInvoiceUserInterface
                     $arrayInvoices     = $this->actionAnalyzeZIPfromANAFfromLocalFolder($strRelevantFolder);
                     if (count($arrayInvoices) === 0) {
                         echo sprintf('<p style="color:red;">'
-                            . 'Unfortunatelly there are no zip files in given folder (%s)...'
+                            . $this->translation->find(null, 'i18n_Msg_NoZip')->getTranslation()
                             . '</p>', $strRelevantFolder);
                     } else {
                         echo $this->setHtmlTable($arrayInvoices);
@@ -219,25 +251,7 @@ class ClassElectronicInvoiceUserInterface
 
     private function setHtmlTableHeader(array $arrayData): string
     {
-        $arrayMap    = [
-            'Amount_TOTAL'    => 'TOTAL',
-            'Amount_VAT'      => 'TVA',
-            'Amount_wo_VAT'   => 'Valoare',
-            'Customer_CUI'    => 'CUI client',
-            'Customer_Name'   => 'Nume client',
-            'Days_Between'    => 'Zile emitere-depunere',
-            'Document_No'     => 'Identificator',
-            'Error'           => 'Eroare',
-            'Issue_Date'      => 'Data emiterii',
-            'Issue_YearMonth' => 'Anul și luna emiterii',
-            'Loading_Index'   => 'Index încărcare',
-            'No_of_Lines'     => 'Nr. linii',
-            'Response_Date'   => 'Data răspuns',
-            'Response_Index'  => 'Index răspuns',
-            'Size'            => 'Dim. [bytes]',
-            'Supplier_CUI'    => 'CUI emitent',
-            'Supplier_Name'   => 'Nume emitent',
-        ];
+        $arrayMap    = $this->getHeaderColumnMapping(array_values($arrayData));
         $strToReturn = '<th>#</th>';
         foreach ($arrayData as $key) {
             $strToReturn .= sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
@@ -263,9 +277,19 @@ class ClassElectronicInvoiceUserInterface
             . '</tr>';
     }
 
+    private function setLocalization(): void
+    {
+        if (!array_key_exists('language_COUNTRY', $_GET)) {
+            $_GET['language_COUNTRY'] = 'ro_RO';
+        }
+        $loader            = new \Gettext\Loader\PoLoader();
+        $this->translation = $loader->loadFile(__DIR__ . '/locale/' . $_GET['language_COUNTRY']
+            . '/LC_MESSAGES/eFactura.po');
+    }
+
     private function setNumbers(float $floatNumber, int $intMinDigits, int $intMaxDigits): string
     {
-        $classFormat = new \NumberFormatter('ro_RO', \NumberFormatter::DECIMAL);
+        $classFormat = new \NumberFormatter($_GET['language_COUNTRY'], \NumberFormatter::DECIMAL);
         $classFormat->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $intMinDigits);
         $classFormat->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $intMaxDigits);
         return $classFormat->format($floatNumber);
@@ -299,10 +323,10 @@ class ClassElectronicInvoiceUserInterface
             $arrayToReturn['Document_No']     = $arrayAttr['ID'];
             $arrayToReturn['Issue_Date']      = $arrayAttr['IssueDate'];
             $arrayToReturn['Issue_YearMonth'] = (new \IntlDateFormatter(
-                    'ro_RO',
+                    $_GET['language_COUNTRY'],
                     \IntlDateFormatter::FULL,
                     \IntlDateFormatter::FULL,
-                    'Europe/Bucharest',
+                    $this->translation->find(null, 'i18n_TimeZone')->getTranslation(),
                     \IntlDateFormatter::GREGORIAN,
                     'r-MM__MMMM'
                 ))->format(new \DateTime($arrayAttr['IssueDate']));
@@ -332,10 +356,13 @@ class ClassElectronicInvoiceUserInterface
     public function setUserInterface(): void
     {
         echo '<header class="border-bottom">'
+        . $this->getButtonForLocalisation('en_US')
+        . $this->getButtonForLocalisation('it_IT')
+        . $this->getButtonForLocalisation('ro_RO')
         . $this->getButtonToActionSomething([
-            'Text' => 'Analyze ZIP archives from ANAF from a local folder',
+            'Text' => $this->translation->find(null, 'i18n_Btn_AnalyzeZIP')->getTranslation(),
             'URL'  => '?action=AnalyzeZIPfromANAFfromLocalFolder',
         ])
-        . '</header>';
+        . ' </header>';
     }
 }

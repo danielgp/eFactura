@@ -13,15 +13,17 @@
     ],
     "require": {
         "php"                       : ">=7.4",
-        "danielgp/io-operations"    : "~1.1",
-        "fortawesome/font-awesome"  : "~6.4",
-        "phpunit/php-timer"         : "~7.0",
-        "twbs/bootstrap"            : "~5.3",
         "ext-json"                  : "*",
         "ext-mbstring"              : "*",
         "ext-SimpleXML"             : "*",
         "ext-XML"                   : "*",
-        "ext-XMLWriter"             : "*"
+        "ext-XMLWriter"             : "*",
+        "danielgp/io-operations"    : "~1.1",
+        "fortawesome/font-awesome"  : "~6.4",
+        "gettext/gettext"           : "~5.7",
+        "lipis/flag-icons"          : "~7.1",
+        "phpunit/php-timer"         : "~7.0",
+        "twbs/bootstrap"            : "~5.3"
     },
     "require-dev": {
         "phpunit/phpunit": "~11"
