@@ -20,6 +20,7 @@ class ClassElectronicInvoiceUserInterface
 
     private array $arrayConfiguration;
     private \SebastianBergmann\Timer\Timer $classTimer;
+    private $translation;
 
     public function __construct()
     {
@@ -27,6 +28,7 @@ class ClassElectronicInvoiceUserInterface
         $this->classTimer->start();
         $this->arrayConfiguration = $this->getArrayFromJsonFile(__DIR__
             . DIRECTORY_SEPARATOR . 'config', 'BasicConfiguration.json');
+        $this->setLocalization();
     }
 
     public function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
@@ -102,6 +104,19 @@ class ClassElectronicInvoiceUserInterface
         return $arrayToReturn;
     }
 
+    private function getHeaderColumnMapping(array $arrayColumns): array
+    {
+        $arrayMap = [];
+        foreach ($arrayColumns as $strColumnName) {
+            $arrayMap[$strColumnName] = $strColumnName;
+            $strRelevant              = $this->translation->find(null, 'i18n_Clmn_' . $strColumnName);
+            if (!is_null($strRelevant)) {
+                $arrayMap[$strColumnName] = $strRelevant->getTranslation();
+            }
+        }
+        return $arrayMap;
+    }
+
     /**
      * Archived document interpretation requires a temporary files to be stored
      * and upon processing file is removed immediately
@@ -143,7 +158,7 @@ class ClassElectronicInvoiceUserInterface
                     $arrayInvoices     = $this->actionAnalyzeZIPfromANAFfromLocalFolder($strRelevantFolder);
                     if (count($arrayInvoices) === 0) {
                         echo sprintf('<p style="color:red;">'
-                            . 'Unfortunatelly there are no zip files in given folder (%s)...'
+                            . $this->translation->find(null, 'i18n_Msg_NoZip')->getTranslation()
                             . '</p>', $strRelevantFolder);
                     } else {
                         echo $this->setHtmlTable($arrayInvoices);
@@ -219,25 +234,7 @@ class ClassElectronicInvoiceUserInterface
 
     private function setHtmlTableHeader(array $arrayData): string
     {
-        $arrayMap    = [
-            'Amount_TOTAL'    => 'TOTAL',
-            'Amount_VAT'      => 'TVA',
-            'Amount_wo_VAT'   => 'Valoare',
-            'Customer_CUI'    => 'CUI client',
-            'Customer_Name'   => 'Nume client',
-            'Days_Between'    => 'Zile emitere-depunere',
-            'Document_No'     => 'Identificator',
-            'Error'           => 'Eroare',
-            'Issue_Date'      => 'Data emiterii',
-            'Issue_YearMonth' => 'Anul și luna emiterii',
-            'Loading_Index'   => 'Index încărcare',
-            'No_of_Lines'     => 'Nr. linii',
-            'Response_Date'   => 'Data răspuns',
-            'Response_Index'  => 'Index răspuns',
-            'Size'            => 'Dim. [bytes]',
-            'Supplier_CUI'    => 'CUI emitent',
-            'Supplier_Name'   => 'Nume emitent',
-        ];
+        $arrayMap    = $this->getHeaderColumnMapping(array_values($arrayData));
         $strToReturn = '<th>#</th>';
         foreach ($arrayData as $key) {
             $strToReturn .= sprintf('<th>%s</th>', (array_key_exists($key, $arrayMap) ? $arrayMap[$key] : $key));
@@ -261,6 +258,16 @@ class ClassElectronicInvoiceUserInterface
             . '<td>' . $intLineNo . '</td>'
             . implode('', $arrayContent)
             . '</tr>';
+    }
+
+    private function setLocalization(): void
+    {
+        if (!array_key_exists('language_COUNTRY', $_GET)) {
+            $_GET['language_COUNTRY'] = 'ro_RO';
+        }
+        $loader            = new \Gettext\Loader\PoLoader();
+        $this->translation = $loader->loadFile(__DIR__ . '/locale/' . $_GET['language_COUNTRY']
+            . '/LC_MESSAGES/eFactura.po');
     }
 
     private function setNumbers(float $floatNumber, int $intMinDigits, int $intMaxDigits): string
@@ -299,10 +306,10 @@ class ClassElectronicInvoiceUserInterface
             $arrayToReturn['Document_No']     = $arrayAttr['ID'];
             $arrayToReturn['Issue_Date']      = $arrayAttr['IssueDate'];
             $arrayToReturn['Issue_YearMonth'] = (new \IntlDateFormatter(
-                    'ro_RO',
+                    $_GET['language_COUNTRY'],
                     \IntlDateFormatter::FULL,
                     \IntlDateFormatter::FULL,
-                    'Europe/Bucharest',
+                    $this->translation->find(null, 'i18n_TimeZone')->getTranslation(),
                     \IntlDateFormatter::GREGORIAN,
                     'r-MM__MMMM'
                 ))->format(new \DateTime($arrayAttr['IssueDate']));
@@ -333,9 +340,9 @@ class ClassElectronicInvoiceUserInterface
     {
         echo '<header class="border-bottom">'
         . $this->getButtonToActionSomething([
-            'Text' => 'Analyze ZIP archives from ANAF from a local folder',
+            'Text' => $this->translation->find(null, 'i18n_Btn_AnalyzeZIP')->getTranslation(),
             'URL'  => '?action=AnalyzeZIPfromANAFfromLocalFolder',
         ])
-        . '</header>';
+        . ' </header>';
     }
 }

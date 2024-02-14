@@ -1,0 +1,78 @@
+# Romanian Romania translation for eFactura package.
+# Copyright (C) 2024 Daniel Popiniuc
+# This file is distributed under the same license as the PACKAGE package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2024-02-14 00:55+0200\n"
+"PO-Revision-Date: 2024-02-14 02:49+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ro_RO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Poedit-Basepath: .\n"
+
+msgid "i18n_Btn_AnalyzeZIP"
+msgstr "Analizează arhivele ZIP de la ANAF din dosarul local"
+
+msgid "i18n_Clmn_Amount_TOTAL"
+msgstr "TOTAL"
+
+msgid "i18n_Clmn_Amount_VAT"
+msgstr "TVA"
+
+msgid "i18n_Clmn_Amount_wo_VAT"
+msgstr "Valoare"
+
+msgid "i18n_Clmn_Customer_CUI"
+msgstr "CUI client"
+
+msgid "i18n_Clmn_Customer_Name"
+msgstr "Nume client"
+
+msgid "i18n_Clmn_Days_Between"
+msgstr "Zile emitere-răspuns"
+
+msgid "i18n_Clmn_Document_No"
+msgstr "Identificator document"
+
+msgid "i18n_Clmn_Error"
+msgstr "Eroare"
+
+msgid "i18n_Clmn_Issue_Date"
+msgstr "Dată emitere"
+
+msgid "i18n_Clmn_Issue_YearMonth"
+msgstr "An și lună emitere"
+
+msgid "i18n_Clmn_Loading_Index"
+msgstr "Index încărcare"
+
+msgid "i18n_Clmn_No_of_Lines"
+msgstr "Nr. linii"
+
+msgid "i18n_Clmn_Response_Date"
+msgstr "Dată și timp răspuns"
+
+msgid "i18n_Clmn_Response_Index"
+msgstr "Index răspuns"
+
+msgid "i18n_Clmn_Size"
+msgstr "Dimensiune [bytes]"
+
+msgid "i18n_Clmn_Supplier_CUI"
+msgstr "CUI furnizor"
+
+msgid "i18n_Clmn_Supplier_Name"
+msgstr "Nume furnizor"
+
+msgid "i18n_Msg_NoZip"
+msgstr "Din păcate nu există arhive zip în dosarul specificat (%s)..."
+
+msgid "i18n_TimeZone"
+msgstr "Europe/Bucharest"
