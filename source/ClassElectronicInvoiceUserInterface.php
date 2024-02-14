@@ -45,19 +45,36 @@ class ClassElectronicInvoiceUserInterface
         return $arrayInvoices;
     }
 
+    private function getButtonForLocalisation(string $strLanguageCountry): string
+    {
+        $arrayMapFlags = [
+            'ro_RO' => 'ro',
+            'it_IT' => 'it',
+            'en_US' => 'us',
+        ];
+        return vsprintf('<a href="?language_COUNTRY=%s" style="float:left;margin-left:10px;">'
+            . '<span class="fi fi-%s" style="%s">&nbsp;</span>'
+            . '</a>', [
+            $strLanguageCountry . (array_key_exists('action', $_GET) ? '&action=' . $_GET['action'] : ''),
+            $arrayMapFlags[$strLanguageCountry],
+            ($strLanguageCountry === $_GET['language_COUNTRY'] ? 'width:40px;height:30px;' : 'width:20px;height:15px;'),
+        ]);
+    }
+
     private function getButtonToActionSomething(array $arrayButtonFeatures): string
     {
         $arrayButtonStyle = [
-            'font: bold 14pt Arial',
-            'margin: 2px',
-            'padding: 4px 10px',
+            'font:bold 14pt Arial',
+            'margin:2px',
+            'padding:4px 10px',
         ];
         $arrayStylePieces = $arrayButtonStyle;
         if (array_key_exists('AdditionalStyle', $arrayButtonFeatures)) {
             $arrayStylePieces = array_merge($arrayButtonStyle, $arrayButtonFeatures['AdditionalStyle']);
         }
         return vsprintf('<a href="%s" class="btn btn-outline-primary" style="%s">%s</a>', [
-            $arrayButtonFeatures['URL'],
+            $arrayButtonFeatures['URL']
+            . (array_key_exists('language_COUNTRY', $_GET) ? '&language_COUNTRY=' . $_GET['language_COUNTRY'] : ''),
             implode(';', $arrayStylePieces),
             $arrayButtonFeatures['Text'],
         ]);
@@ -339,6 +356,9 @@ class ClassElectronicInvoiceUserInterface
     public function setUserInterface(): void
     {
         echo '<header class="border-bottom">'
+        . $this->getButtonForLocalisation('en_US')
+        . $this->getButtonForLocalisation('it_IT')
+        . $this->getButtonForLocalisation('ro_RO')
         . $this->getButtonToActionSomething([
             'Text' => $this->translation->find(null, 'i18n_Btn_AnalyzeZIP')->getTranslation(),
             'URL'  => '?action=AnalyzeZIPfromANAFfromLocalFolder',
