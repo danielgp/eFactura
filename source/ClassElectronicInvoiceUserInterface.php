@@ -272,7 +272,7 @@ class ClassElectronicInvoiceUserInterface
 
     private function setNumbers(float $floatNumber, int $intMinDigits, int $intMaxDigits): string
     {
-        $classFormat = new \NumberFormatter('ro_RO', \NumberFormatter::DECIMAL);
+        $classFormat = new \NumberFormatter($_GET['language_COUNTRY'], \NumberFormatter::DECIMAL);
         $classFormat->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $intMinDigits);
         $classFormat->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $intMaxDigits);
         return $classFormat->format($floatNumber);
