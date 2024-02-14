@@ -6,7 +6,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-v20.html
  *
  * Contributors:
  *    Daniel Popiniuc
@@ -21,7 +21,7 @@ final class WriteTest extends TestCase
 {
     const LOCAL_UBL_EXAMPLES_PATH = __DIR__ . '/UBL_examples/';
 
-    public function testGetLocalJsonInvoiceIntoXml()
+    public function testGetLocalJsonInvoiceIntoXml(): void
     {
         $url           = self::LOCAL_UBL_EXAMPLES_PATH . 'Romanian/Invoice.json';
         $fileHandle    = fopen($url, 'r');
@@ -38,7 +38,7 @@ final class WriteTest extends TestCase
             . 'Romanian/eInvoice_ex.xml', $strTargetFile);
     }
 
-    public function testGetLocalJsonInvoiceIntoXmlWithComments()
+    public function testGetLocalJsonInvoiceIntoXmlWithComments(): void
     {
         $url           = self::LOCAL_UBL_EXAMPLES_PATH . 'Romanian/Invoice.json';
         $fileHandle    = fopen($url, 'r');
@@ -55,7 +55,7 @@ final class WriteTest extends TestCase
             . 'Romanian/eInvoice_ex.xml', $strTargetFile);
     }
 
-    public function testGetLocalJsonInvoiceIntoXmlWithSchemaLocation()
+    public function testGetLocalJsonInvoiceIntoXmlWithSchemaLocation(): void
     {
         $url           = self::LOCAL_UBL_EXAMPLES_PATH . 'Romanian/Invoice.json';
         $fileHandle    = fopen($url, 'r');
