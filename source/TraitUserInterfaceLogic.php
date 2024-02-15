@@ -53,7 +53,7 @@ trait TraitUserInterfaceLogic
         return $arrayStandardized;
     }
 
-    protected function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
+    public function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
     {
         $arrayFiles    = new \RecursiveDirectoryIterator($strFilePath, \FilesystemIterator::SKIP_DOTS);
         $arrayInvoices = [];
