@@ -70,7 +70,7 @@ trait TraitUserInterfaceLogic
         return $arrayStandardized;
     }
 
-    private function handleResponseFile(\SplFileInfo $strFile): array
+    private function handleResponseFile(\SplFileInfo|string $strFile): array
     {
         $arrayToReturn = [];
         $strFileMime   = mime_content_type($strFile->getRealPath());
@@ -95,7 +95,6 @@ trait TraitUserInterfaceLogic
         $intFilesArchived = $classZip->numFiles;
         for ($intArchivedFile = 0; $intArchivedFile < $intFilesArchived; $intArchivedFile++) {
             $strArchivedFile = $classZip->getNameIndex($intArchivedFile);
-            $strFileStats    = $classZip->statIndex($intArchivedFile);
             $matches         = [];
             preg_match('/^[0-9]{5,20}\.xml$/', $strArchivedFile, $matches, PREG_OFFSET_CAPTURE);
             $matches2        = [];
@@ -104,6 +103,7 @@ trait TraitUserInterfaceLogic
                 $resInvoice        = $classZip->getStream($strArchivedFile);
                 $strInvoiceContent = stream_get_contents($resInvoice);
                 fclose($resInvoice);
+                $strFileStats      = $classZip->statIndex($intArchivedFile);
                 $arrayToReturn     = $this->setStandardizedFeedbackArray([
                     'Response_Index'      => pathinfo($strFile)['filename'],
                     'Size'                => $strFileStats['size'],
@@ -198,8 +198,8 @@ trait TraitUserInterfaceLogic
             $arrayToReturn['Error'] = sprintf($strErrorTag, $arrayData['Error']);
             $arrayToReturn['Size']  = 0;
         } elseif ($arrayData['Size'] > 1000) {
-            $strTimeZone                      = $this->translation->find(null, 'i18n_TimeZone')->getTranslation();
-            $strFormatter                     = new \IntlDateFormatter(
+            $strTimeZone   = $this->translation->find(null, 'i18n_TimeZone')->getTranslation();
+            $strFormatter  = new \IntlDateFormatter(
                 $_GET['language_COUNTRY'],
                 \IntlDateFormatter::FULL,
                 \IntlDateFormatter::FULL,
@@ -207,31 +207,37 @@ trait TraitUserInterfaceLogic
                 \IntlDateFormatter::GREGORIAN,
                 'r-MM__MMMM'
             );
-            $arrayAttr                        = $this->getDocumentDetails($arrayData);
-            $arrayToReturn['Loading_Index']   = substr($arrayData['Matches'][0][0], 0, -4);
-            $arrayToReturn['Size']            = $arrayData['Size'];
-            $arrayToReturn['Document_No']     = $arrayAttr['ID'];
-            $arrayToReturn['Issue_Date']      = $arrayAttr['IssueDate'];
-            $arrayToReturn['Issue_YearMonth'] = $strFormatter->format(new \DateTime($arrayAttr['IssueDate']));
-            $arrayToReturn['Response_Date']   = $arrayData['FileDate'];
-            $arrayToReturn['Amount_wo_VAT']   = $arrayAttr['wo_VAT'];
-            $arrayToReturn['Amount_TOTAL']    = $arrayAttr['TOTAL'];
-            $arrayToReturn['Amount_VAT']      = round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2);
-            $arrayToReturn['Supplier_CUI']    = $this->setDataSupplierOrCustomer($arrayAttr['Supplier']);
-            $arrayToReturn['Supplier_Name']   = $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'];
-            $arrayToReturn['Customer_CUI']    = $this->setDataSupplierOrCustomer($arrayAttr['Customer']);
-            $arrayToReturn['Customer_Name']   = $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'];
-            $arrayToReturn['No_of_Lines']     = $arrayAttr['No_of_Lines'];
-            $arrayToReturn['Days_Between']    = $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDate']);
+            $arrayAttr     = $this->getDocumentDetails($arrayData);
+            $arrayTemp     = [
+                'Loading_Index'   => substr($arrayData['Matches'][0][0], 0, -4),
+                'Size'            => $arrayData['Size'],
+                'Document_No'     => $arrayAttr['ID'],
+                'Issue_Date'      => $arrayAttr['IssueDate'],
+                'Issue_YearMonth' => $strFormatter->format(new \DateTime($arrayAttr['IssueDate'])),
+                'Response_Date'   => $arrayData['FileDate'],
+                'Amount_wo_VAT'   => $arrayAttr['wo_VAT'],
+                'Amount_TOTAL'    => $arrayAttr['TOTAL'],
+                'Amount_VAT'      => round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2),
+                'Supplier_CUI'    => $this->setDataSupplierOrCustomer($arrayAttr['Supplier']),
+                'Supplier_Name'   => $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'],
+                'Customer_CUI'    => $this->setDataSupplierOrCustomer($arrayAttr['Customer']),
+                'Customer_Name'   => arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
+                'No_of_Lines'     => $arrayAttr['No_of_Lines'],
+                'Days_Between'    => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDate']),
+            ];
+            $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
         } elseif ($arrayData['Size'] > 0) {
-            $objErrors                      = new \SimpleXMLElement($arrayData['strInvoiceContent']);
-            $arrayToReturn['Loading_Index'] = $objErrors->attributes()->Index_incarcare->__toString();
-            $arrayToReturn['Size']          = $arrayData['Size'];
-            $arrayToReturn['Response_Date'] = $arrayData['FileDate'];
-            $arrayToReturn['Supplier_CUI']  = 'RO' . $objErrors->attributes()->Cif_emitent->__toString();
-            $arrayToReturn['Supplier_Name'] = '??????????';
-            $arrayToReturn['Error']         = sprintf($strErrorTag, $objErrors
-                ->Error->attributes()->errorMessage->__toString());
+            $objErrors     = new \SimpleXMLElement($arrayData['strInvoiceContent']);
+            $arrayTemp     = [
+                'Loading_Index' => $objErrors->attributes()->Index_incarcare->__toString(),
+                'Size'          => $arrayData['Size'],
+                'Response_Date' => $arrayData['FileDate'],
+                'Supplier_CUI'  => 'RO' . $objErrors->attributes()->Cif_emitent->__toString(),
+                'Supplier_Name' => '??????????',
+                'Error'         => sprintf($strErrorTag, $objErrors
+                    ->Error->attributes()->errorMessage->__toString()),
+            ];
+            $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
         }
         return $arrayToReturn;
     }
