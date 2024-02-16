@@ -89,7 +89,7 @@ trait TraitUserInterfaceLogic
         return $arrayToReturn;
     }
 
-    private function handleArchiveContent(\ZipArchive $classZip): array
+    private function handleArchiveContent(\ZipArchive $classZip, string $strFile): array
     {
         $arrayToReturn    = [];
         $intFilesArchived = $classZip->numFiles;
@@ -128,7 +128,7 @@ trait TraitUserInterfaceLogic
         $classZip      = new \ZipArchive();
         $res           = $classZip->open($strFile, \ZipArchive::RDONLY);
         if ($res) {
-            $arrayToReturn = $this->handleArchiveContent($classZip);
+            $arrayToReturn = $this->handleArchiveContent($classZip, $strFile);
         } else {
             // @codeCoverageIgnoreStart
             $arrayToReturn = $this->setStandardizedFeedbackArray([
@@ -221,7 +221,7 @@ trait TraitUserInterfaceLogic
                 'Supplier_CUI'    => $this->setDataSupplierOrCustomer($arrayAttr['Supplier']),
                 'Supplier_Name'   => $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'],
                 'Customer_CUI'    => $this->setDataSupplierOrCustomer($arrayAttr['Customer']),
-                'Customer_Name'   => arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
+                'Customer_Name'   => $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
                 'No_of_Lines'     => $arrayAttr['No_of_Lines'],
                 'Days_Between'    => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDate']),
             ];
