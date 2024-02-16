@@ -16,10 +16,28 @@ namespace danielgp\efactura;
 
 trait TraitUserInterfaceLogic
 {
+
     use \danielgp\io_operations\InputOutputFiles;
 
     protected array $arrayConfiguration;
     protected $translation;
+
+    public function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
+    {
+        $arrayFiles    = new \RecursiveDirectoryIterator($strFilePath, \FilesystemIterator::SKIP_DOTS);
+        $arrayInvoices = [];
+        $intFileNo     = 0;
+        foreach ($arrayFiles as $strFile) {
+            if ($strFile->isFile()) {
+                $arrayFileDetails = $this->handleResponseFile($strFile);
+                if ($arrayFileDetails !== []) {
+                    $arrayInvoices[$intFileNo] = $arrayFileDetails;
+                    $intFileNo++;
+                }
+            }
+        }
+        return $arrayInvoices;
+    }
 
     protected function getConfiguration()
     {
@@ -52,58 +70,70 @@ trait TraitUserInterfaceLogic
         return $arrayStandardized;
     }
 
-    public function actionAnalyzeZIPfromANAFfromLocalFolder(string $strFilePath): array
+    private function handleResponseFile(\SplFileInfo $strFile): array
     {
-        $arrayFiles    = new \RecursiveDirectoryIterator($strFilePath, \FilesystemIterator::SKIP_DOTS);
-        $arrayInvoices = [];
-        $intFileNo     = 0;
-        foreach ($arrayFiles as $strFile) {
-            if ($strFile->isFile() && ($strFile->getExtension() === 'zip')) {
-                $arrayInvoices[$intFileNo] = $this->setArchiveFromAnaf($strFile->getRealPath());
-                $intFileNo++;
+        $arrayToReturn = [];
+        $strFileMime   = mime_content_type($strFile->getRealPath());
+        switch ($strFileMime) {
+            case 'application/json':
+                $arrayError    = $this->getArrayFromJsonFile($strFile->getPath(), $strFile->getFilename());
+                $arrayToReturn = $this->setStandardizedFeedbackArray([
+                    'Error'          => $arrayError['eroare'] . ' ===> ' . $arrayError['titlu'],
+                    'Response_Index' => pathinfo($strFile)['filename'],
+                ]);
+                break;
+            case 'application/zip':
+                $arrayToReturn = $this->setArchiveFromAnaf($strFile->getRealPath());
+                break;
+        }
+        return $arrayToReturn;
+    }
+
+    private function handleArchiveContent(\ZipArchive $classZip): array
+    {
+        $arrayToReturn    = [];
+        $intFilesArchived = $classZip->numFiles;
+        for ($intArchivedFile = 0; $intArchivedFile < $intFilesArchived; $intArchivedFile++) {
+            $strArchivedFile = $classZip->getNameIndex($intArchivedFile);
+            $strFileStats    = $classZip->statIndex($intArchivedFile);
+            $matches         = [];
+            preg_match('/^[0-9]{5,20}\.xml$/', $strArchivedFile, $matches, PREG_OFFSET_CAPTURE);
+            $matches2        = [];
+            preg_match('/^semnatura_[0-9]{5,20}\.xml$/', $strArchivedFile, $matches2, PREG_OFFSET_CAPTURE);
+            if ($matches !== []) {
+                $resInvoice        = $classZip->getStream($strArchivedFile);
+                $strInvoiceContent = stream_get_contents($resInvoice);
+                fclose($resInvoice);
+                $arrayToReturn     = $this->setStandardizedFeedbackArray([
+                    'Response_Index'      => pathinfo($strFile)['filename'],
+                    'Size'                => $strFileStats['size'],
+                    'FileDate'            => date('Y-m-d H:i:s', $strFileStats['mtime']),
+                    'Matches'             => $matches,
+                    'strArchivedFileName' => $strArchivedFile,
+                    'strInvoiceContent'   => $strInvoiceContent,
+                ]);
+            } elseif ($matches2 === []) {
+                echo vsprintf('<div>' . $this->arrayConfiguration['Feedback']['DifferentFile'] . '</div>', [
+                    $strArchivedFile,
+                    $strFile->getBasename(),
+                ]);
             }
         }
-        return $arrayInvoices;
+        return $arrayToReturn;
     }
 
     private function setArchiveFromAnaf(string $strFile)
     {
-        $classZip      = new \ZipArchive();
         $arrayToReturn = [];
+        $classZip      = new \ZipArchive();
         $res           = $classZip->open($strFile, \ZipArchive::RDONLY);
-        if ($res === true) {
-            $intFilesArchived = $classZip->numFiles;
-            for ($intArchivedFile = 0; $intArchivedFile < $intFilesArchived; $intArchivedFile++) {
-                $strArchivedFile = $classZip->getNameIndex($intArchivedFile);
-                $strFileStats    = $classZip->statIndex($intArchivedFile);
-                $matches         = [];
-                preg_match('/^[0-9]{5,20}\.xml$/', $strArchivedFile, $matches, PREG_OFFSET_CAPTURE);
-                $matches2        = [];
-                preg_match('/^semnatura_[0-9]{5,20}\.xml$/', $strArchivedFile, $matches2, PREG_OFFSET_CAPTURE);
-                if ($matches !== []) {
-                    $resInvoice        = $classZip->getStream($strArchivedFile);
-                    $strInvoiceContent = stream_get_contents($resInvoice);
-                    fclose($resInvoice);
-                    $arrayToReturn     = $this->setStandardizedFeedbackArray([
-                        'Response_Index'      => pathinfo($strFile)['filename'],
-                        'Size'                => $strFileStats['size'],
-                        'FileDate'            => date('Y-m-d H:i:s', $strFileStats['mtime']),
-                        'Matches'             => $matches,
-                        'strArchivedFileName' => $strArchivedFile,
-                        'strInvoiceContent'   => $strInvoiceContent,
-                    ]);
-                } elseif ($matches2 === []) {
-                    echo vsprintf('<div>' . $this->arrayConfiguration['Feedback']['DifferentFile'] . '</div>', [
-                        $strArchivedFile,
-                        $strFile->getBasename(),
-                    ]);
-                }
-            }
+        if ($res) {
+            $arrayToReturn = $this->handleArchiveContent($classZip);
         } else {
             // @codeCoverageIgnoreStart
             $arrayToReturn = $this->setStandardizedFeedbackArray([
-                'Response_Index'   => pathinfo($strFile)['filename'],
-                'NotOpeningReason' => $this->translation->find(null, 'i18n_Msg_InvalidZip')->getTranslation(),
+                'Response_Index' => pathinfo($strFile)['filename'],
+                'Error'          => $this->translation->find(null, 'i18n_Msg_InvalidZip')->getTranslation(),
             ]);
             // @codeCoverageIgnoreEnd
         }
@@ -163,20 +193,26 @@ trait TraitUserInterfaceLogic
             'Error'           => '',
             'Days_Between'    => '',
         ];
-        if ($arrayData['Size'] > 1000) {
+        $strErrorTag   = '<div style="max-width:200px;font-size:0.8rem;">%s</div>';
+        if (array_key_exists('Error', $arrayData)) {
+            $arrayToReturn['Error'] = sprintf($strErrorTag, $arrayData['Error']);
+            $arrayToReturn['Size']  = 0;
+        } elseif ($arrayData['Size'] > 1000) {
+            $strTimeZone                      = $this->translation->find(null, 'i18n_TimeZone')->getTranslation();
+            $strFormatter                     = new \IntlDateFormatter(
+                $_GET['language_COUNTRY'],
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                $strTimeZone,
+                \IntlDateFormatter::GREGORIAN,
+                'r-MM__MMMM'
+            );
             $arrayAttr                        = $this->getDocumentDetails($arrayData);
             $arrayToReturn['Loading_Index']   = substr($arrayData['Matches'][0][0], 0, -4);
             $arrayToReturn['Size']            = $arrayData['Size'];
             $arrayToReturn['Document_No']     = $arrayAttr['ID'];
             $arrayToReturn['Issue_Date']      = $arrayAttr['IssueDate'];
-            $arrayToReturn['Issue_YearMonth'] = (new \IntlDateFormatter(
-                    $_GET['language_COUNTRY'],
-                    \IntlDateFormatter::FULL,
-                    \IntlDateFormatter::FULL,
-                    $this->translation->find(null, 'i18n_TimeZone')->getTranslation(),
-                    \IntlDateFormatter::GREGORIAN,
-                    'r-MM__MMMM'
-                ))->format(new \DateTime($arrayAttr['IssueDate']));
+            $arrayToReturn['Issue_YearMonth'] = $strFormatter->format(new \DateTime($arrayAttr['IssueDate']));
             $arrayToReturn['Response_Date']   = $arrayData['FileDate'];
             $arrayToReturn['Amount_wo_VAT']   = $arrayAttr['wo_VAT'];
             $arrayToReturn['Amount_TOTAL']    = $arrayAttr['TOTAL'];
@@ -194,8 +230,8 @@ trait TraitUserInterfaceLogic
             $arrayToReturn['Response_Date'] = $arrayData['FileDate'];
             $arrayToReturn['Supplier_CUI']  = 'RO' . $objErrors->attributes()->Cif_emitent->__toString();
             $arrayToReturn['Supplier_Name'] = '??????????';
-            $arrayToReturn['Error']         = '<div style="max-width:200px;font-size:0.8rem;">'
-                . $objErrors->Error->attributes()->errorMessage->__toString() . '</div>';
+            $arrayToReturn['Error']         = sprintf($strErrorTag, $objErrors
+                ->Error->attributes()->errorMessage->__toString());
         }
         return $arrayToReturn;
     }
