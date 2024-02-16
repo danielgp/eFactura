@@ -19,6 +19,7 @@ trait TraitUserInterfaceLogic
     use \danielgp\io_operations\InputOutputFiles;
 
     protected array $arrayConfiguration;
+    protected $translation;
 
     protected function getConfiguration()
     {
@@ -128,6 +129,16 @@ trait TraitUserInterfaceLogic
         $target   = new \DateTimeImmutable($strLaterDate);
         $interval = $origin->diff($target);
         return $interval->format('%R%a');
+    }
+
+    private function setLocalization(): void
+    {
+        if (!array_key_exists('language_COUNTRY', $_GET)) {
+            $_GET['language_COUNTRY'] = 'ro_RO';
+        }
+        $loader            = new \Gettext\Loader\PoLoader();
+        $this->translation = $loader->loadFile(__DIR__ . '/locale/' . $_GET['language_COUNTRY']
+            . '/LC_MESSAGES/eFactura.po');
     }
 
     private function setStandardizedFeedbackArray(array $arrayData): array

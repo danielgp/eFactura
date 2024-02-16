@@ -16,10 +16,10 @@ namespace danielgp\efactura;
 
 class ClassElectronicInvoiceUserInterface
 {
+
     use \danielgp\efactura\TraitUserInterfaceLogic;
 
     private \SebastianBergmann\Timer\Timer $classTimer;
-    private $translation;
 
     public function __construct()
     {
@@ -169,16 +169,6 @@ class ClassElectronicInvoiceUserInterface
             . '<td>' . $intLineNo . '</td>'
             . implode('', $arrayContent)
             . '</tr>';
-    }
-
-    private function setLocalization(): void
-    {
-        if (!array_key_exists('language_COUNTRY', $_GET)) {
-            $_GET['language_COUNTRY'] = 'ro_RO';
-        }
-        $loader            = new \Gettext\Loader\PoLoader();
-        $this->translation = $loader->loadFile(__DIR__ . '/locale/' . $_GET['language_COUNTRY']
-            . '/LC_MESSAGES/eFactura.po');
     }
 
     private function setNumbers(float $floatNumber, int $intMinDigits, int $intMaxDigits): string
