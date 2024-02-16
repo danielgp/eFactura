@@ -89,10 +89,9 @@ trait TraitUserInterfaceLogic
         return $arrayToReturn;
     }
 
-    private function handleArchiveContent(\ZipArchive $classZip, string $strFile): array
+    private function handleArchiveContent(\ZipArchive $classZip, int $intFilesArchived, string $strFile): array
     {
-        $arrayToReturn    = [];
-        $intFilesArchived = $classZip->numFiles;
+        $arrayToReturn = [];
         for ($intArchivedFile = 0; $intArchivedFile < $intFilesArchived; $intArchivedFile++) {
             $strArchivedFile = $classZip->getNameIndex($intArchivedFile);
             $matches         = [];
@@ -128,7 +127,8 @@ trait TraitUserInterfaceLogic
         $classZip      = new \ZipArchive();
         $res           = $classZip->open($strFile, \ZipArchive::RDONLY);
         if ($res) {
-            $arrayToReturn = $this->handleArchiveContent($classZip, $strFile);
+            $intFilesArchived = $classZip->numFiles;
+            $arrayToReturn    = $this->handleArchiveContent($classZip, $intFilesArchived, $strFile);
         } else {
             // @codeCoverageIgnoreStart
             $arrayToReturn = $this->setStandardizedFeedbackArray([
