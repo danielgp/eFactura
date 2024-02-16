@@ -162,21 +162,11 @@ trait TraitUserInterfaceLogic
         return $interval->format('%R%a');
     }
 
-    private function setLocalization(): void
+    private function setDefaultsToInvoiceDetailsArray(string $strResponseIndex): array
     {
-        if (!array_key_exists('language_COUNTRY', $_GET)) {
-            $_GET['language_COUNTRY'] = 'ro_RO';
-        }
-        $loader            = new \Gettext\Loader\PoLoader();
-        $this->translation = $loader->loadFile(__DIR__ . '/locale/' . $_GET['language_COUNTRY']
-            . '/LC_MESSAGES/eFactura.po');
-    }
-
-    private function setStandardizedFeedbackArray(array $arrayData): array
-    {
-        $arrayToReturn = [
+        return [
             'Response_Date'   => '',
-            'Response_Index'  => $arrayData['Response_Index'],
+            'Response_Index'  => $strResponseIndex,
             'Loading_Index'   => '',
             'Size'            => '',
             'Document_No'     => '',
@@ -193,6 +183,39 @@ trait TraitUserInterfaceLogic
             'Error'           => '',
             'Days_Between'    => '',
         ];
+    }
+
+    private function setErrorsFromExtendedMarkupLaguage(array $arrayData, string $strErrorTag): array
+    {
+        $arrayErrors = [];
+        $parser      = xml_parser_create();
+        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+        xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+        xml_parse_into_struct($parser, $arrayData['strInvoiceContent'], $arrayErrors);
+        xml_parser_free($parser);
+        return [
+            'Loading_Index' => $arrayErrors[0]['attributes']['Index_incarcare'],
+            'Size'          => $arrayData['Size'],
+            'Response_Date' => $arrayData['FileDate'],
+            'Supplier_CUI'  => 'RO' . $arrayErrors[0]['attributes']['Cif_emitent'],
+            'Supplier_Name' => '??????????',
+            'Error'         => sprintf($strErrorTag, $arrayErrors[1]['attributes']['errorMessage']),
+        ];
+    }
+
+    private function setLocalization(): void
+    {
+        if (!array_key_exists('language_COUNTRY', $_GET)) {
+            $_GET['language_COUNTRY'] = 'ro_RO';
+        }
+        $loader            = new \Gettext\Loader\PoLoader();
+        $this->translation = $loader->loadFile(__DIR__ . '/locale/' . $_GET['language_COUNTRY']
+            . '/LC_MESSAGES/eFactura.po');
+    }
+
+    private function setStandardizedFeedbackArray(array $arrayData): array
+    {
+        $arrayToReturn = $this->setDefaultsToInvoiceDetailsArray($arrayData['Response_Index']);
         $strErrorTag   = '<div style="max-width:200px;font-size:0.8rem;">%s</div>';
         if (array_key_exists('Error', $arrayData)) {
             $arrayToReturn['Error'] = sprintf($strErrorTag, $arrayData['Error']);
@@ -227,16 +250,7 @@ trait TraitUserInterfaceLogic
             ];
             $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
         } elseif ($arrayData['Size'] > 0) {
-            $objErrors     = new \SimpleXMLElement($arrayData['strInvoiceContent']);
-            $arrayTemp     = [
-                'Loading_Index' => $objErrors->attributes()->Index_incarcare->__toString(),
-                'Size'          => $arrayData['Size'],
-                'Response_Date' => $arrayData['FileDate'],
-                'Supplier_CUI'  => 'RO' . $objErrors->attributes()->Cif_emitent->__toString(),
-                'Supplier_Name' => '??????????',
-                'Error'         => sprintf($strErrorTag, $objErrors
-                    ->Error->attributes()->errorMessage->__toString()),
-            ];
+            $arrayTemp     = $this->setErrorsFromExtendedMarkupLaguage($arrayData, $strErrorTag);
             $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
         }
         return $arrayToReturn;
