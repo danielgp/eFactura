@@ -28,17 +28,16 @@ trait TraitUserInterfaceLogic
     }
 
     /**
-     * Archived document interpretation requires a temporary files to be stored
-     * and upon processing file is removed immediately
+     * Archived document is read as content in memory since 2024-02-16
+     * (prior to this date a temporary local file was saved, processed and finally removed when done with it)
      *
      * @param array $arrayData
      * @return array
      */
     private function getDocumentDetails(array $arrayData): array
     {
-        file_put_contents($arrayData['strArchivedFileName'], $arrayData['strInvoiceContent']);
         $appR               = new \danielgp\efactura\ClassElectronicInvoiceRead();
-        $arrayElectronicInv = $appR->readElectronicInvoice($arrayData['strArchivedFileName']);
+        $arrayElectronicInv = $appR->readElectronicInvoice($arrayData['strInvoiceContent']);
         $arrayBasic         = $arrayElectronicInv['Header']['CommonBasicComponents-2'];
         $arrayAggregate     = $arrayElectronicInv['Header']['CommonAggregateComponents-2'];
         $arrayStandardized  = [
@@ -50,7 +49,6 @@ trait TraitUserInterfaceLogic
             'TOTAL'       => (float) $arrayAggregate['LegalMonetaryTotal']['TaxInclusiveAmount']['value'],
             'wo_VAT'      => (float) $arrayAggregate['LegalMonetaryTotal']['TaxExclusiveAmount']['value'],
         ];
-        unlink($arrayData['strArchivedFileName']);
         return $arrayStandardized;
     }
 

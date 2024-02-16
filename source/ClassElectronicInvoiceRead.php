@@ -16,6 +16,7 @@ namespace danielgp\efactura;
 
 class ClassElectronicInvoiceRead
 {
+
     use TraitBasic;
     use TraitTax;
     use TraitLines;
@@ -91,7 +92,7 @@ class ClassElectronicInvoiceRead
         return $arrayDocument;
     }
 
-    private function getHeaderComponents(array $arrayParams, string $key, string $value): array | string
+    private function getHeaderComponents(array $arrayParams, string $key, string $value): array|string
     {
         $arrayDocument = [];
         if ($value === 'SingleCompany') {
@@ -126,7 +127,9 @@ class ClassElectronicInvoiceRead
     {
         $this->getProcessingDetails();
         $this->getHierarchyTagOrder();
-        $objFile                 = new \SimpleXMLElement($strFile, null, true);
+        $flags                   = LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_NOERROR;
+        $bolIsLocal              = is_file($strFile);
+        $objFile                 = new \SimpleXMLElement($strFile, $flags, $bolIsLocal);
         $arrayDocument           = $this->getDocumentRoot($objFile);
         $arrayBasics             = $this->getElementsOrdered([
             'data'          => $objFile->children('cbc', true),
