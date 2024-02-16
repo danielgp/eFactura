@@ -72,5 +72,8 @@ msgstr ""
 msgid "i18n_Msg_NoZip"
 msgstr ""
 
+msgid "i18n_Msg_InvalidZip"
+msgstr ""
+
 msgid "i18n_TimeZone"
 msgstr ""

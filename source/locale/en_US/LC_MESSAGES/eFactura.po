@@ -73,5 +73,8 @@ msgstr "Supplier Name"
 msgid "i18n_Msg_NoZip"
 msgstr "Unfortunately there are no zip archives within given folder (%s)..."
 
+msgid "i18n_Msg_InvalidZip"
+msgstr "Invalid archive (could not be opened)"
+
 msgid "i18n_TimeZone"
 msgstr "America/Chicago"

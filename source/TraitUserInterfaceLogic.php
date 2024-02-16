@@ -103,7 +103,10 @@ trait TraitUserInterfaceLogic
             }
         } else {
             // @codeCoverageIgnoreStart
-            throw new \RuntimeException(sprintf('Archive %s could not be opened!', $strFile));
+            $arrayToReturn = $this->setStandardizedFeedbackArray([
+                'Response_Index'   => pathinfo($strFile)['filename'],
+                'NotOpeningReason' => $this->translation->find(null, 'i18n_Msg_InvalidZip')->getTranslation(),
+            ]);
             // @codeCoverageIgnoreEnd
         }
         return $arrayToReturn;

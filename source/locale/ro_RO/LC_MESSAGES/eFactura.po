@@ -74,5 +74,8 @@ msgstr "Nume furnizor"
 msgid "i18n_Msg_NoZip"
 msgstr "Din păcate nu există arhive zip în dosarul specificat (%s)..."
 
+msgid "i18n_Msg_InvalidZip"
+msgstr "Arhivă invalidă (nu a putut fi deschisă)"
+
 msgid "i18n_TimeZone"
 msgstr "Europe/Bucharest"
