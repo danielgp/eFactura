@@ -16,7 +16,6 @@ namespace danielgp\efactura;
 
 trait TraitUserInterfaceLogic
 {
-
     use \danielgp\io_operations\InputOutputFiles;
 
     protected array $arrayConfiguration;
@@ -70,7 +69,7 @@ trait TraitUserInterfaceLogic
         return $arrayStandardized;
     }
 
-    private function handleResponseFile(\SplFileInfo|string $strFile): array
+    private function handleResponseFile(\SplFileInfo | string $strFile): array
     {
         $arrayToReturn = [];
         $strFileMime   = mime_content_type($strFile->getRealPath());
@@ -79,20 +78,21 @@ trait TraitUserInterfaceLogic
                 $arrayError    = $this->getArrayFromJsonFile($strFile->getPath(), $strFile->getFilename());
                 $arrayToReturn = $this->setStandardizedFeedbackArray([
                     'Error'          => $arrayError['eroare'] . ' ===> ' . $arrayError['titlu'],
-                    'Response_Index' => pathinfo($strFile)['filename'],
+                    'Response_Index' => $strFile->getFilename(),
+                    'Response_Size'  => $strFile->getSize(),
                 ]);
                 break;
             case 'application/zip':
-                $arrayToReturn = $this->setArchiveFromAnaf($strFile->getRealPath());
+                $arrayToReturn = $this->setArchiveFromAnaf($strFile->getRealPath(), $strFile->getSize());
                 break;
         }
         return $arrayToReturn;
     }
 
-    private function handleArchiveContent(\ZipArchive $classZip, int $intFilesArchived, string $strFile): array
+    private function handleArchiveContent(\ZipArchive $classZip, array $arrayArchiveParam): array
     {
         $arrayToReturn = [];
-        for ($intArchivedFile = 0; $intArchivedFile < $intFilesArchived; $intArchivedFile++) {
+        for ($intArchivedFile = 0; $intArchivedFile < $arrayArchiveParam['No_of_Files']; $intArchivedFile++) {
             $strArchivedFile = $classZip->getNameIndex($intArchivedFile);
             $matches         = [];
             preg_match('/^[0-9]{5,20}\.xml$/', $strArchivedFile, $matches, PREG_OFFSET_CAPTURE);
@@ -104,12 +104,13 @@ trait TraitUserInterfaceLogic
                 fclose($resInvoice);
                 $strFileStats      = $classZip->statIndex($intArchivedFile);
                 $arrayToReturn     = $this->setStandardizedFeedbackArray([
-                    'Response_Index'      => pathinfo($strFile)['filename'],
+                    'Response_Index'      => pathinfo($arrayArchiveParam['FileName'])['filename'],
                     'Size'                => $strFileStats['size'],
                     'FileDate'            => date('Y-m-d H:i:s', $strFileStats['mtime']),
                     'Matches'             => $matches,
                     'strArchivedFileName' => $strArchivedFile,
                     'strInvoiceContent'   => $strInvoiceContent,
+                    'Response_Size'       => $arrayArchiveParam['Response_Size'],
                 ]);
             } elseif ($matches2 === []) {
                 echo vsprintf('<div>' . $this->arrayConfiguration['Feedback']['DifferentFile'] . '</div>', [
@@ -121,19 +122,24 @@ trait TraitUserInterfaceLogic
         return $arrayToReturn;
     }
 
-    private function setArchiveFromAnaf(string $strFile)
+    private function setArchiveFromAnaf(string $strFile, int $intFileSize)
     {
         $arrayToReturn = [];
         $classZip      = new \ZipArchive();
         $res           = $classZip->open($strFile, \ZipArchive::RDONLY);
         if ($res) {
             $intFilesArchived = $classZip->numFiles;
-            $arrayToReturn    = $this->handleArchiveContent($classZip, $intFilesArchived, $strFile);
+            $arrayToReturn    = $this->handleArchiveContent($classZip, [
+                'No_of_Files'   => $intFilesArchived,
+                'FileName'      => $strFile,
+                'Response_Size' => $intFileSize,
+            ]);
         } else {
             // @codeCoverageIgnoreStart
             $arrayToReturn = $this->setStandardizedFeedbackArray([
                 'Response_Index' => pathinfo($strFile)['filename'],
                 'Error'          => $this->translation->find(null, 'i18n_Msg_InvalidZip')->getTranslation(),
+                'Response_Size'  => 0,
             ]);
             // @codeCoverageIgnoreEnd
         }
@@ -162,11 +168,12 @@ trait TraitUserInterfaceLogic
         return $interval->format('%R%a');
     }
 
-    private function setDefaultsToInvoiceDetailsArray(string $strResponseIndex): array
+    private function setDefaultsToInvoiceDetailsArray(array $arrayData): array
     {
         return [
             'Response_Date'   => '',
-            'Response_Index'  => $strResponseIndex,
+            'Response_Index'  => $arrayData['Response_Index'],
+            'Response_Size'   => $arrayData['Response_Size'],
             'Loading_Index'   => '',
             'Size'            => '',
             'Document_No'     => '',
@@ -215,7 +222,7 @@ trait TraitUserInterfaceLogic
 
     private function setStandardizedFeedbackArray(array $arrayData): array
     {
-        $arrayToReturn = $this->setDefaultsToInvoiceDetailsArray($arrayData['Response_Index']);
+        $arrayToReturn = $this->setDefaultsToInvoiceDetailsArray($arrayData);
         $strErrorTag   = '<div style="max-width:200px;font-size:0.8rem;">%s</div>';
         if (array_key_exists('Error', $arrayData)) {
             $arrayToReturn['Error'] = sprintf($strErrorTag, $arrayData['Error']);

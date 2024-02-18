@@ -16,7 +16,6 @@ namespace danielgp\efactura;
 
 class ClassElectronicInvoiceUserInterface
 {
-
     use \danielgp\efactura\TraitUserInterfaceLogic;
 
     private \SebastianBergmann\Timer\Timer $classTimer;
@@ -31,17 +30,21 @@ class ClassElectronicInvoiceUserInterface
 
     private function getButtonForLocalisation(string $strLanguageCountry): string
     {
-        $arrayMapFlags = [
+        $arrayMapFlags  = [
             'ro_RO' => 'ro',
             'it_IT' => 'it',
             'en_US' => 'us',
         ];
+        $arrayFlagSizes = ['20px', '15px'];
+        if ($strLanguageCountry === $_GET['language_COUNTRY']) {
+            $arrayFlagSizes = ['40px', '30px'];
+        }
         return vsprintf('<a href="?language_COUNTRY=%s" style="float:left;margin-left:10px;">'
             . '<span class="fi fi-%s" style="%s">&nbsp;</span>'
             . '</a>', [
             $strLanguageCountry . (array_key_exists('action', $_GET) ? '&action=' . $_GET['action'] : ''),
             $arrayMapFlags[$strLanguageCountry],
-            ($strLanguageCountry === $_GET['language_COUNTRY'] ? 'width:40px;height:30px;' : 'width:20px;height:15px;'),
+            vsprintf('width:%s;height:%s;', $arrayFlagSizes),
         ]);
     }
 
@@ -80,13 +83,17 @@ class ClassElectronicInvoiceUserInterface
     public function setActionToDo(): void
     {
         echo '<main>';
-        $arrayOptions = [
-            'action' => FILTER_SANITIZE_SPECIAL_CHARS,
-        ];
-        $arrayInputs  = filter_input_array(INPUT_GET, $arrayOptions);
-        if (array_key_exists('action', $arrayInputs)) {
+        if (is_array($_GET) && array_key_exists('action', $_GET)) {
+            $arrayOptions = [
+                'action' => FILTER_SANITIZE_SPECIAL_CHARS,
+            ];
+            $arrayInputs  = filter_input_array(INPUT_GET, $arrayOptions, true);
             switch ($arrayInputs['action']) {
                 case 'AnalyzeZIPfromANAFfromLocalFolder':
+                    echo '<div class="tabber" id="tabStandard">'
+                    . '<div class="tabbertab" id="tab1" title="Filters">';
+                    echo '</div><!-- tab1 -->';
+                    echo '<div class="tabbertab" id="tab2" title="Lista">';
                     $strRelevantFolder = 'P:/eFactura_Responses/Luna_Anterioara_NeDeclarata_Inca/';
                     $arrayInvoices     = $this->actionAnalyzeZIPfromANAFfromLocalFolder($strRelevantFolder);
                     if (count($arrayInvoices) === 0) {
@@ -96,6 +103,8 @@ class ClassElectronicInvoiceUserInterface
                     } else {
                         echo $this->setHtmlTable($arrayInvoices);
                     }
+                    echo '</div><!-- tab2 -->'
+                    . '</div><!-- tabStandard -->';
                     break;
             }
         }
@@ -159,7 +168,7 @@ class ClassElectronicInvoiceUserInterface
         foreach ($arrayLine as $strColumn => $strValue) {
             if (str_starts_with($strColumn, 'Amount_')) {
                 $arrayContent[] = sprintf('<td style="text-align:right;">%s</td>', $this->setNumbers($strValue, 2, 2));
-            } elseif (str_starts_with($strColumn, 'Size')) {
+            } elseif (in_array($strColumn, ['No_of_Lines', 'Response_Size', 'Size'])) {
                 $arrayContent[] = sprintf('<td style="text-align:right;">%s</td>', $this->setNumbers($strValue, 0, 0));
             } else {
                 $arrayContent[] = sprintf('<td>%s</td>', $strValue);

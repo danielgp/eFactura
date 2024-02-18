@@ -61,6 +61,9 @@ msgstr "Response Timestamp"
 msgid "i18n_Clmn_Response_Index"
 msgstr "Response Index"
 
+msgid "i18n_Clmn_Response_Size"
+msgstr "Response size [bytes]"
+
 msgid "i18n_Clmn_Size"
 msgstr "Size [bytes]"
 

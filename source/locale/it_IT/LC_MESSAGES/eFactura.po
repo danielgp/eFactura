@@ -61,6 +61,9 @@ msgstr "Data di rilascio"
 msgid "i18n_Clmn_Response_Index"
 msgstr "Indice di rilascio"
 
+msgid "i18n_Clmn_Response_Size"
+msgstr "Dimensione rilascio [bytes]"
+
 msgid "i18n_Clmn_Size"
 msgstr "Dimensione [bytes]"
 

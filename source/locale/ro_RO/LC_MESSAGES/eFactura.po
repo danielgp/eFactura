@@ -62,6 +62,9 @@ msgstr "Dată și timp răspuns"
 msgid "i18n_Clmn_Response_Index"
 msgstr "Index răspuns"
 
+msgid "i18n_Clmn_Response_Size"
+msgstr "Dimens. răspuns [bytes]"
+
 msgid "i18n_Clmn_Size"
 msgstr "Dimensiune [bytes]"
 

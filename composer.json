@@ -30,7 +30,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.2.15"
+            "php": "8.2.16"
         },
         "optimize-autoloader": true,
         "sort-packages": true

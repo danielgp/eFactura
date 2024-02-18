@@ -60,6 +60,9 @@ msgstr ""
 msgid "i18n_Clmn_Response_Index"
 msgstr ""
 
+msgid "i18n_Clmn_Response_Size"
+msgstr ""
+
 msgid "i18n_Clmn_Size"
 msgstr ""
 
