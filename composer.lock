@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "deb94dbb58d7d59f5f67b1a9af160f63",
+    "content-hash": "f1e05262a1aff21cb7dd87e8498063b4",
     "packages": [
         {
             "name": "danielgp/io-operations",
@@ -1983,7 +1983,7 @@
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "8.2.15"
+        "php": "8.2.16"
     },
     "plugin-api-version": "2.6.0"
 }
