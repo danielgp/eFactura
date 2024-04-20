@@ -54,7 +54,7 @@ msgstr ""
 msgid "i18n_Clmn_No_of_Lines"
 msgstr ""
 
-msgid "i18n_Clmn_Response_Date"
+msgid "i18n_Clmn_Response_DateTime"
 msgstr ""
 
 msgid "i18n_Clmn_Response_Index"

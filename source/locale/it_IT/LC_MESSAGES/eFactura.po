@@ -55,8 +55,8 @@ msgstr "Indice di caricamento"
 msgid "i18n_Clmn_No_of_Lines"
 msgstr "Numero di righe"
 
-msgid "i18n_Clmn_Response_Date"
-msgstr "Data di rilascio"
+msgid "i18n_Clmn_Response_DateTime"
+msgstr "Data e ora di rilascio"
 
 msgid "i18n_Clmn_Response_Index"
 msgstr "Indice di rilascio"

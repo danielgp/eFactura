@@ -55,7 +55,7 @@ msgstr "Loading Index"
 msgid "i18n_Clmn_No_of_Lines"
 msgstr "No. of Lines"
 
-msgid "i18n_Clmn_Response_Date"
+msgid "i18n_Clmn_Response_DateTime"
 msgstr "Response Timestamp"
 
 msgid "i18n_Clmn_Response_Index"

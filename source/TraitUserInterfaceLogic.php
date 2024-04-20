@@ -106,7 +106,7 @@ trait TraitUserInterfaceLogic
                 $arrayToReturn     = $this->setStandardizedFeedbackArray([
                     'Response_Index'      => pathinfo($arrayArchiveParam['FileName'])['filename'],
                     'Size'                => $strFileStats['size'],
-                    'FileDate'            => date('Y-m-d H:i:s', $strFileStats['mtime']),
+                    'FileDateTime'        => date('Y-m-d H:i:s', $strFileStats['mtime']),
                     'Matches'             => $matches,
                     'strArchivedFileName' => $strArchivedFile,
                     'strInvoiceContent'   => $strInvoiceContent,
@@ -171,7 +171,7 @@ trait TraitUserInterfaceLogic
     private function setDefaultsToInvoiceDetailsArray(array $arrayData): array
     {
         return [
-            'Response_Date'   => '',
+            'Response_DateTime'    => '',
             'Response_Index'  => $arrayData['Response_Index'],
             'Response_Size'   => $arrayData['Response_Size'],
             'Loading_Index'   => '',
@@ -203,7 +203,7 @@ trait TraitUserInterfaceLogic
         return [
             'Loading_Index' => $arrayErrors[0]['attributes']['Index_incarcare'],
             'Size'          => $arrayData['Size'],
-            'Response_Date' => $arrayData['FileDate'],
+            'Response_DateTime' => $arrayData['FileDateTime'],
             'Supplier_CUI'  => 'RO' . $arrayErrors[0]['attributes']['Cif_emitent'],
             'Supplier_Name' => '??????????',
             'Error'         => sprintf($strErrorTag, $arrayErrors[1]['attributes']['errorMessage']),
@@ -244,7 +244,7 @@ trait TraitUserInterfaceLogic
                 'Document_No'     => $arrayAttr['ID'],
                 'Issue_Date'      => $arrayAttr['IssueDate'],
                 'Issue_YearMonth' => $strFormatter->format(new \DateTime($arrayAttr['IssueDate'])),
-                'Response_Date'   => $arrayData['FileDate'],
+                'Response_DateTime'    => $arrayData['FileDateTime'],
                 'Amount_wo_VAT'   => $arrayAttr['wo_VAT'],
                 'Amount_TOTAL'    => $arrayAttr['TOTAL'],
                 'Amount_VAT'      => round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2),
@@ -253,7 +253,7 @@ trait TraitUserInterfaceLogic
                 'Customer_CUI'    => $this->setDataSupplierOrCustomer($arrayAttr['Customer']),
                 'Customer_Name'   => $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
                 'No_of_Lines'     => $arrayAttr['No_of_Lines'],
-                'Days_Between'    => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDate']),
+                'Days_Between'         => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDateTime']),
             ];
             $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
         } elseif ($arrayData['Size'] > 0) {

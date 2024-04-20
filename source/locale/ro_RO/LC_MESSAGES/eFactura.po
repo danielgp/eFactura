@@ -56,7 +56,7 @@ msgstr "Index încărcare"
 msgid "i18n_Clmn_No_of_Lines"
 msgstr "Nr. linii"
 
-msgid "i18n_Clmn_Response_Date"
+msgid "i18n_Clmn_Response_DateTime"
 msgstr "Dată și timp răspuns"
 
 msgid "i18n_Clmn_Response_Index"
