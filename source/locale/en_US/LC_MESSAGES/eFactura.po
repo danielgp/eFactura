@@ -40,6 +40,9 @@ msgstr "Days issue-response"
 msgid "i18n_Clmn_Document_No"
 msgstr "Document ID"
 
+msgid "i18n_Clmn_DocumentCurrencyCode"
+msgstr "Document Currency Code"
+
 msgid "i18n_Clmn_Error"
 msgstr "Error"
 

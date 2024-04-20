@@ -40,6 +40,9 @@ msgstr "Giorni tra emissione e risposta"
 msgid "i18n_Clmn_Document_No"
 msgstr "Numero del documento"
 
+msgid "i18n_Clmn_DocumentCurrencyCode"
+msgstr "Codice valuta del documento"
+
 msgid "i18n_Clmn_Error"
 msgstr "Errore"
 

@@ -16,6 +16,7 @@ namespace danielgp\efactura;
 
 trait TraitUserInterfaceLogic
 {
+
     use \danielgp\io_operations\InputOutputFiles;
 
     protected array $arrayConfiguration;
@@ -58,18 +59,19 @@ trait TraitUserInterfaceLogic
         $arrayBasic         = $arrayElectronicInv['Header']['CommonBasicComponents-2'];
         $arrayAggregate     = $arrayElectronicInv['Header']['CommonAggregateComponents-2'];
         $arrayStandardized  = [
-            'Customer'    => $arrayAggregate['AccountingCustomerParty']['Party'],
-            'ID'          => $arrayBasic['ID'],
-            'IssueDate'   => $arrayBasic['IssueDate'],
-            'No_of_Lines' => count($arrayElectronicInv['Lines']),
-            'Supplier'    => $arrayAggregate['AccountingSupplierParty']['Party'],
-            'TOTAL'       => (float) $arrayAggregate['LegalMonetaryTotal']['TaxInclusiveAmount']['value'],
-            'wo_VAT'      => (float) $arrayAggregate['LegalMonetaryTotal']['TaxExclusiveAmount']['value'],
+            'Customer'             => $arrayAggregate['AccountingCustomerParty']['Party'],
+            'ID'                   => $arrayBasic['ID'],
+            'IssueDate'            => $arrayBasic['IssueDate'],
+            'DocumentCurrencyCode' => $arrayBasic['DocumentCurrencyCode'],
+            'No_of_Lines'          => count($arrayElectronicInv['Lines']),
+            'Supplier'             => $arrayAggregate['AccountingSupplierParty']['Party'],
+            'TOTAL'                => (float) $arrayAggregate['LegalMonetaryTotal']['TaxInclusiveAmount']['value'],
+            'wo_VAT'               => (float) $arrayAggregate['LegalMonetaryTotal']['TaxExclusiveAmount']['value'],
         ];
         return $arrayStandardized;
     }
 
-    private function handleResponseFile(\SplFileInfo | string $strFile): array
+    private function handleResponseFile(\SplFileInfo|string $strFile): array
     {
         $arrayToReturn = [];
         $strFileMime   = mime_content_type($strFile->getRealPath());
@@ -172,23 +174,24 @@ trait TraitUserInterfaceLogic
     {
         return [
             'Response_DateTime'    => '',
-            'Response_Index'  => $arrayData['Response_Index'],
-            'Response_Size'   => $arrayData['Response_Size'],
-            'Loading_Index'   => '',
-            'Size'            => '',
-            'Document_No'     => '',
-            'Issue_Date'      => '',
-            'Issue_YearMonth' => '',
-            'Amount_wo_VAT'   => '',
-            'Amount_TOTAL'    => '',
-            'Amount_VAT'      => '',
-            'Supplier_CUI'    => '',
-            'Supplier_Name'   => '',
-            'Customer_CUI'    => '',
-            'Customer_Name'   => '',
-            'No_of_Lines'     => '',
-            'Error'           => '',
-            'Days_Between'    => '',
+            'Response_Index'       => $arrayData['Response_Index'],
+            'Response_Size'        => $arrayData['Response_Size'],
+            'Loading_Index'        => '',
+            'Size'                 => '',
+            'Document_No'          => '',
+            'Issue_Date'           => '',
+            'Issue_YearMonth'      => '',
+            'DocumentCurrencyCode' => '',
+            'Amount_wo_VAT'        => '',
+            'Amount_TOTAL'         => '',
+            'Amount_VAT'           => '',
+            'Supplier_CUI'         => '',
+            'Supplier_Name'        => '',
+            'Customer_CUI'         => '',
+            'Customer_Name'        => '',
+            'No_of_Lines'          => '',
+            'Error'                => '',
+            'Days_Between'         => '',
         ];
     }
 
@@ -201,12 +204,12 @@ trait TraitUserInterfaceLogic
         xml_parse_into_struct($parser, $arrayData['strInvoiceContent'], $arrayErrors);
         xml_parser_free($parser);
         return [
-            'Loading_Index' => $arrayErrors[0]['attributes']['Index_incarcare'],
-            'Size'          => $arrayData['Size'],
+            'Loading_Index'     => $arrayErrors[0]['attributes']['Index_incarcare'],
+            'Size'              => $arrayData['Size'],
             'Response_DateTime' => $arrayData['FileDateTime'],
-            'Supplier_CUI'  => 'RO' . $arrayErrors[0]['attributes']['Cif_emitent'],
-            'Supplier_Name' => '??????????',
-            'Error'         => sprintf($strErrorTag, $arrayErrors[1]['attributes']['errorMessage']),
+            'Supplier_CUI'      => 'RO' . $arrayErrors[0]['attributes']['Cif_emitent'],
+            'Supplier_Name'     => '??????????',
+            'Error'             => sprintf($strErrorTag, $arrayErrors[1]['attributes']['errorMessage']),
         ];
     }
 
@@ -239,20 +242,21 @@ trait TraitUserInterfaceLogic
             );
             $arrayAttr     = $this->getDocumentDetails($arrayData);
             $arrayTemp     = [
-                'Loading_Index'   => substr($arrayData['Matches'][0][0], 0, -4),
-                'Size'            => $arrayData['Size'],
-                'Document_No'     => $arrayAttr['ID'],
-                'Issue_Date'      => $arrayAttr['IssueDate'],
-                'Issue_YearMonth' => $strFormatter->format(new \DateTime($arrayAttr['IssueDate'])),
+                'Loading_Index'        => substr($arrayData['Matches'][0][0], 0, -4),
+                'Size'                 => $arrayData['Size'],
+                'Document_No'          => $arrayAttr['ID'],
+                'Issue_Date'           => $arrayAttr['IssueDate'],
+                'Issue_YearMonth'      => $strFormatter->format(new \DateTime($arrayAttr['IssueDate'])),
                 'Response_DateTime'    => $arrayData['FileDateTime'],
-                'Amount_wo_VAT'   => $arrayAttr['wo_VAT'],
-                'Amount_TOTAL'    => $arrayAttr['TOTAL'],
-                'Amount_VAT'      => round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2),
-                'Supplier_CUI'    => $this->setDataSupplierOrCustomer($arrayAttr['Supplier']),
-                'Supplier_Name'   => $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'],
-                'Customer_CUI'    => $this->setDataSupplierOrCustomer($arrayAttr['Customer']),
-                'Customer_Name'   => $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
-                'No_of_Lines'     => $arrayAttr['No_of_Lines'],
+                'DocumentCurrencyCode' => $arrayAttr['DocumentCurrencyCode'],
+                'Amount_wo_VAT'        => $arrayAttr['wo_VAT'],
+                'Amount_TOTAL'         => $arrayAttr['TOTAL'],
+                'Amount_VAT'           => round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2),
+                'Supplier_CUI'         => $this->setDataSupplierOrCustomer($arrayAttr['Supplier']),
+                'Supplier_Name'        => $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'],
+                'Customer_CUI'         => $this->setDataSupplierOrCustomer($arrayAttr['Customer']),
+                'Customer_Name'        => $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
+                'No_of_Lines'          => $arrayAttr['No_of_Lines'],
                 'Days_Between'         => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDateTime']),
             ];
             $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);

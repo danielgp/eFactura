@@ -39,6 +39,9 @@ msgstr ""
 msgid "i18n_Clmn_Document_No"
 msgstr ""
 
+msgid "i18n_Clmn_DocumentCurrencyCode"
+msgstr ""
+
 msgid "i18n_Clmn_Error"
 msgstr ""
 
