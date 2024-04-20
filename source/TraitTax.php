@@ -16,6 +16,7 @@ namespace danielgp\efactura;
 
 trait TraitTax
 {
+
     use TraitBasic;
 
     private function getTax(\SimpleXMLElement $child): array
@@ -38,13 +39,15 @@ trait TraitTax
         foreach ($this->arrayProcessing[$strElementName] as $strElement => $strType) {
             switch ($strType) {
                 case 'Elements':
-                    if (isset($child3->children('cac', true)->$strElement)) {
-                        $arrayOut[$strElement] = $this->getElements($child3->children('cac', true)->$strElement);
+                    if (isset($child3->children($this->arrayProcessing['mapping']['cac'], true)->$strElement)) {
+                        $arrayOut[$strElement] = $this->getElements($child3->children($this
+                                ->arrayProcessing['mapping']['cac'], true)->$strElement);
                     }
                     break;
                 case 'Single':
-                    if (isset($child3->children('cbc', true)->$strElement)) {
-                        $arrayOut[$strElement] = $this->getElementSingle($child3->children('cbc', true)->$strElement);
+                    if (isset($child3->children($this->arrayProcessing['mapping']['cbc'], true)->$strElement)) {
+                        $arrayOut[$strElement] = $this->getElementSingle($child3->children($this
+                                ->arrayProcessing['mapping']['cbc'], true)->$strElement);
                     }
                     break;
             }
@@ -58,14 +61,17 @@ trait TraitTax
         foreach ($this->arrayProcessing['TaxSubtotal'] as $strElementChild => $strTypeChild) {
             switch ($strTypeChild) {
                 case 'Single':
-                    if (isset($child->children('cbc', true)->$strElementChild)) {
-                        $arrayOut[$strElementChild] = $this
-                            ->getElementSingle($child->children('cbc', true)->$strElementChild);
+                    if (isset($child->children($this->arrayProcessing['mapping']['cbc'], true)->$strElementChild)) {
+                        $arrayOut[$strElementChild] = $this->getElementSingle($child
+                                ->children($this->arrayProcessing['mapping']['cbc'], true)->$strElementChild);
                     }
                     break;
                 case 'Multiple':
-                    $arrayOut[$strElementChild] = $this->getTaxCategory($child->children('cac', true)
-                        ->$strElementChild, $strElementChild);
+                    if (isset($child->children($this->arrayProcessing['mapping']['cac'], true)->$strElementChild)) {
+                        $arrayOut[$strElementChild] = $this->getTaxCategory($child
+                                ->children($this->arrayProcessing['mapping']['cac'], true)
+                            ->$strElementChild, $strElementChild);
+                    }
                     break;
             }
         }
@@ -78,13 +84,14 @@ trait TraitTax
         foreach ($this->arrayProcessing['TaxTotal'] as $strElement => $strType) {
             switch ($strType) {
                 case 'Single':
-                    if (isset($child->children('cbc', true)->$strElement)) {
-                        $arrayOut[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
+                    if (isset($child->children($this->arrayProcessing['mapping']['cbc'], true)->$strElement)) {
+                        $arrayOut[$strElement] = $this->getElementSingle($child->children($this
+                                ->arrayProcessing['mapping']['cbc'], true)->$strElement);
                     }
                     break;
                 case 'Multiple':
                     $intLineNo = 0;
-                    foreach ($child->children('cac', true)->$strElement as $child3) {
+                    foreach ($child->children($this->arrayProcessing['mapping']['cac'], true)->$strElement as $child3) {
                         $intLineNo++;
                         $intLineStr                         = $this->getLineStringFromNumber($intLineNo);
                         $arrayOut[$strElement][$intLineStr] = $this->getTaxSubTotal($child3);

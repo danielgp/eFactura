@@ -16,6 +16,7 @@ namespace danielgp\efactura;
 
 trait TraitBasic
 {
+
     protected array $arraySettings   = [];
     protected array $arrayProcessing = [];
 
@@ -24,17 +25,17 @@ trait TraitBasic
         return $this->getJsonFromFile('config/ElectronicInvoiceComments.json');
     }
 
-    private function getElements(\SimpleXMLElement | null $arrayIn): array
+    private function getElements(\SimpleXMLElement|null $arrayIn): array
     {
         $arrayToReturn = [];
         if (!is_null($arrayIn)) {
-            if (count($arrayIn->children('cbc', true)) !== 0) { // checking if we have cbc elements
-                foreach ($arrayIn->children('cbc', true) as $key => $value) {
+            if (count($arrayIn->children($this->arrayProcessing['mapping']['cbc'], true)) !== 0) { // checking if we have cbc elements
+                foreach ($arrayIn->children($this->arrayProcessing['mapping']['cbc'], true) as $key => $value) {
                     $arrayToReturn[$key] = $this->getElementSingle($value);
                 }
             }
-            if (count($arrayIn->children('cac', true)) !== 0) { // checking if we have cac elements
-                foreach ($arrayIn->children('cac', true) as $key => $value) {
+            if (count($arrayIn->children($this->arrayProcessing['mapping']['cac'], true)) !== 0) { // checking if we have cac elements
+                foreach ($arrayIn->children($this->arrayProcessing['mapping']['cac'], true) as $key => $value) {
                     $arrayToReturn[$key] = $this->getElements($value);
                 }
             }
@@ -42,7 +43,7 @@ trait TraitBasic
         return $arrayToReturn;
     }
 
-    private function getElementSingle(\SimpleXMLElement | null $value)
+    private function getElementSingle(\SimpleXMLElement|null $value)
     {
         $arrayToReturn = [];
         if (!is_null($value)) {
@@ -51,7 +52,9 @@ trait TraitBasic
             } else {
                 $arrayToReturn['value'] = $value->__toString();
                 foreach ($value->attributes() as $keyA => $valueA) {
-                    $arrayToReturn[$keyA] = $valueA->__toString();
+                    if (!str_ends_with($valueA, ':CommonAggregateComponents-2') && str_ends_with($valueA, ':CommonBasicComponents-2')) {
+                        $arrayToReturn[$keyA] = $valueA->__toString();
+                    }
                 }
             }
         }
@@ -105,24 +108,26 @@ trait TraitBasic
         return $arrayOutput;
     }
 
-    private function getMultipleElementsStandard(array | \SimpleXMLElement $arrayIn): array
+    private function getMultipleElementsStandard(array|\SimpleXMLElement $arrayIn): array
     {
         $arrayToReturn = [];
         $intLineNo     = 0;
         foreach ($arrayIn as $child) {
             $intLineNo++;
             $intLineStr = $this->getLineStringFromNumber($intLineNo);
-            foreach ($child->children('cbc', true) as $key2 => $value2) {
+            foreach ($child->children($this->arrayProcessing['mapping']['cbc'], true) as $key2 => $value2) {
                 if (count($value2->attributes()) === 0) {
                     $arrayToReturn[$intLineStr][$key2] = $value2->__toString();
                 } else {
                     $arrayToReturn[$intLineStr][$key2]['value'] = $value2->__toString();
                     foreach ($value2->attributes() as $keyA => $valueA) {
-                        $arrayToReturn[$intLineStr][$key2][$keyA] = $valueA->__toString();
+                        if (!str_ends_with($valueA, ':CommonAggregateComponents-2') && str_ends_with($valueA, ':CommonBasicComponents-2')) {
+                            $arrayToReturn[$intLineStr][$key2][$keyA] = $valueA->__toString();
+                        }
                     }
                 }
             }
-            foreach ($child->children('cac', true) as $key2 => $value2) {
+            foreach ($child->children($this->arrayProcessing['mapping']['cac'], true) as $key2 => $value2) {
                 $arrayToReturn[$intLineStr][$key2] = $this->getElements($value2);
             }
         }
@@ -134,7 +139,7 @@ trait TraitBasic
         $this->arrayProcessing = $this->getJsonFromFile('config/ElectronicInvoiceProcessingDetails.json');
     }
 
-    public function getRightMethod(string $existingFunction, $givenParameters = null): array | string
+    public function getRightMethod(string $existingFunction, $givenParameters = null): array|string
     {
         try {
             if (is_array($givenParameters)) {

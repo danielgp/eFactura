@@ -16,6 +16,7 @@ namespace danielgp\efactura;
 
 trait TraitLines
 {
+
     use TraitBasic;
     use TraitTax;
 
@@ -23,7 +24,7 @@ trait TraitLines
     {
         $arrayLines = [];
         $intLineNo  = 0;
-        foreach ($arrayDataIn->children('cac', true) as $strNodeName => $child) {
+        foreach ($arrayDataIn->children($this->arrayProcessing['mapping']['cac'], true) as $strNodeName => $child) {
             if ($strNodeName === ($strTag . 'Line')) {
                 $intLineNo++;
                 $intLineStr              = $this->getLineStringFromNumber($intLineNo);
@@ -39,19 +40,19 @@ trait TraitLines
         foreach ($this->arrayProcessing['Lines@Read'] as $strElement => $strType) {
             switch ($strType) {
                 case 'Item':
-                    $arrayOutput[$strElement] = $this->getLineItem($child->children('cac', true)->$strElement);
+                    $arrayOutput[$strElement] = $this->getLineItem($child->children($this->arrayProcessing['mapping']['cac'], true)->$strElement);
                     break;
                 case 'Multiple':
-                    if (count($child->children('cac', true)->$strElement) !== 0) {
+                    if (isset($child->children($this->arrayProcessing['mapping']['cac'], true)->$strElement)) {
                         $arrayOutput[$strElement] = $this->getMultipleElementsByKey($child
-                                ->children('cac', true)->$strElement);
+                                ->children($this->arrayProcessing['mapping']['cac'], true)->$strElement);
                     }
                     break;
                 case 'Single':
-                    if (count($child->children('cbc', true)->$strElement) !== 0) {
-                        $arrayOutput[$strElement] = $this->getElementSingle($child->children('cbc', true)->$strElement);
-                    } elseif (count($child->children('cac', true)->$strElement) !== 0) {
-                        $arrayOutput[$strElement] = $this->getElements($child->children('cac', true)->$strElement);
+                    if (isset($child->children($this->arrayProcessing['mapping']['cbc'], true)->$strElement)) {
+                        $arrayOutput[$strElement] = $this->getElementSingle($child->children($this->arrayProcessing['mapping']['cbc'], true)->$strElement);
+                    } elseif (isset($child->children($this->arrayProcessing['mapping']['cac'], true)->$strElement)) {
+                        $arrayOutput[$strElement] = $this->getElements($child->children($this->arrayProcessing['mapping']['cac'], true)->$strElement);
                     }
                     break;
             }
@@ -65,17 +66,21 @@ trait TraitLines
         foreach ($this->arrayProcessing['Lines_Item@Read'] as $key => $value) {
             switch ($value) {
                 case 'Multiple':
-                    $arrayOutput[$key] = $this->getMultipleElementsByKey($child3->children('cac', true)->$key);
+                    if (isset($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key)) {
+                        $arrayOutput[$key] = $this->getMultipleElementsByKey($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key);
+                    }
                     break;
                 case 'Single':
-                    if (count($child3->children('cbc', true)->$key) !== 0) {
-                        $arrayOutput[$key] = $child3->children('cbc', true)->$key->__toString();
-                    } elseif (count($child3->children('cac', true)->$key) !== 0) {
-                        $arrayOutput[$key] = $this->getElements($child3->children('cac', true)->$key);
+                    if (isset($child3->children($this->arrayProcessing['mapping']['cbc'], true)->$key)) {
+                        $arrayOutput[$key] = $child3->children($this->arrayProcessing['mapping']['cbc'], true)->$key->__toString();
+                    } elseif (isset($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key)) {
+                        $arrayOutput[$key] = $this->getElements($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key);
                     }
                     break;
                 case 'TaxCategory':
-                    $arrayOutput[$key] = $this->getTaxCategory($child3->children('cac', true)->$key, $key);
+                    if (isset($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key)) {
+                        $arrayOutput[$key] = $this->getTaxCategory($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key, $key);
+                    }
                     break;
             }
         }

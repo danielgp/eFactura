@@ -25,23 +25,28 @@ class ClassElectronicInvoiceRead
     {
         $arrayOut = [];
         foreach ($this->arraySettings['CustomOrder'][$arrayIn['type']] as $strElement) {
-            if (isset($arrayIn['data']->children('cac', true)->$strElement)) {
+            if (isset($arrayIn['data']->children($this->arrayProcessing['mapping']['cac'], true)->$strElement)) {
                 if ($strElement === 'PartyTaxScheme') {
                     $arrayOut[$strElement] = $this->getMultipleElementsByKey($arrayIn['data']
-                            ->children('cac', true)->$strElement);
+                            ->children($this->arrayProcessing['mapping']['cac'], true)->$strElement);
                 } else {
-                    $arrayOut[$strElement] = $this->getElements($arrayIn['data']->children('cac', true)->$strElement);
+                    $arrayOut[$strElement] = $this->getElements($arrayIn['data']
+                            ->children($this->arrayProcessing['mapping']['cac'], true)->$strElement);
                 }
             }
-            if (isset($arrayIn['data']->children('cbc', true)->$strElement)) {
+            if (isset($arrayIn['data']->children($this->arrayProcessing['mapping']['cbc'], true)->$strElement)) {
                 if ($strElement === 'EndpointID') {
                     $arrayOut['EndpointID'] = [
-                        'schemeID' => $arrayIn['data']->children('cbc', true)->EndpointID
+                        'schemeID' => $arrayIn['data']
+                            ->children($this->arrayProcessing['mapping']['cbc'], true)->EndpointID
                             ->attributes()->schemeID->__toString(),
-                        'value'    => $arrayIn['data']->children('cbc', true)->EndpointID->__toString(),
+                        'value'    => $arrayIn['data']
+                            ->children($this->arrayProcessing['mapping']['cbc'], true)->EndpointID
+                            ->__toString(),
                     ];
                 } else {
-                    $arrayOut[$strElement] = $this->getElements($arrayIn['data']->children('cbc', true)->$strElement);
+                    $arrayOut[$strElement] = $this->getElements($arrayIn['data']
+                            ->children($this->arrayProcessing['mapping']['cbc'], true)->$strElement);
                 }
             }
         }
@@ -63,6 +68,14 @@ class ClassElectronicInvoiceRead
         if (array_key_exists('xsi', $arrayDocument['DocumentNameSpaces'])) {
             if (isset($objFile->attributes('xsi', true)->schemaLocation)) {
                 $arrayDocument['SchemaLocation'] = $objFile->attributes('xsi', true)->schemaLocation;
+            }
+        }
+        foreach ($arrayDocument['DocumentNameSpaces'] as $key => $value) {
+            if (str_ends_with($value, ':CommonBasicComponents-2')) {
+                $this->arrayProcessing['mapping']['cbc'] = $key;
+            }
+            if (str_ends_with($value, ':CommonAggregateComponents-2')) {
+                $this->arrayProcessing['mapping']['cac'] = $key;
             }
         }
         return $arrayDocument;
@@ -98,7 +111,8 @@ class ClassElectronicInvoiceRead
         if ($value === 'SingleCompany') {
             $arrayDocument = [
                 'Party' => $this->getAccountingCustomerOrSupplierParty([
-                    'data' => $arrayParams['CAC']->$key->children('cac', true)->Party,
+                    'data' => $arrayParams['CAC']->$key
+                        ->children($this->arrayProcessing['mapping']['cac'], true)->Party,
                     'type' => $key,
                 ])
             ];
@@ -131,17 +145,18 @@ class ClassElectronicInvoiceRead
         $bolIsLocal              = is_file($strFile);
         $objFile                 = new \SimpleXMLElement($strFile, $flags, $bolIsLocal);
         $arrayDocument           = $this->getDocumentRoot($objFile);
+        $strMap                  = $this->arrayProcessing['mapping'];
         $arrayBasics             = $this->getElementsOrdered([
-            'data'          => $objFile->children('cbc', true),
-            'namespace_cbc' => $arrayDocument['DocumentNameSpaces']['cbc'],
+            'data'          => $objFile->children($strMap['cbc'], true),
+            'namespace_cbc' => $arrayDocument['DocumentNameSpaces'][$strMap['cbc']],
         ]);
         $arrayAggregates         = $this->getHeader([
-            'CAC'  => $objFile->children('cac', true),
+            'CAC'  => $objFile->children($strMap['cac'], true),
             'data' => $objFile,
         ]);
         $arrayDocument['Header'] = [
-            $this->getBasicOrAggregateKey($arrayDocument['DocumentNameSpaces'], 'cbc') => $arrayBasics,
-            $this->getBasicOrAggregateKey($arrayDocument['DocumentNameSpaces'], 'cac') => $arrayAggregates,
+            $this->getBasicOrAggregateKey($arrayDocument['DocumentNameSpaces'], $strMap['cbc']) => $arrayBasics,
+            $this->getBasicOrAggregateKey($arrayDocument['DocumentNameSpaces'], $strMap['cac']) => $arrayAggregates,
         ];
         $arrayDocument['Lines']  = $this->getDocumentLines($objFile, $arrayDocument['DocumentTagName']);
         return $arrayDocument;
