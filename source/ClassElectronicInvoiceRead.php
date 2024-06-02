@@ -16,7 +16,6 @@ namespace danielgp\efactura;
 
 class ClassElectronicInvoiceRead
 {
-
     use TraitBasic;
     use TraitTax;
     use TraitLines;
@@ -70,12 +69,18 @@ class ClassElectronicInvoiceRead
                 $arrayDocument['SchemaLocation'] = $objFile->attributes('xsi', true)->schemaLocation;
             }
         }
+        $bolMappingsNotSet = [
+            'cac' => true,
+            'cbc' => true,
+        ];
         foreach ($arrayDocument['DocumentNameSpaces'] as $key => $value) {
-            if (str_ends_with($value, ':CommonBasicComponents-2')) {
-                $this->arrayProcessing['mapping']['cbc'] = $key;
-            }
-            if (str_ends_with($value, ':CommonAggregateComponents-2')) {
+            if (str_ends_with($value, ':CommonAggregateComponents-2') && $bolMappingsNotSet['cac']) {
                 $this->arrayProcessing['mapping']['cac'] = $key;
+                $bolMappingsNotSet['cac']                = false;
+            }
+            if (str_ends_with($value, ':CommonBasicComponents-2') && $bolMappingsNotSet['cbc']) {
+                $this->arrayProcessing['mapping']['cbc'] = $key;
+                $bolMappingsNotSet['cbc']                = false;
             }
         }
         return $arrayDocument;
@@ -105,7 +110,7 @@ class ClassElectronicInvoiceRead
         return $arrayDocument;
     }
 
-    private function getHeaderComponents(array $arrayParams, string $key, string $value): array|string
+    private function getHeaderComponents(array $arrayParams, string $key, string $value): array | string
     {
         $arrayDocument = [];
         if ($value === 'SingleCompany') {
