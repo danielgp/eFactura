@@ -69,20 +69,6 @@ class ClassElectronicInvoiceRead
                 $arrayDocument['SchemaLocation'] = $objFile->attributes('xsi', true)->schemaLocation;
             }
         }
-        $bolMappingsNotSet = [
-            'cac' => true,
-            'cbc' => true,
-        ];
-        foreach ($arrayDocument['DocumentNameSpaces'] as $key => $value) {
-            if (str_ends_with($value, ':CommonAggregateComponents-2') && $bolMappingsNotSet['cac']) {
-                $this->arrayProcessing['mapping']['cac'] = $key;
-                $bolMappingsNotSet['cac']                = false;
-            }
-            if (str_ends_with($value, ':CommonBasicComponents-2') && $bolMappingsNotSet['cbc']) {
-                $this->arrayProcessing['mapping']['cbc'] = $key;
-                $bolMappingsNotSet['cbc']                = false;
-            }
-        }
         return $arrayDocument;
     }
 
@@ -150,6 +136,7 @@ class ClassElectronicInvoiceRead
         $bolIsLocal              = is_file($strFile);
         $objFile                 = new \SimpleXMLElement($strFile, $flags, $bolIsLocal);
         $arrayDocument           = $this->getDocumentRoot($objFile);
+        $this->setArrayProcessing($arrayDocument['DocumentNameSpaces']);
         $strMap                  = $this->arrayProcessing['mapping'];
         $arrayBasics             = $this->getElementsOrdered([
             'data'          => $objFile->children($strMap['cbc'], true),
@@ -165,5 +152,23 @@ class ClassElectronicInvoiceRead
         ];
         $arrayDocument['Lines']  = $this->getDocumentLines($objFile, $arrayDocument['DocumentTagName']);
         return $arrayDocument;
+    }
+
+    private function setArrayProcessing(array $arrayDocumentNameSpaces): void
+    {
+        $bolMappingsNotSet = [
+            'cac' => true,
+            'cbc' => true,
+        ];
+        foreach ($arrayDocumentNameSpaces as $key => $value) {
+            if (str_ends_with($value, ':CommonAggregateComponents-2') && $bolMappingsNotSet['cac']) {
+                $this->arrayProcessing['mapping']['cac'] = $key;
+                $bolMappingsNotSet['cac']                = false;
+            }
+            if (str_ends_with($value, ':CommonBasicComponents-2') && $bolMappingsNotSet['cbc']) {
+                $this->arrayProcessing['mapping']['cbc'] = $key;
+                $bolMappingsNotSet['cbc']                = false;
+            }
+        }
     }
 }
