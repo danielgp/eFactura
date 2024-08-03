@@ -1981,7 +1981,7 @@
         "SemanticDataType": "Percent"
     },
     "BT-102": {
-        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_TaxCategory_TaxScheme_ID",
+        "HierarchycalTagName": "AllowanceCharge~ChargeIndicatorTrue_TaxCategory_ID",
         "Level": "++",
         "Cardinality": "1..1",
         "OperationalTerm": {
