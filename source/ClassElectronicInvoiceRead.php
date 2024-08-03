@@ -58,7 +58,7 @@ class ClassElectronicInvoiceRead
         return $arrayPieces[count($arrayPieces) - 1];
     }
 
-    private function getDocumentRoot(object $objFile): array
+    public function getDocumentRoot(object $objFile): array
     {
         $arrayDocument = [
             'DocumentTagName'    => $objFile->getName(),
@@ -67,6 +67,11 @@ class ClassElectronicInvoiceRead
         if (array_key_exists('xsi', $arrayDocument['DocumentNameSpaces'])) {
             if (isset($objFile->attributes('xsi', true)->schemaLocation)) {
                 $arrayDocument['SchemaLocation'] = $objFile->attributes('xsi', true)->schemaLocation;
+            }
+        }
+        if ($arrayDocument['DocumentTagName'] === 'header') {
+            foreach ($objFile->attributes() as $attributeName => $attributeValue) {
+                $arrayDocument['header'][$attributeName] = $attributeValue->__toString();
             }
         }
         return $arrayDocument;
@@ -128,13 +133,24 @@ class ClassElectronicInvoiceRead
         return $arrayDocument;
     }
 
-    public function readElectronicInvoice(string $strFile): array
+    public function readElectronicXmlHeader(string $strFile): \SimpleXMLElement
     {
         $this->getProcessingDetails();
+        $this->getHierarchyTagOrder();
+        $flags      = LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_NOERROR;
+        $bolIsLocal = is_file($strFile);
+        return new \SimpleXMLElement($strFile, $flags, $bolIsLocal);
+    }
+
+    public function readElectronicInvoice(string $strFile): array
+    {
+        /*$this->getProcessingDetails();
         $this->getHierarchyTagOrder();
         $flags                   = LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_NOERROR;
         $bolIsLocal              = is_file($strFile);
         $objFile                 = new \SimpleXMLElement($strFile, $flags, $bolIsLocal);
+        $arrayDocument           = $this->getDocumentRoot($objFile);*/
+        $objFile                 = $this->readElectronicXmlHeader($strFile);
         $arrayDocument           = $this->getDocumentRoot($objFile);
         $this->setArrayProcessing($arrayDocument['DocumentNameSpaces']);
         $strMap                  = $this->arrayProcessing['mapping'];

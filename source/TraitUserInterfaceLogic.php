@@ -191,6 +191,7 @@ trait TraitUserInterfaceLogic
             'Customer_Name'        => '',
             'No_of_Lines'          => '',
             'Error'                => '',
+            'Mesaj_Cumparator'     => '',
             'Days_Between'         => '',
         ];
     }
@@ -227,42 +228,63 @@ trait TraitUserInterfaceLogic
     {
         $arrayToReturn = $this->setDefaultsToInvoiceDetailsArray($arrayData);
         $strErrorTag   = '<div style="max-width:200px;font-size:0.8rem;">%s</div>';
+        $strTimeZone   = $this->translation->find(null, 'i18n_TimeZone')->getTranslation();
+        $strFormatter  = new \IntlDateFormatter(
+            $_GET['language_COUNTRY'],
+            \IntlDateFormatter::FULL,
+            \IntlDateFormatter::FULL,
+            $strTimeZone,
+            \IntlDateFormatter::GREGORIAN,
+            'r-MM__MMMM'
+        );
         if (array_key_exists('Error', $arrayData)) {
             $arrayToReturn['Error'] = sprintf($strErrorTag, $arrayData['Error']);
             $arrayToReturn['Size']  = 0;
-        } elseif ($arrayData['Size'] > 1000) {
-            $strTimeZone   = $this->translation->find(null, 'i18n_TimeZone')->getTranslation();
-            $strFormatter  = new \IntlDateFormatter(
-                $_GET['language_COUNTRY'],
-                \IntlDateFormatter::FULL,
-                \IntlDateFormatter::FULL,
-                $strTimeZone,
-                \IntlDateFormatter::GREGORIAN,
-                'r-MM__MMMM'
-            );
-            $arrayAttr     = $this->getDocumentDetails($arrayData);
-            $arrayTemp     = [
-                'Loading_Index'        => substr($arrayData['Matches'][0][0], 0, -4),
-                'Size'                 => $arrayData['Size'],
-                'Document_No'          => $arrayAttr['ID'],
-                'Issue_Date'           => $arrayAttr['IssueDate'],
-                'Issue_YearMonth'      => $strFormatter->format(new \DateTime($arrayAttr['IssueDate'])),
-                'Response_DateTime'    => $arrayData['FileDateTime'],
-                'DocumentCurrencyCode' => $arrayAttr['DocumentCurrencyCode'],
-                'Amount_wo_VAT'        => $arrayAttr['wo_VAT'],
-                'Amount_TOTAL'         => $arrayAttr['TOTAL'],
-                'Amount_VAT'           => round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2),
-                'Supplier_CUI'         => $this->setDataSupplierOrCustomer($arrayAttr['Supplier']),
-                'Supplier_Name'        => $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'],
-                'Customer_CUI'         => $this->setDataSupplierOrCustomer($arrayAttr['Customer']),
-                'Customer_Name'        => $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
-                'No_of_Lines'          => $arrayAttr['No_of_Lines'],
-                'Days_Between'         => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDateTime']),
-            ];
-            $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
-        } elseif ($arrayData['Size'] > 0) {
-            $arrayTemp     = $this->setErrorsFromExtendedMarkupLaguage($arrayData, $strErrorTag);
-            $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
+        } else {
+            $appR              = new \danielgp\efactura\ClassElectronicInvoiceRead();
+            $objFile           = $appR->readElectronicXmlHeader($arrayData['strInvoiceContent']);
+            $documentHeaderTag = $appR->getDocumentRoot($objFile);
+            switch($documentHeaderTag['DocumentTagName']) {
+                case 'header':
+                    switch($documentHeaderTag['DocumentNameSpaces']['']) {
+                        case 'mfp:anaf:dgti:efactura:mesajEroriFactuta:v1':
+                            $arrayTemp     = $this->setErrorsFromExtendedMarkupLaguage($arrayData, $strErrorTag);
+                            $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
+                            break;
+                        case 'mfp:anaf:dgti:spv:reqMesaj:v1':
+                            $arrayTemp     = [
+                                'Loading_Index'     => $documentHeaderTag['header']['index_incarcare'],
+                                'Mesaj_Cumparator'  => $documentHeaderTag['header']['message'],
+                                'Size'              => $arrayData['Size'],
+                                'Response_DateTime' => $arrayData['FileDateTime'],
+                            ];
+                            $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
+                            break;
+                    }
+                    break;
+                case 'Invoice':
+                    $arrayAttr     = $this->getDocumentDetails($arrayData);
+                    $arrayTemp     = [
+                        'Loading_Index'        => substr($arrayData['Matches'][0][0], 0, -4),
+                        'Size'                 => $arrayData['Size'],
+                        'Document_No'          => $arrayAttr['ID'],
+                        'Issue_Date'           => $arrayAttr['IssueDate'],
+                        'Issue_YearMonth'      => $strFormatter->format(new \DateTime($arrayAttr['IssueDate'])),
+                        'Response_DateTime'    => $arrayData['FileDateTime'],
+                        'DocumentCurrencyCode' => $arrayAttr['DocumentCurrencyCode'],
+                        'Amount_wo_VAT'        => $arrayAttr['wo_VAT'],
+                        'Amount_TOTAL'         => $arrayAttr['TOTAL'],
+                        'Amount_VAT'           => round(($arrayAttr['TOTAL'] - $arrayAttr['wo_VAT']), 2),
+                        'Supplier_CUI'         => $this->setDataSupplierOrCustomer($arrayAttr['Supplier']),
+                        'Supplier_Name'        => $arrayAttr['Supplier']['PartyLegalEntity']['RegistrationName'],
+                        'Customer_CUI'         => $this->setDataSupplierOrCustomer($arrayAttr['Customer']),
+                        'Customer_Name'        => $arrayAttr['Customer']['PartyLegalEntity']['RegistrationName'],
+                        'No_of_Lines'          => $arrayAttr['No_of_Lines'],
+                        'Days_Between'         => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDateTime']),
+                    ];
+                    $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
+                    break;
+            }
         }
         return $arrayToReturn;
     }
