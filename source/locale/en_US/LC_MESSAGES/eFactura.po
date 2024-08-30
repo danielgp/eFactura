@@ -55,6 +55,9 @@ msgstr "Issued Year and Month"
 msgid "i18n_Clmn_Loading_Index"
 msgstr "Loading Index"
 
+msgid "i18n_Clmn_Message"
+msgstr "Message"
+
 msgid "i18n_Clmn_No_of_Lines"
 msgstr "No. of Lines"
 

@@ -56,6 +56,9 @@ msgstr "An și lună emitere"
 msgid "i18n_Clmn_Loading_Index"
 msgstr "Index încărcare"
 
+msgid "i18n_Clmn_Message"
+msgstr "Mesaj"
+
 msgid "i18n_Clmn_No_of_Lines"
 msgstr "Nr. linii"
 

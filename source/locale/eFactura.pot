@@ -54,6 +54,9 @@ msgstr ""
 msgid "i18n_Clmn_Loading_Index"
 msgstr ""
 
+msgid "i18n_Clmn_Message"
+msgstr ""
+
 msgid "i18n_Clmn_No_of_Lines"
 msgstr ""
 
