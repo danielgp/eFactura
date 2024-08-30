@@ -38,11 +38,14 @@ msgstr "Nume client"
 msgid "i18n_Clmn_Days_Between"
 msgstr "Zile emitere-răspuns"
 
+msgid "i18n_Clmn_Document_Currency_Code"
+msgstr "Cod valută document"
+
 msgid "i18n_Clmn_Document_No"
 msgstr "Identificator document"
 
-msgid "i18n_Clmn_DocumentCurrencyCode"
-msgstr "Cod valută document"
+msgid "i18n_Clmn_Document_Type_Code"
+msgstr "Cod tip document"
 
 msgid "i18n_Clmn_Error"
 msgstr "Eroare"

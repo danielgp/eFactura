@@ -36,10 +36,13 @@ msgstr ""
 msgid "i18n_Clmn_Days_Between"
 msgstr ""
 
+msgid "i18n_Clmn_Document_Currency_Code"
+msgstr ""
+
 msgid "i18n_Clmn_Document_No"
 msgstr ""
 
-msgid "i18n_Clmn_DocumentCurrencyCode"
+msgid "i18n_Clmn_Document_Type_Code"
 msgstr ""
 
 msgid "i18n_Clmn_Error"

@@ -37,11 +37,14 @@ msgstr ".Nome del cliente"
 msgid "i18n_Clmn_Days_Between"
 msgstr "Giorni tra emissione e risposta"
 
+msgid "i18n_Clmn_Document_Currency_Code"
+msgstr "Codice valuta del documento"
+
 msgid "i18n_Clmn_Document_No"
 msgstr "Numero del documento"
 
-msgid "i18n_Clmn_DocumentCurrencyCode"
-msgstr "Codice valuta del documento"
+msgid "i18n_Clmn_Document_Type_Code"
+msgstr "Codice per tipo di documento"
 
 msgid "i18n_Clmn_Error"
 msgstr "Errore"
