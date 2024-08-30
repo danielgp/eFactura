@@ -71,26 +71,6 @@ trait TraitUserInterfaceLogic
         return $arrayStandardized;
     }
 
-    private function handleResponseFile(\SplFileInfo|string $strFile): array
-    {
-        $arrayToReturn = [];
-        $strFileMime   = mime_content_type($strFile->getRealPath());
-        switch ($strFileMime) {
-            case 'application/json':
-                $arrayError    = $this->getArrayFromJsonFile($strFile->getPath(), $strFile->getFilename());
-                $arrayToReturn = $this->setStandardizedFeedbackArray([
-                    'Error'          => $arrayError['eroare'] . ' ===> ' . $arrayError['titlu'],
-                    'Response_Index' => $strFile->getFilename(),
-                    'Response_Size'  => $strFile->getSize(),
-                ]);
-                break;
-            case 'application/zip':
-                $arrayToReturn = $this->setArchiveFromAnaf($strFile->getRealPath(), $strFile->getSize());
-                break;
-        }
-        return $arrayToReturn;
-    }
-
     private function handleArchiveContent(\ZipArchive $classZip, array $arrayArchiveParam): array
     {
         $arrayToReturn = [];
@@ -120,6 +100,26 @@ trait TraitUserInterfaceLogic
                     $strFile->getBasename(),
                 ]);
             }
+        }
+        return $arrayToReturn;
+    }
+
+    private function handleResponseFile(\SplFileInfo | string $strFile): array
+    {
+        $arrayToReturn = [];
+        $strFileMime   = mime_content_type($strFile->getRealPath());
+        switch($strFileMime) {
+            case 'application/json':
+                $arrayError    = $this->getArrayFromJsonFile($strFile->getPath(), $strFile->getFilename());
+                $arrayToReturn = $this->setStandardizedFeedbackArray([
+                    'Error'          => $arrayError['eroare'] . ' ===> ' . $arrayError['titlu'],
+                    'Response_Index' => $strFile->getFilename(),
+                    'Response_Size'  => $strFile->getSize(),
+                ]);
+                break;
+            case 'application/zip':
+                $arrayToReturn = $this->setArchiveFromAnaf($strFile->getRealPath(), $strFile->getSize());
+                break;
         }
         return $arrayToReturn;
     }
