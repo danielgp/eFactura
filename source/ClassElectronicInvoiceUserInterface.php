@@ -94,8 +94,11 @@ class ClassElectronicInvoiceUserInterface
                     . '<div class="tabbertab" id="tab1" title="Filters">';
                     echo '</div><!-- tab1 -->';
                     echo '<div class="tabbertab" id="tab2" title="Lista">';
-                    $strRelevantFolder = 'P:/eFactura_Responses/Luna_Anterioara_NeDeclarata_Inca/';
-                    $arrayInvoices     = $this->actionAnalyzeZIPfromANAFfromLocalFolder($strRelevantFolder);
+                    $strRelevantFolder = 'P:/e-Factura/ZIPs_from_ANAF/';
+                    if (!file_exists($strRelevantFolder)) {
+                        $strRelevantFolder = realpath('../../');
+                    }
+                    $arrayInvoices = $this->actionAnalyzeZIPfromANAFfromLocalFolder($strRelevantFolder);
                     if (count($arrayInvoices) === 0) {
                         echo sprintf('<p style="color:red;">'
                             . $this->translation->find(null, 'i18n_Msg_NoZip')->getTranslation()
