@@ -115,7 +115,7 @@ trait TraitVersions
     {
         $strCategoryToReturn = '';
         $key                 = implode('_', [$arrayDataIn['commentParentKey'], $arrayDataIn['tag']]);
-        $arrayVarious        = $this->arrayProcessing['WritingCatgoryization'];
+        $arrayVarious        = $this->arrayProcessing['WritingCategorization'];
         if (array_key_exists($key, $arrayVarious['Key'])) {
             $strCategoryToReturn = $arrayVarious['Key'][$key];
         } elseif (array_key_exists($arrayDataIn['tag'], $arrayVarious['Tag'])) {

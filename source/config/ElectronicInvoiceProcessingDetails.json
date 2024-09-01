@@ -68,7 +68,7 @@
         "TaxAmount"     : "Single",
         "TaxSubtotal"   : "Multiple"
     },
-    "WritingCatgoryization": {
+    "WritingCategorization": {
         "CommentParrentKey": [
             "AccountingCustomerParty_PartyIdentification",
             "AccountingSupplierParty_PartyIdentification",
