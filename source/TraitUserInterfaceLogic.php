@@ -274,6 +274,7 @@ trait TraitUserInterfaceLogic
                             break;
                     }
                     break;
+                case 'CreditNote':
                 case 'Invoice':
                     $arrayAttr     = $this->getDocumentDetails($arrayData);
                     $arrayTemp     = [
