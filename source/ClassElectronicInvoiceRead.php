@@ -101,7 +101,7 @@ class ClassElectronicInvoiceRead
         return $arrayDocument;
     }
 
-    private function getHeaderComponents(array $arrayParams, string $key, string $value): array | string
+    private function getHeaderComponents(array $arrayParams, string $key, string $value): array|string
     {
         $arrayDocument = [];
         if ($value === 'SingleCompany') {
