@@ -126,7 +126,7 @@ trait TraitUserInterfaceLogic
         return $strValueToReturn;
     }
 
-    private function handleResponseFile(\SplFileInfo | string $strFile): array
+    private function handleResponseFile(\SplFileInfo|string $strFile): array
     {
         $arrayToReturn = [];
         $strFileMime   = mime_content_type($strFile->getRealPath());
@@ -307,6 +307,16 @@ trait TraitUserInterfaceLogic
                         'No_of_Lines'            => $arrayAttr['No_of_Lines'],
                         'Days_Between'           => $this->setDaysElapsed($arrayAttr['IssueDate'], $arrayData['FileDateTime']),
                     ];
+                    $arrayOptionalTags = [
+                        'InvoicePeriod_StartDate',
+                        'InvoicePeriod_EndDate',
+                        'ContractDocumentReference_ID',
+                    ];
+                    foreach ($arrayOptionalTags as $strKey) {
+                        if (array_key_exists($strKey, $arrayAttr)) {
+                            $arrayTemp[$strKey] = $arrayAttr[$strKey];
+                        }
+                    }
                     $arrayToReturn = array_merge($arrayToReturn, $arrayTemp);
                     break;
             }
