@@ -144,12 +144,6 @@ class ClassElectronicInvoiceRead
 
     public function readElectronicInvoice(string $strFile): array
     {
-        /*$this->getProcessingDetails();
-        $this->getHierarchyTagOrder();
-        $flags                   = LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_NOERROR;
-        $bolIsLocal              = is_file($strFile);
-        $objFile                 = new \SimpleXMLElement($strFile, $flags, $bolIsLocal);
-        $arrayDocument           = $this->getDocumentRoot($objFile);*/
         $objFile                 = $this->readElectronicXmlHeader($strFile);
         $arrayDocument           = $this->getDocumentRoot($objFile);
         $this->setArrayProcessing($arrayDocument['DocumentNameSpaces']);
