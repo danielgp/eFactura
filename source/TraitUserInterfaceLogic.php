@@ -68,6 +68,17 @@ trait TraitUserInterfaceLogic
             'TOTAL'                => (float) $arrayAggregate['LegalMonetaryTotal']['TaxInclusiveAmount']['value'],
             'wo_VAT'               => (float) $arrayAggregate['LegalMonetaryTotal']['TaxExclusiveAmount']['value'],
         ];
+        if (array_key_exists('InvoicePeriod', $arrayAggregate)) {
+            if (array_key_exists('StartDate', $arrayAggregate['InvoicePeriod'])) {
+                $arrayStandardized['InvoicePeriod_StartDate'] = $arrayAggregate['InvoicePeriod']['StartDate'];
+            }
+            if (array_key_exists('EndDate', $arrayAggregate['InvoicePeriod'])) {
+                $arrayStandardized['InvoicePeriod_EndDate'] = $arrayAggregate['InvoicePeriod']['EndDate'];
+            }
+        }
+        if (array_key_exists('ContractDocumentReference', $arrayAggregate)) {
+            $arrayStandardized['ContractDocumentReference_ID'] = $arrayAggregate['ContractDocumentReference']['ID'];
+        }
         return $arrayStandardized;
     }
 
