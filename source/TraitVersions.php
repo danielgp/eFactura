@@ -61,7 +61,7 @@ trait TraitVersions
 
     private function getSettingsFromFileIntoMemory(bool $bolComments): void
     {
-        $this->arraySettings             = $this->getJsonFromFile('config/ElectronicInvoiceSettings.json');
+        $this->loadSettingsFromFile();
         $this->getHierarchyTagOrder();
         $this->arraySettings['Comments'] = [
             'CAC' => [],

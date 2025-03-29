@@ -16,12 +16,15 @@ namespace danielgp\efactura;
 
 trait TraitBasic
 {
+    use \danielgp\io_operations\InputOutputFiles;
+
     protected array $arraySettings   = [];
     protected array $arrayProcessing = [];
 
     private function getCommentsFromFileAsArray(): array
     {
-        return $this->getJsonFromFile('config/ElectronicInvoiceComments.json');
+        return $this->getArrayFromJsonFile(__DIR__
+                . DIRECTORY_SEPARATOR . 'config', 'ElectronicInvoiceComments.json');
     }
 
     private function getElements(\SimpleXMLElement | null $arrayIn): array
@@ -62,34 +65,10 @@ trait TraitBasic
         return $arrayToReturn;
     }
 
-    private function getJsonFromFile(string $strFileName): array
-    {
-        $strFileName = __DIR__ . DIRECTORY_SEPARATOR . $strFileName;
-        if (!file_exists($strFileName)) {
-            // @codeCoverageIgnoreStart
-            throw new \RuntimeException(sprintf('File %s does not exists!', $strFileName));
-            // @codeCoverageIgnoreEnd
-        }
-        $fileHandle = fopen($strFileName, 'r');
-        if ($fileHandle === false) {
-            // @codeCoverageIgnoreStart
-            throw new \RuntimeException(sprintf('Unable to open file %s for read purpose!', $strFileName));
-            // @codeCoverageIgnoreEnd
-        }
-        $fileContent   = fread($fileHandle, ((int) filesize($strFileName)));
-        fclose($fileHandle);
-        $arrayToReturn = json_decode($fileContent, true);
-        if (json_last_error() != JSON_ERROR_NONE) {
-            // @codeCoverageIgnoreStart
-            throw new \RuntimeException(sprintf('Unable to interpret JSON from %s file...', $strFileName));
-            // @codeCoverageIgnoreEnd
-        }
-        return $arrayToReturn;
-    }
-
     private function getHierarchyTagOrder(): void
     {
-        $this->arraySettings['CustomOrder'] = $this->getJsonFromFile('config/ElectronicInvoiceHierarchyTagOrder.json');
+        $this->arraySettings['CustomOrder'] = $this->getArrayFromJsonFile(__DIR__
+            . DIRECTORY_SEPARATOR . 'config', 'ElectronicInvoiceHierarchyTagOrder.json');
     }
 
     private function getLineStringFromNumber(int $intLineNo): string
@@ -139,7 +118,8 @@ trait TraitBasic
 
     private function getProcessingDetails(): void
     {
-        $this->arrayProcessing = $this->getJsonFromFile('config/ElectronicInvoiceProcessingDetails.json');
+        $this->arrayProcessing = $this->getArrayFromJsonFile(__DIR__
+            . DIRECTORY_SEPARATOR . 'config', 'ElectronicInvoiceProcessingDetails.json');
     }
 
     public function getRightMethod(string $existingFunction, $givenParameters = null): array | string
@@ -156,5 +136,11 @@ trait TraitBasic
             return false;
         }
         // @codeCoverageIgnoreEnd
+    }
+
+    protected function loadSettingsFromFile(): void
+    {
+        $this->arraySettings = $this->getArrayFromJsonFile(__DIR__
+            . DIRECTORY_SEPARATOR . 'config', 'ElectronicInvoiceSettings.json');
     }
 }
