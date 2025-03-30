@@ -28,6 +28,7 @@
             <directory suffix=".php">source</directory>
         </include>
         <exclude>
+            <file>source/TraitBackEndRomania.php</file>
             <file>source/TraitUserInterfaceLogic.php</file>
             <file>source/ClassElectronicInvoiceUserInterface.php</file>
         </exclude>
