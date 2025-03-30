@@ -468,7 +468,7 @@ trait TraitBackEndRomania
         $arrayHttpHeader  = $this->buildHeaderAsArray();
         $intFileFoundNo   = 0;
         $intFileProcessed = 0;
-        $arrayFiles       = new \RecursiveDirectoryIterator($this->arraySolutionCustomSettings['Generated XML'], \FilesystemIterator::SKIP_DOTS);
+        $arrayFiles       = new \RecursiveDirectoryIterator($this->arraySolutionCustomSettings['ArrayFolders']['Generated XML'], \FilesystemIterator::SKIP_DOTS);
         foreach ($arrayFiles as $strCrtFile) {
             if ($strCrtFile->isFile()) { // only Files are relevant for processing
                 if ($intFileFoundNo === 0) { // authorization is only needed for 1st file
@@ -497,7 +497,7 @@ trait TraitBackEndRomania
                         $arrayResponse['@attributes']['index_incarcare'],
                     ]));
                     // if response has no error move the file to processed folder
-                    rename($strCrtFile->getRealPath(), $this->arraySolutionCustomSettings['Uploaded XML']
+                    rename($strCrtFile->getRealPath(), $this->arraySolutionCustomSettings['ArrayFolders']['Uploaded XML']
                         . $strCrtFile->getBasename());
                     $intFileProcessed++;
                 }
