@@ -107,20 +107,20 @@ trait TraitBackEndRomania
             switch($strLabelCheck) {
                 case 'Empty Environment':
                     if ($elementChecked == '') {
-                        $arrayErrorMessages = 'Environment is NOT allowed to be empty'
+                        $arrayErrorMessages[] = 'Environment is NOT allowed to be empty'
                             . ', please ensure proper environment from your custom class...';
                     }
                     break;
                 case 'Empty Secrets Array':
                     if ($elementChecked == []) {
-                        $arrayErrorMessages = 'Secrets array is NOT allowed to be empty'
+                        $arrayErrorMessages[] = 'Secrets array is NOT allowed to be empty'
                             . ', please ensure proper building from your custom class...';
                     }
                     break;
                 case 'Message Filter Value':
                     $arrayAllowedValues = array_column($this->arraystandardMesageFilters, 'Value');
                     if (($elementChecked !== '') && !in_array($elementChecked, $arrayAllowedValues)) {
-                        $arrayErrorMessages = vsprintf('Message Filter provided has a value of %s that is not allowed'
+                        $arrayErrorMessages[] = vsprintf('Message Filter provided has a value of %s that is not allowed'
                             . ' as can only be one of the following: %s'
                             . ', please ensure proper value is given from your custom class...', [
                             $elementChecked,
@@ -131,7 +131,7 @@ trait TraitBackEndRomania
                 case 'Message Type Value':
                     $arrayAllowedValues = array_keys($this->arraySettings['Infrastructure']['RO']['Calls']['Content']['Message']);
                     if (!in_array($elementChecked, $arrayAllowedValues)) {
-                        $arrayErrorMessages = vsprintf('Message Type provided has a value of %s that is not allowed'
+                        $arrayErrorMessages[] = vsprintf('Message Type provided has a value of %s that is not allowed'
                             . ' as can only be one of the following: %s'
                             . ', please ensure proper value is given from your custom class...', [
                             $elementChecked,
@@ -142,7 +142,7 @@ trait TraitBackEndRomania
                 case 'Non-Standard Environment Value':
                     $arrayAllowedValues = ['prod', 'test'];
                     if (($elementChecked !== '') && !in_array($elementChecked, $arrayAllowedValues)) {
-                        $arrayErrorMessages = vsprintf('Environment provided has a value of %s that is not allowed'
+                        $arrayErrorMessages[] = vsprintf('Environment provided has a value of %s that is not allowed'
                             . ' as can only be one of the following: %s'
                             . ', please ensure proper value is given from your custom class...', [
                             $elementChecked,
@@ -152,7 +152,7 @@ trait TraitBackEndRomania
                     break;
                 case 'Zero Value':
                     if ($elementChecked === 0) {
-                        $arrayErrorMessages = 'Tax Identification Number is not allowed to be 0'
+                        $arrayErrorMessages[] = 'Tax Identification Number is not allowed to be 0'
                             . ', please ensure you pass proper value from your custom class...';
                     }
                     break;
@@ -343,14 +343,14 @@ trait TraitBackEndRomania
             $arrayAllowedCombined = array_merge($arrayAllowedParameters['Mandatory'], $arrayAllowedParameters['Optional']);
         }
         $arrayGivenKeys = array_keys($arrayParameters);
-        $strErrors      = [];
+        $arrayErrors      = [];
         if (array_diff($arrayAllowedParameters['Mandatory'], $arrayGivenKeys) != []) {
-            $strErrors[] = vsprintf('Provided parameters %s does contain all mandatory ones: %s...', [
+            $arrayErrors[] = vsprintf('Provided parameters %s does contain all mandatory ones: %s...', [
                 json_encode($arrayGivenKeys),
                 json_encode($arrayAllowedParameters['Mandatory']),
             ]);
         } elseif (($arrayGivenKeys != $arrayAllowedParameters['Mandatory']) && (array_diff($arrayAllowedCombined, $arrayGivenKeys) != [])) {
-            $strErrors[] = vsprintf('Provided parameters %s does contain all mandatory & optional ones: %s...', [
+            $arrayErrors[] = vsprintf('Provided parameters %s does contain all mandatory & optional ones: %s...', [
                 json_encode($arrayGivenKeys),
                 json_encode($arrayAllowedCombined),
             ]);
@@ -369,13 +369,13 @@ trait TraitBackEndRomania
                         $regs                    = null;
                         preg_match('/[0-9]{1,20}/', $strParameterValue, $regs, PREG_UNMATCHED_AS_NULL);
                         if (is_array($regs) && ($regs !== []) && ($regs[0] != $strParameterValue)) {
-                            $strErrors[] = vsprintf('Parameter "%s" is expected to be of integer type'
+                            $arrayErrors[] = vsprintf('Parameter "%s" is expected to be of integer type'
                                 . ' but something else is given "%s"...', [
                                 $strParameterKey,
                                 json_encode($strParameterValue),
                             ]);
                         } elseif (($strParameterValue < $arrayRangeAllowedPieces[0]) || ($strParameterValue > $arrayRangeAllowedPieces[1])) {
-                            $strErrors[] = vsprintf('Parameter "%s" is an integer value'
+                            $arrayErrors[] = vsprintf('Parameter "%s" is an integer value'
                                 . ' and within range between 1 and 60 but %s is given...', [
                                 $strParameterKey,
                                 $strParameterValue,
@@ -385,7 +385,7 @@ trait TraitBackEndRomania
                     case 'Filter':
                         $arrayAllowedValues = array_column($this->arraystandardMesageFilters, 'Value');
                         if (($strParameterValue !== '') && !in_array($strParameterValue, $arrayAllowedValues)) {
-                            $strErrors[] = vsprintf('Message Filter provided has a value of %s'
+                            $arrayErrors[] = vsprintf('Message Filter provided has a value of %s'
                                 . ' that is not allowed'
                                 . ' as can only be one of the following: %s'
                                 . ', please ensure proper value is given from your custom class...', [
@@ -400,9 +400,9 @@ trait TraitBackEndRomania
                             . '|' . strval((new \DateTime('now', new \DateTimeZone('UTC')))->format('U') * 1000));
                         $arrayRangeAllowedPiecesForHumans = explode('|', (\DateTime::createFromFormat('U', intval(($arrayRangeAllowedPieces[0] / 1000)), new \DateTimeZone('UTC')))->format('Y-m-d H:i:s')
                             . '|' . (\DateTime::createFromFormat('U', intval(($arrayRangeAllowedPieces[1] / 1000)), new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'));
-                        $strErrors                        = [];
+                        $arrayErrors                        = [];
                         if (is_integer($strParameterValue) && (($strParameterValue < $arrayRangeAllowedPieces[0]) || ($strParameterValue > $arrayRangeAllowedPieces[1]))) {
-                            $strErrors[] = vsprintf('Parameter "%s" is given as an integer value %s (which translate in %s) '
+                            $arrayErrors[] = vsprintf('Parameter "%s" is given as an integer value %s (which translate in %s) '
                                 . ' but that is NOT within allowed range, which is between %s and %s...', [
                                 $strParameterKey,
                                 $strParameterValue,
@@ -416,7 +416,7 @@ trait TraitBackEndRomania
                             if (is_array($regs) && ($regs !== []) && ($regs[0] == $strParameterValue)) {
                                 $intValueToCompare = (\DateTime::createFromFormat('Y-m-d G:i:s', $strParameterValue, new \DateTimeZone('UTC')))->format('U') * 1000;
                                 if (($intValueToCompare < $arrayRangeAllowedPieces[0]) || ($intValueToCompare > $arrayRangeAllowedPieces[1])) {
-                                    $strErrors[] = vsprintf('Parameter "%s" is given as a TimeStamp value of %s '
+                                    $arrayErrors[] = vsprintf('Parameter "%s" is given as a TimeStamp value of %s '
                                         . ' but that is NOT within allowed range, which is between %s and %s...', [
                                         $strParameterKey,
                                         $strParameterValue,
@@ -430,9 +430,9 @@ trait TraitBackEndRomania
                 }
             }
         }
-        if ($strErrors != []) {
-            error_log(implode(PHP_EOL, $strErrors));
-            throw new \RuntimeException(implode(PHP_EOL, $strErrors));
+        if ($arrayErrors != []) {
+            error_log(implode(PHP_EOL, $arrayErrors));
+            throw new \RuntimeException(implode(PHP_EOL, $arrayErrors));
         }
     }
 
