@@ -16,7 +16,6 @@ namespace danielgp\efactura;
 
 trait TraitLines
 {
-
     use TraitBasic;
     use TraitTax;
 
@@ -27,8 +26,10 @@ trait TraitLines
         foreach ($arrayDataIn->children($this->arrayProcessing['mapping']['cac'], true) as $strNodeName => $child) {
             if ($strNodeName === ($strTag . 'Line')) {
                 $intLineNo++;
-                $intLineStr              = $this->getLineStringFromNumber($intLineNo);
-                $arrayLines[$intLineStr] = $this->getLine($child);
+                $intLineStr = $this->getLineStringFromNumber($intLineNo);
+                if (!is_null($child)) {
+                    $arrayLines[$intLineStr] = $this->getLine($child);
+                }
             }
         }
         return $arrayLines;
@@ -38,7 +39,7 @@ trait TraitLines
     {
         $arrayOutput = [];
         foreach ($this->arrayProcessing['Lines@Read'] as $strElement => $strType) {
-            switch ($strType) {
+            switch($strType) {
                 case 'Item':
                     $arrayOutput[$strElement] = $this->getLineItem($child->children($this->arrayProcessing['mapping']['cac'], true)->$strElement);
                     break;
@@ -64,7 +65,7 @@ trait TraitLines
     {
         $arrayOutput = [];
         foreach ($this->arrayProcessing['Lines_Item@Read'] as $key => $value) {
-            switch ($value) {
+            switch($value) {
                 case 'Multiple':
                     if (isset($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key)) {
                         $arrayOutput[$key] = $this->getMultipleElementsByKey($child3->children($this->arrayProcessing['mapping']['cac'], true)->$key);

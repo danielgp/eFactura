@@ -21,6 +21,7 @@ namespace danielgp\efactura;
  */
 trait TraitBackEndRomania
 {
+    use \danielgp\io_operations\InputOutputCurl;
     use \danielgp\efactura\TraitBasic;
 
     private array $arraystandardMesageFilters    = [
@@ -101,60 +102,65 @@ trait TraitBackEndRomania
 
     private function checkPrerequisite(array $arrayAssignedChecks): void
     {
+        $arrayErrorMessages = [];
         foreach ($arrayAssignedChecks as $strLabelCheck => $elementChecked) {
-            switch ($strLabelCheck) {
+            switch($strLabelCheck) {
                 case 'Empty Environment':
                     if ($elementChecked == '') {
-                        throw \RuntimeException('Environment is NOT allowed to be empty'
-                                . ', please ensure proper environment from your custom class...');
+                        $arrayErrorMessages = 'Environment is NOT allowed to be empty'
+                            . ', please ensure proper environment from your custom class...';
                     }
                     break;
                 case 'Empty Secrets Array':
                     if ($elementChecked == []) {
-                        throw \RuntimeException('Secrets array is NOT allowed to be empty'
-                                . ', please ensure proper building from your custom class...');
+                        $arrayErrorMessages = 'Secrets array is NOT allowed to be empty'
+                            . ', please ensure proper building from your custom class...';
                     }
                     break;
                 case 'Message Filter Value':
                     $arrayAllowedValues = array_column($this->arraystandardMesageFilters, 'Value');
                     if (($elementChecked !== '') && !in_array($elementChecked, $arrayAllowedValues)) {
-                        throw \RuntimeException(vsprintf('Message Filter provided has a value of %s that is not allowed'
-                                    . ' as can only be one of the following: %s'
-                                    . ', please ensure proper value is given from your custom class...', [
-                                $elementChecked,
-                                '"' . implode('" or "', array_keys($arrayAllowedValues)) . '"',
-                        ]));
+                        $arrayErrorMessages = vsprintf('Message Filter provided has a value of %s that is not allowed'
+                            . ' as can only be one of the following: %s'
+                            . ', please ensure proper value is given from your custom class...', [
+                            $elementChecked,
+                            '"' . implode('" or "', array_keys($arrayAllowedValues)) . '"',
+                        ]);
                     }
                     break;
                 case 'Message Type Value':
                     $arrayAllowedValues = array_keys($this->arraySettings['Infrastructure']['RO']['Calls']['Content']['Message']);
                     if (!in_array($elementChecked, $arrayAllowedValues)) {
-                        throw \RuntimeException(vsprintf('Message Type provided has a value of %s that is not allowed'
-                                    . ' as can only be one of the following: %s'
-                                    . ', please ensure proper value is given from your custom class...', [
-                                $elementChecked,
-                                '"' . implode('" or "', array_keys($arrayAllowedValues)) . '"',
-                        ]));
+                        $arrayErrorMessages = vsprintf('Message Type provided has a value of %s that is not allowed'
+                            . ' as can only be one of the following: %s'
+                            . ', please ensure proper value is given from your custom class...', [
+                            $elementChecked,
+                            '"' . implode('" or "', array_keys($arrayAllowedValues)) . '"',
+                        ]);
                     }
                     break;
                 case 'Non-Standard Environment Value':
                     $arrayAllowedValues = ['prod', 'test'];
                     if (($elementChecked !== '') && !in_array($elementChecked, $arrayAllowedValues)) {
-                        throw \RuntimeException(vsprintf('Environment provided has a value of %s that is not allowed'
-                                    . ' as can only be one of the following: %s'
-                                    . ', please ensure proper value is given from your custom class...', [
-                                $elementChecked,
-                                '"' . implode('" or "', $arrayAllowedValues) . '"',
-                        ]));
+                        $arrayErrorMessages = vsprintf('Environment provided has a value of %s that is not allowed'
+                            . ' as can only be one of the following: %s'
+                            . ', please ensure proper value is given from your custom class...', [
+                            $elementChecked,
+                            '"' . implode('" or "', $arrayAllowedValues) . '"',
+                        ]);
                     }
                     break;
                 case 'Zero Value':
                     if ($elementChecked === 0) {
-                        throw \RuntimeException('Tax Identification Number is not allowed to be 0'
-                                . ', please ensure you pass proper value from your custom class...');
+                        $arrayErrorMessages = 'Tax Identification Number is not allowed to be 0'
+                            . ', please ensure you pass proper value from your custom class...';
                     }
                     break;
             }
+        }
+        if ($arrayErrorMessages != []) {
+            error_log(implode(PHP_EOL, $arrayErrorMessages));
+            throw new \RuntimeException(implode(PHP_EOL, $arrayErrorMessages));
         }
     }
 
@@ -204,7 +210,7 @@ trait TraitBackEndRomania
         $strContentBranch          = '';
         $arrayFinalParameterValues = [];
         $strFilter                 = '';
-        switch ($strType) {
+        switch($strType) {
             case 'ListAll':
                 $strContentBranch            = 'ListAllMessages';
                 $arrayFinalParameterValues[] = $arrayParameters['Days'];
@@ -236,7 +242,7 @@ trait TraitBackEndRomania
         ]);
         if ($arrayFeedback['errNo'] === 0) {
             if (json_validate($arrayFeedback['response'])) {
-                $arrayFeedback['response'] = json_decode($arrayFeedback['response'], JSON_OBJECT_AS_ARRAY);
+                $arrayFeedback['response'] = json_decode($arrayFeedback['response'], true, 512, \JSON_OBJECT_AS_ARRAY);
                 $intMessageNo              = 0;
                 error_log('Response = ' . json_encode($arrayFeedback['response']));
                 if (array_key_exists('eroare', $arrayFeedback['response'])) {
@@ -351,7 +357,7 @@ trait TraitBackEndRomania
         } else {
             // here we have to validate actual value passed as parameters
             foreach ($arrayParameters as $strParameterKey => $strParameterValue) {
-                switch ($strParameterKey) {
+                switch($strParameterKey) {
                     case 'Days':
                     case 'LoadingId':
                     case 'Page':
@@ -383,7 +389,7 @@ trait TraitBackEndRomania
                                 . ' that is not allowed'
                                 . ' as can only be one of the following: %s'
                                 . ', please ensure proper value is given from your custom class...', [
-                                $elementChecked,
+                                $strParameterValue,
                                 '"' . implode('" or "', array_keys($arrayAllowedValues)) . '"',
                             ]);
                         }
@@ -426,7 +432,7 @@ trait TraitBackEndRomania
         }
         if ($strErrors != []) {
             error_log(implode(PHP_EOL, $strErrors));
-            throw \RuntimeException(implode(PHP_EOL, $strErrors));
+            throw new \RuntimeException(implode(PHP_EOL, $strErrors));
         }
     }
 
@@ -440,7 +446,7 @@ trait TraitBackEndRomania
         $strLabel         = '';
         foreach ($arrayKnownLabels as $strCurrentLabel) {
             $arrayPieces = explode('|', $this->arraySolutionCustomSettings['ArrayStrategyForUpload'][$strCurrentLabel]);
-            switch ($arrayPieces[0]) {
+            switch($arrayPieces[0]) {
                 case 'File base name end with':
                     if (str_ends_with($strFileName, $arrayPieces[1])) {
                         $strLabel = $strCurrentLabel;
@@ -490,7 +496,7 @@ trait TraitBackEndRomania
                 ]);
                 error_log(json_encode($arrayFeedback));
                 if ($arrayFeedback['errNo'] === 0) {
-                    $arrayResponse = json_decode(json_encode(simplexml_load_string($arrayFeedback['response'])), JSON_OBJECT_AS_ARRAY);
+                    $arrayResponse = json_decode(json_encode(simplexml_load_string($arrayFeedback['response'])), true, 512, \JSON_OBJECT_AS_ARRAY);
                     error_log('Complete content of response is: ' . json_encode($arrayResponse));
                     error_log(vsprintf('File %s has been sucessfully loaded with %u index', [
                         $strCrtFile->getRealPath(),

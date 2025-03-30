@@ -54,7 +54,7 @@ trait TraitBasic
             } else {
                 $arrayToReturn['value'] = $value->__toString();
                 foreach ($value->attributes() as $keyA => $valueA) {
-                    if (str_ends_with($valueA, ':CommonAggregateComponents-2')) {
+                    if (!is_null($valueA) && str_ends_with($valueA, ':CommonAggregateComponents-2')) {
                         // nothing
                     } else {
                         $arrayToReturn[$keyA] = $valueA->__toString();

@@ -108,7 +108,7 @@ trait TraitUserInterfaceLogic
             } elseif ($matches2 === []) {
                 echo vsprintf('<div>' . $this->arrayConfiguration['Feedback']['DifferentFile'] . '</div>', [
                     $strArchivedFile,
-                    $strFile->getBasename(),
+                    $arrayArchiveParam['Filename'],
                 ]);
             }
         }
@@ -126,7 +126,7 @@ trait TraitUserInterfaceLogic
         return $strValueToReturn;
     }
 
-    private function handleResponseFile(\SplFileInfo|string $strFile): array
+    private function handleResponseFile(\SplFileInfo | string $strFile): array
     {
         $arrayToReturn = [];
         $strFileMime   = mime_content_type($strFile->getRealPath());
@@ -287,8 +287,8 @@ trait TraitUserInterfaceLogic
                     break;
                 case 'CreditNote':
                 case 'Invoice':
-                    $arrayAttr     = $this->getDocumentDetails($arrayData);
-                    $arrayTemp     = [
+                    $arrayAttr         = $this->getDocumentDetails($arrayData);
+                    $arrayTemp         = [
                         'Loading_Index'          => substr($arrayData['Matches'][0][0], 0, -4),
                         'Size'                   => $arrayData['Size'],
                         'Document_Type_Code'     => $arrayAttr['DocumentTypeCode'],
