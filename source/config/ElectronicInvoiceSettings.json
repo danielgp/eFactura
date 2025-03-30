@@ -20,6 +20,43 @@
         "Messages_List": "listaMesajeFactura",
         "Upload": "upload"
     },
+    "Infrastructure": {
+        "RO": {
+            "Calls": {
+                "Content": {
+                    "Download": "/FCTEL/rest/descarcare?id=%u",
+                    "Message": {
+                        "ListAll": "/FCTEL/rest/listaMesajeFactura?zile=%u&cif=%u%s",
+                        "ListSinglePage": "/FCTEL/rest/listaMesajePaginatieFactura?startTime=%s&endTime=%s&cif=%u&pagina=%u%s",
+                        "Single": "/FCTEL/rest/stareMesaj?id_incarcare=%s"
+                    },
+                    "TransformXmlIntoPdf": "/FCTEL/rest/transformare/%s",
+                    "Upload": {
+                        "About": "last %s is FACT1/FCN additional may have a extra /DA if validation is not wanted",
+                        "B2B": "/FCTEL/rest/upload?standard=%s&cif=%u%s",
+                        "B2C": "/FCTEL/rest/uploadb2c?standard=%s&cif=%u%s",
+                        "B2G": "/FCTEL/rest/upload?standard=%s&cif=%u%s"
+                    },
+                    "Validation": {
+                        "Value": "/FCTEL/rest/validare/%s"
+                    }
+                },
+                "Login": {
+                    "Authorisation": "/authorize",
+                    "Token": "/token"
+                },
+                "Redirect": "/callback"
+            },
+            "Servers": {
+                "Content": {
+                    "DigitalCertificateCall": "https://webserviceapl.anaf.ro/",
+                    "OAuth2": "https://api.anaf.ro/"
+                },
+                "Login": "https://logincert.anaf.ro/anaf-oauth2/v1",
+                "Redirect": "https://oauth.pstmn.io/v1"
+            }
+        }
+    },
     "Versions": {
         "1.0.7": {
             "CIUS-RO": "1.0.0",

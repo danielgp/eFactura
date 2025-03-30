@@ -17,6 +17,7 @@ namespace danielgp\efactura;
 class ClassElectronicInvoiceUserInterface
 {
     use \danielgp\efactura\TraitUserInterfaceLogic;
+    use \danielgp\efactura\TraitBackEndRomania;
 
     private \SebastianBergmann\Timer\Timer $classTimer;
 
@@ -108,6 +109,23 @@ class ClassElectronicInvoiceUserInterface
                     }
                     echo '</div><!-- tab2 -->'
                     . '</div><!-- tabStandard -->';
+                    break;
+                case 'checkAllMessages':
+                    if (!array_key_exists('NumberOfDays', $_GET)) {
+                        $_GET['NumberOfDays'] = 2;
+                    }
+                    $this->getElectronicInvoiceMessages('ListAll', [
+                        'Days' => filter_input(INPUT_GET, 'NumberOfDays', FILTER_SANITIZE_NUMBER_INT),
+                    ]);
+                case 'checkSingleMessage':
+                    if (!array_key_exists('NumberOfDays', $_GET)) {
+                        $_GET['LoadingId'] = 0; // this is not real ID...
+                    }
+                    $this->getElectronicInvoiceMessages('Single', [
+                        'LoadingId' => filter_input(INPUT_GET, 'LoadingId', FILTER_SANITIZE_NUMBER_INT),
+                    ]);
+                case 'uploadElectronicInvoicesFromFolderToRomanianAuthority':
+                    $this->uploadElectronicInvoicesFromFolder();
                     break;
             }
         }

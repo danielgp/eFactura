@@ -11,6 +11,16 @@ eFactura scripts to produce and read XML files containing official selling detai
 PHP developers that serves various business to accomodate custom applications involving selling activity in Romania.
 
 
+## Usage
+
+
+* add to your `composer.json` file, branch `require` following line: `"danielgp/efactura": "<target_version_specification_here>"` and save
+* execute a composer update to fetch the library components
+* add `use \danielgp\eFactura\TraitBackEndRomania;` to your custom class
+* customize $this->arraySolutionCustomSettings as per your needs (see definition from [TraitBackEndRomania.php](/source/TraitBackEndRomania.php) file)
+* consult [ClassElectronicInvoiceUserInterface.php](/source/ClassElectronicInvoiceUserInterface.php) file and method named `setActionToDo` refers to main features: checkAllMessages, checkSingleMessage and uploadElectronicInvoicesFromFolderToRomanianAuthority which you may take to your custom class
+
+
 ## Terms dictionary
 
 * ABIE - Aggregate Business Information Entity
@@ -49,6 +59,7 @@ PHP developers that serves various business to accomodate custom applications in
 * [Aplicații web RO-eFactura - completare manuală](https://mfinante.gov.ro/ro/web/efactura/aplicatii-web-ro-efactura)
 * [E-invoicing in Europe](https://dddinvoices.com/learn/e-invoicing-europe/)
 * [GitHub - eInvoicing-EN16931](https://github.com/ConnectingEurope/eInvoicing-EN16931)
+* [Prezentare servicii web pentru Sistemul național privind factura electronică RO e-Factura](https://mfinante.gov.ro/static/10/eFactura/prezentare%20api%20efactura.pdf)
 * [UBL specifications - multiple versions](https://ubl.xml.org/wiki/ubl-specifications)
 * [UNL 2.1 specification](https://docs.oasis-open.org/ubl/UBL-2.1.html)
 * [UBL 2.1 Invoice Example: 6 Steps to Create Your Own (XML Format)](https://www.storecove.com/blog/en/creating-your-own-ubl-invoice/?unbounce_brid=1705651446_009411_26a4ce94605ccc39070d57d1622f2a4d) by Nikkie Bakker on 2019 April 17

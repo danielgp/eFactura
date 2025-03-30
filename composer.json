@@ -41,6 +41,7 @@
         ],
         "files": [
             "source/TraitBasic.php",
+            "source/TraitBackEndRomania.php",
             "source/TraitVersions.php",
             "source/TraitTax.php",
             "source/TraitLines.php",
