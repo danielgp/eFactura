@@ -132,7 +132,7 @@ trait TraitBasic
             }
             // @codeCoverageIgnoreStart
         } catch (\Exception $ex) {
-            echo $ex->getMessage();
+            error_log($ex->getTraceAsString());
             return false;
         }
         // @codeCoverageIgnoreEnd
