@@ -93,7 +93,7 @@ trait TraitUserInterfaceLogic
             preg_match('/^semnatura_[0-9]{5,20}\.xml$/', $strArchivedFile, $matches2, PREG_OFFSET_CAPTURE);
             if ($matches !== []) {
                 $resInvoice        = $classZip->getStream($strArchivedFile);
-                $strInvoiceContent = filter_var(stream_get_contents($resInvoice), FILTER_FLAG_ENCODE_HIGH);
+                $strInvoiceContent = filter_var(stream_get_contents($resInvoice), FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH);
                 fclose($resInvoice);
                 $strFileStats      = $classZip->statIndex($intArchivedFile);
                 $arrayToReturn     = $this->setStandardizedFeedbackArray([
@@ -106,7 +106,9 @@ trait TraitUserInterfaceLogic
                     'Response_Size'       => $arrayArchiveParam['Response_Size'],
                 ]);
             } elseif ($matches2 === []) {
-                echo vsprintf('<div>' . $this->arrayConfiguration['Feedback']['DifferentFile'] . '</div>', [
+                echo vsprintf('<div>'
+                    . filter_var($this->arrayConfiguration['Feedback']['DifferentFile'], FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH)
+                    . '</div>', [
                     $strArchivedFile,
                     $arrayArchiveParam['Filename'],
                 ]);
