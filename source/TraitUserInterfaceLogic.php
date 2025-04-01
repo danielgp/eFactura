@@ -93,7 +93,7 @@ trait TraitUserInterfaceLogic
             preg_match('/^semnatura_[0-9]{5,20}\.xml$/', $strArchivedFile, $matches2, PREG_OFFSET_CAPTURE);
             if ($matches !== []) {
                 $resInvoice        = $classZip->getStream($strArchivedFile);
-                $strInvoiceContent = stream_get_contents($resInvoice);
+                $strInvoiceContent = filter_var(stream_get_contents($resInvoice), FILTER_FLAG_ENCODE_HIGH);
                 fclose($resInvoice);
                 $strFileStats      = $classZip->statIndex($intArchivedFile);
                 $arrayToReturn     = $this->setStandardizedFeedbackArray([
@@ -225,7 +225,7 @@ trait TraitUserInterfaceLogic
         $parser      = xml_parser_create();
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
         xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-        xml_parse_into_struct($parser, $arrayData['strInvoiceContent'], $arrayErrors);
+        xml_parse_into_struct($parser, filter_var($arrayData['strInvoiceContent'], FILTER_FLAG_ENCODE_HIGH), $arrayErrors);
         xml_parser_free($parser);
         return [
             'Loading_Index'     => $arrayErrors[0]['attributes']['Index_incarcare'],
@@ -265,7 +265,7 @@ trait TraitUserInterfaceLogic
             $arrayToReturn['Size']  = 0;
         } else {
             $appR              = new \danielgp\efactura\ClassElectronicInvoiceRead();
-            $objFile           = $appR->readElectronicXmlHeader($arrayData['strInvoiceContent']);
+            $objFile           = $appR->readElectronicXmlHeader(filter_var($arrayData['strInvoiceContent'], FILTER_FLAG_ENCODE_HIGH));
             $documentHeaderTag = $appR->getDocumentRoot($objFile);
             switch($documentHeaderTag['DocumentTagName']) {
                 case 'header':
