@@ -37,13 +37,18 @@ class ClassElectronicInvoiceUserInterface
             'en_US' => 'us',
         ];
         $arrayFlagSizes = ['20px', '15px'];
-        if ($strLanguageCountry === $_GET['language_COUNTRY']) {
+        if ($strLanguageCountry === filter_input(INPUT_GET, 'language_COUNTRY', FILTER_VALIDATE_REGEXP, [
+                'options' => [
+                    'regexp' => '/^(en_US|it_IT|ro_RO)$/'
+                ]
+            ])) {
             $arrayFlagSizes = ['40px', '30px'];
         }
         return vsprintf('<a href="?language_COUNTRY=%s" style="float:left;margin-left:10px;">'
             . '<span class="fi fi-%s" style="%s">&nbsp;</span>'
             . '</a>', [
-            $strLanguageCountry . (array_key_exists('action', $_GET) ? '&action=' . $_GET['action'] : ''),
+            $strLanguageCountry . (array_key_exists('action', $_GET) ? '&action='
+            . filter_input(INPUT_GET, 'action', FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH) : ''),
             $arrayMapFlags[$strLanguageCountry],
             vsprintf('width:%s;height:%s;', $arrayFlagSizes),
         ]);
@@ -62,7 +67,12 @@ class ClassElectronicInvoiceUserInterface
         }
         return vsprintf('<a href="%s" class="btn btn-outline-primary" style="%s">%s</a>', [
             $arrayButtonFeatures['URL']
-            . (array_key_exists('language_COUNTRY', $_GET) ? '&language_COUNTRY=' . $_GET['language_COUNTRY'] : ''),
+            . (array_key_exists('language_COUNTRY', $_GET) ? '&language_COUNTRY='
+            . filter_input(INPUT_GET, 'language_COUNTRY', FILTER_VALIDATE_REGEXP, [
+                'options' => [
+                    'regexp' => '/^(en_US|it_IT|ro_RO)$/'
+                ]
+            ]) : ''),
             implode(';', $arrayStylePieces),
             $arrayButtonFeatures['Text'],
         ]);
@@ -89,7 +99,7 @@ class ClassElectronicInvoiceUserInterface
                 'action' => FILTER_SANITIZE_SPECIAL_CHARS,
             ];
             $arrayInputs  = filter_input_array(INPUT_GET, $arrayOptions, true);
-            switch ($arrayInputs['action']) {
+            switch($arrayInputs['action']) {
                 case 'AnalyzeZIPfromANAFfromLocalFolder':
                     echo '<div class="tabber" id="tabStandard">'
                     . '<div class="tabbertab" id="tab1" title="Filters">';

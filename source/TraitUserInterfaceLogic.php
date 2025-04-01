@@ -225,7 +225,7 @@ trait TraitUserInterfaceLogic
         $parser      = xml_parser_create();
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
         xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-        xml_parse_into_struct($parser, filter_var($arrayData['strInvoiceContent'], FILTER_FLAG_ENCODE_HIGH), $arrayErrors);
+        xml_parse_into_struct($parser, filter_var($arrayData['strInvoiceContent'], FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH), $arrayErrors);
         xml_parser_free($parser);
         return [
             'Loading_Index'     => $arrayErrors[0]['attributes']['Index_incarcare'],
@@ -243,8 +243,12 @@ trait TraitUserInterfaceLogic
             $_GET['language_COUNTRY'] = 'ro_RO';
         }
         $loader            = new \Gettext\Loader\PoLoader();
-        $this->translation = $loader->loadFile(__DIR__ . '/locale/' . $_GET['language_COUNTRY']
-            . '/LC_MESSAGES/eFactura.po');
+        $this->translation = $loader->loadFile(__DIR__ . '/locale/'
+            . filter_input(INPUT_GET, 'language_COUNTRY', FILTER_VALIDATE_REGEXP, [
+                'options' => [
+                    'regexp' => '/^(en_US|it_IT|ro_RO)$/'
+                ]
+            ]) . '/LC_MESSAGES/eFactura.po');
     }
 
     private function setStandardizedFeedbackArray(array $arrayData): array
@@ -253,7 +257,11 @@ trait TraitUserInterfaceLogic
         $strErrorTag   = '<div style="max-width:200px;font-size:0.8rem;">%s</div>';
         $strTimeZone   = $this->translation->find(null, 'i18n_TimeZone')->getTranslation();
         $strFormatter  = new \IntlDateFormatter(
-            $_GET['language_COUNTRY'],
+            filter_input(INPUT_GET, 'language_COUNTRY', FILTER_VALIDATE_REGEXP, [
+                'options' => [
+                    'regexp' => '/^(en_US|it_IT|ro_RO)$/'
+                ]
+            ]),
             \IntlDateFormatter::FULL,
             \IntlDateFormatter::FULL,
             $strTimeZone,
@@ -265,7 +273,7 @@ trait TraitUserInterfaceLogic
             $arrayToReturn['Size']  = 0;
         } else {
             $appR              = new \danielgp\efactura\ClassElectronicInvoiceRead();
-            $objFile           = $appR->readElectronicXmlHeader(filter_var($arrayData['strInvoiceContent'], FILTER_FLAG_ENCODE_HIGH));
+            $objFile           = $appR->readElectronicXmlHeader(filter_var($arrayData['strInvoiceContent'], FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH));
             $documentHeaderTag = $appR->getDocumentRoot($objFile);
             switch($documentHeaderTag['DocumentTagName']) {
                 case 'header':
