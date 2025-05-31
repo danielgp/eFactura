@@ -1,12 +1,11 @@
 <?php
 
 /*
- * Copyright (c) 2024, Daniel Popiniuc and its licensors.
- *
+ * Copyright (c) 2024 - 2025 Daniel Popiniuc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *    Daniel Popiniuc

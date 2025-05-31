@@ -1,12 +1,11 @@
 <?php
 
 /*
- * Copyright (c) 2024, Daniel Popiniuc and its licensors.
- *
+ * Copyright (c) 2024 - 2025 Daniel Popiniuc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *    Daniel Popiniuc
@@ -16,7 +15,6 @@ namespace danielgp\efactura;
 
 trait TraitTax
 {
-
     use TraitBasic;
 
     private function getTax(\SimpleXMLElement $child): array
@@ -37,7 +35,7 @@ trait TraitTax
     {
         $arrayOut = [];
         foreach ($this->arrayProcessing[$strElementName] as $strElement => $strType) {
-            switch ($strType) {
+            switch($strType) {
                 case 'Elements':
                     if (isset($child3->children($this->arrayProcessing['mapping']['cac'], true)->$strElement)) {
                         $arrayOut[$strElement] = $this->getElements($child3->children($this
@@ -59,7 +57,7 @@ trait TraitTax
     {
         $arrayOut = [];
         foreach ($this->arrayProcessing['TaxSubtotal'] as $strElementChild => $strTypeChild) {
-            switch ($strTypeChild) {
+            switch($strTypeChild) {
                 case 'Single':
                     if (isset($child->children($this->arrayProcessing['mapping']['cbc'], true)->$strElementChild)) {
                         $arrayOut[$strElementChild] = $this->getElementSingle($child
@@ -82,7 +80,7 @@ trait TraitTax
     {
         $arrayOut = [];
         foreach ($this->arrayProcessing['TaxTotal'] as $strElement => $strType) {
-            switch ($strType) {
+            switch($strType) {
                 case 'Single':
                     if (isset($child->children($this->arrayProcessing['mapping']['cbc'], true)->$strElement)) {
                         $arrayOut[$strElement] = $this->getElementSingle($child->children($this

@@ -1,12 +1,11 @@
 <?php
 
 /*
- * Copyright (c) 2025, Daniel Popiniuc and its licensors.
- *
+ * Copyright (c) 2024 - 2025 Daniel Popiniuc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *    Daniel Popiniuc
@@ -343,7 +342,7 @@ trait TraitBackEndRomania
             $arrayAllowedCombined = array_merge($arrayAllowedParameters['Mandatory'], $arrayAllowedParameters['Optional']);
         }
         $arrayGivenKeys = array_keys($arrayParameters);
-        $arrayErrors      = [];
+        $arrayErrors    = [];
         if (array_diff($arrayAllowedParameters['Mandatory'], $arrayGivenKeys) != []) {
             $arrayErrors[] = vsprintf('Provided parameters %s does contain all mandatory ones: %s...', [
                 json_encode($arrayGivenKeys),
@@ -400,7 +399,7 @@ trait TraitBackEndRomania
                             . '|' . strval((new \DateTime('now', new \DateTimeZone('UTC')))->format('U') * 1000));
                         $arrayRangeAllowedPiecesForHumans = explode('|', (\DateTime::createFromFormat('U', intval(($arrayRangeAllowedPieces[0] / 1000)), new \DateTimeZone('UTC')))->format('Y-m-d H:i:s')
                             . '|' . (\DateTime::createFromFormat('U', intval(($arrayRangeAllowedPieces[1] / 1000)), new \DateTimeZone('UTC')))->format('Y-m-d H:i:s'));
-                        $arrayErrors                        = [];
+                        $arrayErrors                      = [];
                         if (is_integer($strParameterValue) && (($strParameterValue < $arrayRangeAllowedPieces[0]) || ($strParameterValue > $arrayRangeAllowedPieces[1]))) {
                             $arrayErrors[] = vsprintf('Parameter "%s" is given as an integer value %s (which translate in %s) '
                                 . ' but that is NOT within allowed range, which is between %s and %s...', [
