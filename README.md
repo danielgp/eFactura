@@ -72,9 +72,14 @@ PHP developers that serves various business to accomodate custom applications in
 [![Total Downloads](https://poser.pugx.org/danielgp/efactura/downloads)](https://packagist.org/packages/danielgp/efactura)
 [![Monthly Downloads](https://poser.pugx.org/danielgp/efactura/d/monthly)](https://packagist.org/packages/danielgp/efactura)
 [![Daily Downloads](https://poser.pugx.org/danielgp/efactura/d/daily)](https://packagist.org/packages/danielgp/efactura)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdanielgp%2FeFactura.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdanielgp%2FeFactura?ref=badge_shield)
 
 
 ## Code quality analysis
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/danielgp/efactura/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/danielgp/efactura/?branch=main)
 [![Scrutinizer Code Coverage](https://scrutinizer-ci.com/g/danielgp/eFactura/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/danielgp/eFactura/?branch=main)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdanielgp%2FeFactura.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdanielgp%2FeFactura?ref=badge_large)
