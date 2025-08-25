@@ -19,7 +19,7 @@
         "ext-XML"                   : "*",
         "ext-XMLWriter"             : "*",
         "danielgp/io-operations"    : "~2",
-        "fortawesome/font-awesome"  : "~6.7",
+        "fortawesome/font-awesome"  : "~7.0",
         "gettext/gettext"           : "~5.7",
         "lipis/flag-icons"          : "~7.3",
         "phpunit/php-timer"         : "~8.0",
