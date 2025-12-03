@@ -12,16 +12,16 @@
         }
     ],
     "require": {
-        "php"                       : "^8.3 || ^8.4",
+        "php"                       : "^8.4 || ^8.5",
         "ext-json"                  : "*",
         "ext-mbstring"              : "*",
         "ext-SimpleXML"             : "*",
         "ext-XML"                   : "*",
         "ext-XMLWriter"             : "*",
         "danielgp/io-operations"    : "~2",
-        "fortawesome/font-awesome"  : "~7.0",
+        "fortawesome/font-awesome"  : "~7.1",
         "gettext/gettext"           : "~5.7",
-        "lipis/flag-icons"          : "~7.3",
+        "lipis/flag-icons"          : "~7.5",
         "phpunit/php-timer"         : "~8.0",
         "twbs/bootstrap"            : "~5.3"
     },
@@ -30,7 +30,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.3.16"
+            "php": "8.4.5"
         },
         "optimize-autoloader": true,
         "sort-packages": true
