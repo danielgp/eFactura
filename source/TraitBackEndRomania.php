@@ -91,7 +91,7 @@ trait TraitBackEndRomania
         header('Location: ' . $strRelevantUrl);
     }
 
-    private function buildHeaderAsArray(): array
+    protected function buildHeaderAsArray(): array
     {
         return [
             'Authorization: Bearer ' . $this->arraySolutionCustomSettings['ArrayElectronicInvoiceSecrets']['Token'],
