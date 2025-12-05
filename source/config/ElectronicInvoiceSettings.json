@@ -25,11 +25,9 @@
             "Calls": {
                 "Content": {
                     "Download": "/FCTEL/rest/descarcare?id=%u",
-                    "Message": {
-                        "ListAll": "/FCTEL/rest/listaMesajeFactura?zile=%u&cif=%u%s",
-                        "ListSinglePage": "/FCTEL/rest/listaMesajePaginatieFactura?startTime=%s&endTime=%s&cif=%u&pagina=%u%s",
-                        "Single": "/FCTEL/rest/stareMesaj?id_incarcare=%s"
-                    },
+                    "ListAllMessages": "/FCTEL/rest/listaMesajeFactura?zile=%u&cif=%u%s",
+                    "ListMessagesPaged": "/FCTEL/rest/listaMesajePaginatieFactura?startTime=%s&endTime=%s&cif=%u&pagina=%u%s",
+                    "SingleMessageStatus": "/FCTEL/rest/stareMesaj?id_incarcare=%s",
                     "TransformXmlIntoPdf": "/FCTEL/rest/transformare/%s",
                     "Upload": {
                         "About": "last %s is FACT1/FCN additional may have a extra /DA if validation is not wanted",
