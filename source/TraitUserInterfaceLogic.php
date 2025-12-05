@@ -240,16 +240,19 @@ trait TraitUserInterfaceLogic
 
     private function setLocalization(): void
     {
-        if (!array_key_exists('language_COUNTRY', $_GET)) {
-            $_GET['language_COUNTRY'] = 'ro_RO';
+		$strDefaultLocalization = 'ro_RO';
+        if (!is_array($_GET)) {
+            $_GET['language_COUNTRY'] = $strDefaultLocalization;
+        } elseif (!array_key_exists('language_COUNTRY', $_GET)) {
+            $_GET['language_COUNTRY'] = $strDefaultLocalization;
+        } elseif (!in_array($_GET['language_COUNTRY'], ['en_US', 'it_IT', 'ro_RO'])) {
+            $_GET['language_COUNTRY'] = $strDefaultLocalization;
         }
+        $strTranslationFile = __DIR__ . '/locale/' 
+            . $_GET['language_COUNTRY']
+            . '/LC_MESSAGES/eFactura.po';
         $loader            = new \Gettext\Loader\PoLoader();
-        $this->translation = $loader->loadFile(__DIR__ . '/locale/'
-            . filter_input(INPUT_GET, 'language_COUNTRY', FILTER_VALIDATE_REGEXP, [
-                'options' => [
-                    'regexp' => '/^(en_US|it_IT|ro_RO)$/'
-                ]
-            ]) . '/LC_MESSAGES/eFactura.po');
+        $this->translation = $loader->loadFile($strTranslationFile);
     }
 
     private function setStandardizedFeedbackArray(array $arrayData): array
