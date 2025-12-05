@@ -261,11 +261,7 @@ trait TraitUserInterfaceLogic
         $strErrorTag   = '<div style="max-width:200px;font-size:0.8rem;">%s</div>';
         $strTimeZone   = $this->translation->find(null, 'i18n_TimeZone')->getTranslation();
         $strFormatter  = new \IntlDateFormatter(
-            filter_input(INPUT_GET, 'language_COUNTRY', FILTER_VALIDATE_REGEXP, [
-                'options' => [
-                    'regexp' => '/^(en_US|it_IT|ro_RO)$/'
-                ]
-            ]),
+            'ro_RO',
             \IntlDateFormatter::FULL,
             \IntlDateFormatter::FULL,
             $strTimeZone,
