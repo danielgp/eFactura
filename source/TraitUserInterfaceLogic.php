@@ -179,6 +179,10 @@ trait TraitUserInterfaceLogic
         } else {
             $strCustomerCui = $arrayData['PartyLegalEntity']['CompanyID'];
         }
+        if (is_array($strCustomerCui)) {
+            // elements carrying XML attributes (e.g. CompanyID with schemeID) are parsed as ['value' => ..., attributes...]
+            $strCustomerCui = $strCustomerCui['value'] ?? '';
+        }
         if (is_numeric($strCustomerCui)) {
             $strCustomerCui = 'RO' . $strCustomerCui;
         }
