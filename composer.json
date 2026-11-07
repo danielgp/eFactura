@@ -21,7 +21,7 @@
         "danielgp/io-operations"    : "~2",
         "fortawesome/font-awesome"  : "~7.3",
         "gettext/gettext"           : "~5.7",
-        "lipis/flag-icons"          : "~7.5",
+        "lipis/flag-icons"          : "~7.6",
         "phpunit/php-timer"         : "~9.0",
         "twbs/bootstrap"            : "~5.3"
     },
